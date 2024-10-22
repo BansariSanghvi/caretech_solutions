@@ -1,13 +1,13 @@
 <section id="menu">
             <div class="logo">
-                <img src="../assets/img/logo_symbol.png" alt="">
+                <img src="img/heart.png" alt="">
                 <h2 class="name">CareTech</h2>
             </div>
             <div class="items">
                 <li><i class='bx bxs-home'></i><a href="index.php">Dashboard</a></li>
                 <li><i class='bx bxs-user-detail'></i><a href="#">Staff Hub</a></li>
                 <li><i class='bx bxs-capsule'></i><a href="#">Medicines</a></li>
-                <li><i class='bx bxs-buildings'></i><a href="#">GP Surgery</a></li>
+                <li><i class='bx bxs-buildings'></i><a href="#">GP Surgery / Hospital</a></li>
                 <li><i class='bx bx-line-chart'></i><a href="#">Analytics</a></li>
                 <li><i class='bx bxs-cog'></i><a href="#">Settings</a></li>
                 <li><i class="ri-alert-fill"></i><a href="#">Report Problem</a></li>

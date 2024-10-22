@@ -23,8 +23,7 @@
             <div class="inside-content">
                <section class="dashboard_section" id ='dashboard'>
                   <h2 class="page_title">Dashboard:</h2>
-                  <p class="desc" style="margin-left: 20px; margin-top: 20px;">To do: Need to Design a Dashboard</p>
-
+                  <p class="desc" style="margin-left: 20px; margin-top: 20px;">To do: </p>
 
                </section>
             </div>

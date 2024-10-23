@@ -9,7 +9,7 @@
                 <li><i class='bx bxs-capsule'></i><a href="medicineList.php">Medicines</a></li>
                 <li><i class='bx bxs-buildings'></i><a href="medicalBranches.php">GP Surgery / Hospital</a></li>
                 <li><i class='bx bx-line-chart'></i><a href="analytics.php">Analytics</a></li>
-                <li><i class='bx bxs-cog'></i><a href="#">Settings</a></li>
+                <li><i class='bx bxs-cog'></i><a href="settings.php">Settings</a></li>
                 <li><i class="ri-alert-fill"></i><a href="#">Report Problem</a></li>
             </div>
 

@@ -1,7 +1,7 @@
 <section id="menu">
             <div class="logo">
                 <img src="img/heart.png" alt="">
-                <h2 class="name">CareTech</h2>
+                <h2 class="name">CareTech Ltd</h2>
             </div>
             <div class="items">
                 <li><i class='bx bxs-home'></i><a href="index.php">Dashboard</a></li>

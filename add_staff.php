@@ -58,7 +58,7 @@
             border-radius: 6px;
             cursor: pointer;
             background-color: green;
-            width: 100%;
+            
         }
 
         .form-container button:hover {
@@ -76,15 +76,27 @@
             margin-bottom: 20px;
         }
 
-        /* Flexbox for first and last name in one row */
-        .name-row {
+        .row {
             display: flex;
-            gap: 20px; 
+            align-items: center; 
+            gap: 30px; 
+            margin-bottom: 16px; 
+            width: 100%;
         }
 
-        .name-row input {
-            width: 48%; 
+        .row label {
+            width: 100px; 
+            font-weight: bold;
         }
+
+        .row input, .row select {
+            flex: 1; 
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            
+        }
+
 
     </style>
 </head>
@@ -100,46 +112,49 @@
             <!-- Dashboard Section -->
             <div class="inside-content">
                 <section class="staff_hub_section" id='staff_hub'>
-                    <h2 class="page_title">Add Staff Member:</h2>
+                    <h3 class="page_title">Add Staff Member:</h3>
 
                     <!-- Form to add new staff -->
                     <div class="form-container">
                         <form action="add_staff_process.php" method="POST">
                             
-                            <div class="name-row">
-                                <div>
-                                    <label for="first_name">First Name:</label>
-                                    <input type="text" id="first_name" name="first_name" required>
-                                </div>
-
-                                <div>
-                                    <label for="last_name">Last Name:</label>
-                                    <input type="text" id="last_name" name="last_name" required>
-                                </div>
+                            <div class="row">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" required>
                             </div>
 
+                            <div class="row">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
 
-                            <div>
+                            <div class="row">
                                 <label for="email">Email:</label>
                                 <input type="email" id="email" name="email" required>
                             </div>
 
-                            <div>
+                            <div class="row">
                                 <label for="role">Role:</label>
-                                <input type="text" id="role" name="role" required>
-                            </div>
-
-                            <div>
-                                <label for="department">Department:</label>
-                                <select id="department" name="department" required>
-                                    <option value="radiology">Radiology</option>
-                                    <option value="oncology">Oncology</option>
-                                    <option value="ER">Emergency Response</option>
-                                    <option value="ICU">Intensive Care Unit</option>
+                                <select id="role" name="role" required>
+                                    <option value="doctor">Doctor</option>
+                                    <option value="nurse">Nurse</option>
+                                    <option value="assistant">Assistant</option>
+                                    <option value="manager">Manager</option>
                                 </select>
                             </div>
 
-                            <div>
+                            <div class="row">
+                                <label for="department">Department:</label>
+                                <select id="department" name="department" required>
+                                    <option value="HR">HR</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Sales">Sales</option>
+                                    <option value="Finance">Finance</option>
+                                </select>
+                            </div>
+
+                            <div class="row">
                                 <label for="status">Status:</label>
                                 <select id="status" name="status" required>
                                     <option value="Active">Active</option>
@@ -147,17 +162,19 @@
                                 </select>
                             </div>
 
-                            <div>
+                            <div class="row">
                                 <label for="phone">Phone Number:</label>
                                 <input type="tel" id="phone" name="phone" required>
                             </div>
 
-                            <div>
+                            <div class="row">
                                 <label for="address">Address:</label>
                                 <input type="text" id="address" name="address" required>
                             </div>
 
                             <button type="submit">Add Staff Member</button>
+                            <button class="cancel" onclick="window.location.href='staff_hub.php'">Cancel</button>
+
                         </form>
                     </div>
                 </section>

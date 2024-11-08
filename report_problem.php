@@ -112,12 +112,12 @@
 
             <!-- Dashboard Section -->
             <div class="inside-content">
-                <section class="staff_hub_section" id='staff_hub'>
+                <section class="report_problem_section" id='report_problem'>
                     <h3 class="page_title">Report Problem:</h3>
 
                     <!-- Form to add new staff -->
                     <div class="form-container">
-                        <form action="add_staff_process.php" method="POST">
+                        <form action="report.php" method="POST">
                             
                             <div class="row">
                                 <label for="first_name">First Name:</label>

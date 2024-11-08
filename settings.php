@@ -24,9 +24,6 @@
                <section class="staff_section" id ='staff_hub'>
                   <h2 class="page_title">Settings:</h2>
                   
-                  <section class="filter" id="filter_option">
-                    
-
                     <!-------Add the other elements under this------>
 
                   </section>

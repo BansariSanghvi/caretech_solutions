@@ -130,7 +130,7 @@
                             <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
                         </div>
                     <div class="remove_staff_box">
-                        <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class="ri-user-minus-fill"></i>Remove Staff Member</button>
+                        <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
                     </div>
                     </div>
                         <div class="search_filter">

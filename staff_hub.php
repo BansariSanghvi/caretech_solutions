@@ -127,7 +127,7 @@
                     <div class="staff_hub_top_container">
                         <div class="buttons-container">
                         <div class="add_staff_box">
-                            <button class = "add_staff_btn" onclick="window.location.href='add_staff_form.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
+                            <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
                         </div>
                     <div class="remove_staff_box">
                         <button class="remove_staff_btn"><i class="ri-user-minus-fill"></i>Remove Staff Member</button>

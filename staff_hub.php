@@ -106,6 +106,15 @@
     font-size: 14px;
     border-radius: 4px;
 }
+
+.upload_btn {
+    background-color: #ff5733; 
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    font-size: 14px;
+    border-radius: 4px;
+}
         
        
 </style>
@@ -126,17 +135,22 @@
 
                     <div class="staff_hub_top_container">
                         <div class="buttons-container">
-                        <div class="add_staff_box">
-                            <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
-                        </div>
-                    <div class="remove_staff_box">
-                        <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
-                    </div>
-                    </div>
-                        <div class="search_filter">
-                        <i class="ri-search-line"></i>
-                        <input type="text" placeholder="search">
-                    </div>
+                            <div class="add_staff_box">
+                                <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
+                            </div>
+                            <div class="remove_staff_box">
+                                <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
+                            </div>
+
+                            <div class="upload_box">
+                                <button class="upload_btn" onclick="window.location.href='upload_staff.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
+                            </div>
+
+                            </div>
+                                <div class="search_filter">
+                                <i class="ri-search-line"></i>  
+                                <input type="text" placeholder="search">
+                            </div>
             </div>
                    
 

@@ -111,12 +111,12 @@
 
             <!-- Dashboard Section -->
             <div class="inside-content">
-                <section class="staff_hub_section" id='staff_hub'>
+                <section class="remove_staff_section" id='remove-staff'>
                     <h3 class="page_title">Remove Staff Member:</h3>
 
                     <!-- Form to add new staff -->
                     <div class="form-container">
-                        <form action="add_staff_process.php" method="POST">
+                        <form action="remove_staff_process.php" method="POST">
                             
                             <div class="row">
                                 <label for="first_name">First Name:</label>

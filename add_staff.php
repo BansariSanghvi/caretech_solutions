@@ -91,7 +91,7 @@
 
         .row input, .row select {
             flex: 1; 
-            padding: 8px;
+            padding: 4px;
             border: 1px solid #ddd;
             border-radius: 4px;
             
@@ -163,14 +163,15 @@
                             </div>
 
                             <div class="row">
-                                <label for="phone">Phone Number:</label>
+                                <label for="phone">Number:</label>
                                 <input type="tel" id="phone" name="phone" required>
                             </div>
 
                             <div class="row">
-                                <label for="address">Address:</label>
-                                <input type="text" id="address" name="address" required>
+                                <label for="dialcode">Dial Code:</label>
+                                <input type="text" id="code" name="code" required>
                             </div>
+                            
 
                             <button type="submit">Add Staff Member</button>
                             <button class="cancel" onclick="window.location.href='staff_hub.php'">Cancel</button>

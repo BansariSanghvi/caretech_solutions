@@ -213,19 +213,19 @@ if ($_SESSION['role'] != 'admin') {
                                         <div class="card-body">
                                             <div class="tag-container">
                                                 <!-- Quick Action Buttons -->
-                                                <button class="btn btn-default big-button">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='medicineList.php'">
                                                     <i class="ri-folder-4-fill"></i> Inventory
                                                 </button>
 
-                                                <button class="btn btn-default big-button">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='staff_hub.php'">
                                                     <i class="ri-group-2-fill"></i> Staff Hub
                                                 </button>
 
-                                                <button class="btn btn-default big-button">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='medicalBranches.php'">
                                                     <i class="ri-hospital-fill"></i> Branches
                                                 </button>
 
-                                                <button class="btn btn-default big-button">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='analytics.php'">
                                                     <i class="ri-line-chart-fill"></i> Analytics
                                                 </button>
 

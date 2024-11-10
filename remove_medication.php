@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Add Medication</title>
+    <title>Remove Medication</title>
 
     <style>
         /* Container for the form */
@@ -111,44 +111,29 @@
 
             <!-- Dashboard Section -->
             <div class="inside-content">
-                <section class="inventory" id='inventory'>
-                    <h3 class="page_title">Add Verified Medications to Inventory:</h3>
+                <section class="remove_medicine_section" id='remove-drug'>
+                    <h3 class="page_title">Remove Medicine from Inventory:</h3>
 
-                    <!-- Form to add new medication -->
+                    <!-- Form to add new staff -->
                     <div class="form-container">
-                        <form action="add_medication.php" method="POST">
+                        <form action="remove_drug_process.php" method="POST">
                             
                             <div class="row">
-                                <label for="medicine-name">Medicine Name:</label>
-                                <input type="text" id="mname" name="mname" required>
+                                <label for="dname">Medicine Name:</label>
+                                <input type="text" id="dname" name="dname" required>
                             </div>
 
                             <div class="row">
-                                <label for="medicine-type">Medicine Type</label>
-                                <input type="text" id="mtype" name="mtype" required>
+                                <label for="last_name">ID Number:</label>
+                                <input type="text" id="medicine_id" name="medicine_id" required>
                             </div>
 
                             <div class="row">
-                                <label for="side-effects">Side Effects:</label>
-                                <textarea id="notes" name="notes" rows="4" cols="50" placeholder="State all Side Effects"></textarea>
+                                <label for="last_name">Reason:</label>
+                                <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Enter notes here..."></textarea>
                             </div>
 
-                            <div class="row">
-                                <label for="supplier-name">Supplier Name:</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
-                            
-                            <div class="row">
-                                <label for="phone">Supplier Number</label>
-                                <input type="tel" id="phone" name="phone" required>
-                            </div>
-
-                            <div class="row">
-                                <label for="price">Price:</label>
-                                <input type="text" id="price" name="price" required>
-                            </div>
-
-                            <button type="submit">Add Medication</button>
+                            <button type="submit">Remove Medicine</button>
                             <button class="cancel" onclick="window.location.href='medicineList.php'">Cancel</button>
 
                         </form>

@@ -4,7 +4,7 @@ session_start();
 // Hardcoded user data
 $users = [
     ['username' => 'admin@caretech.com', 'password' => 'admin123', 'role' => 'admin'],
-    ['username' => 'hospital@caretech.com', 'password' => 'hospital123', 'role' => 'hospital'],
+    ['username' => 'manager@caretech.com', 'password' => 'manager123', 'role' => 'branchManager'],
     ['username' => 'gp@caretech.com', 'password' => 'gp123', 'role' => 'gp'],
 ];
 
@@ -26,8 +26,8 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
             // Redirect based on role
             if ($user['role'] == 'admin') {
                 header('Location: index.php');
-            } elseif ($user['role'] == 'hospital') {
-                header('Location: hospital_portal.php');
+            } elseif ($user['role'] == 'branchManager') {
+                header('Location: BranchManager/branchDashboard.php');
             } elseif ($user['role'] == 'gp') {
                 header('Location: staff/staff_dashboard.php');
             }

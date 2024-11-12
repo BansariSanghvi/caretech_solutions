@@ -29,7 +29,7 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
             } elseif ($user['role'] == 'hospital') {
                 header('Location: hospital_portal.php');
             } elseif ($user['role'] == 'gp') {
-                header('Location: gp_portal.php');
+                header('Location: staff/staff_dashboard.php');
             }
             exit;
         }

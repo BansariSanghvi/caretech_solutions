@@ -194,7 +194,7 @@ if ($_SESSION['role'] != 'admin') {
                             <!-- Box 4 -->
                             <div class="col-md-3">
                                 <div class="count-box">
-                                    <h5><i class="ri-add-box-fill"></i>Total Appointments</h5>
+                                    <h5><i class="ri-add-box-fill"></i>Total Referals</h5>
                                     <h6>300</h6>
                                 </div>
                             </div>

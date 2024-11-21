@@ -241,7 +241,7 @@ if ($_SESSION['role'] != 'gp') {
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-user-fill"></i>Appointments Pending</h5>
-                                <h6>1,200</h6>
+                                <h6>8</h6>
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-hospital-line"></i>Appointments</h5>
@@ -263,7 +263,7 @@ if ($_SESSION['role'] != 'gp') {
                                     <button class="big-button" onclick="window.location.href='staff_forms.php'">
                                         <i class="ri-folder-4-fill"></i> Forms
                                     </button>
-                                    <button class="big-button" onclick="window.location.href='staff_staff_hub.php'">
+                                    <button class="big-button" onclick="window.location.href='staff_staffhub.php'">
                                         <i class="ri-group-2-fill"></i> Staff Hub
                                     </button>
                                     <button class="big-button" onclick="window.location.href='staff_patient_records.php'">

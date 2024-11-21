@@ -20,6 +20,7 @@ if ($_SESSION['role'] != 'branchManager') {
     <link rel="stylesheet" href="../css/branch_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>BranchManager Form1</title>
+    
 </head>
 <body>
     <div class="container">

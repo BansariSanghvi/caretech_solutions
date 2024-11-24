@@ -1,3 +1,17 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'admin') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include 'connection/connection.php'
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,12 +182,25 @@
                             </div>
 
                             <div class="row">
-                                <label for="dialcode">Dial Code:</label>
-                                <input type="text" id="code" name="code" required>
+                                <label for="hospital">Hospital:</label>
+                                <?php
+                                // Fetch hospitals
+                                $result = $conn->query("SELECT hospital_id, hname FROM hospital_info");
+
+                                if ($result->num_rows > 0) { 
+                                    echo '<select id="hospital" name="hospital" required>'; 
+                                    while ($row = $result->fetch_assoc()) { 
+                                        echo '<option value="' . $row['hospital_id'] . '">' . $row['hname'] . '</option>'; 
+                                    }
+                                    echo '</select>'; 
+                                } else { 
+                                    echo '<p>No hospitals available</p>'; 
+                                }
+                                ?>
                             </div>
                             
 
-                            <button type="submit">Add Staff Member</button>
+                            <button type="submit" onclick= addStaff() >Add Staff Member</button>
                             <button class="cancel" onclick="window.location.href='staff_hub.php'">Cancel</button>
 
                         </form>

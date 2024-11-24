@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'admin') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include 'connection/connection.php'
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +27,7 @@
         .form-container {
             display: flex;
             flex-direction: grid;
-            width: 70%; /* Adjust width to your liking */
+            width: 70%; 
             margin-left: 20px;
             padding: 20px;
         
@@ -131,6 +144,24 @@
                             <div class="row">
                                 <label for="last_name">Staff ID Number:</label>
                                 <input type="text" id="staff_id" name="staff_id" required>
+                            </div>
+
+                            <div class="row">
+                                <label for="hospital">Hospital:</label>
+                                <?php
+                                // Fetch hospitals
+                                $result = $conn->query("SELECT hospital_id, hname FROM hospital_info");
+
+                                if ($result->num_rows > 0) { 
+                                    echo '<select id="hospital" name="hospital" required>'; 
+                                    while ($row = $result->fetch_assoc()) { 
+                                        echo '<option value="' . $row['hospital_id'] . '">' . $row['hname'] . '</option>'; 
+                                    }
+                                    echo '</select>'; 
+                                } else { 
+                                    echo '<p>No hospitals available</p>'; 
+                                }
+                                ?>
                             </div>
 
                             <div class="row">

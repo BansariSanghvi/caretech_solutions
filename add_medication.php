@@ -116,7 +116,7 @@
 
                     <!-- Form to add new medication -->
                     <div class="form-container">
-                        <form action="add_medication.php" method="POST">
+                        <form action="add_medication_process.php" method="POST">
                             
                             <div class="row">
                                 <label for="medicine-name">Medicine Name:</label>
@@ -124,23 +124,13 @@
                             </div>
 
                             <div class="row">
-                                <label for="medicine-type">Medicine Type</label>
-                                <input type="text" id="mtype" name="mtype" required>
-                            </div>
-
-                            <div class="row">
-                                <label for="side-effects">Side Effects:</label>
-                                <textarea id="notes" name="notes" rows="4" cols="50" placeholder="State all Side Effects"></textarea>
+                                <label for="side-effects">Description:</label>
+                                <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Description" required>></textarea>
                             </div>
 
                             <div class="row">
                                 <label for="supplier-name">Supplier Name:</label>
                                 <input type="text" id="name" name="name" required>
-                            </div>
-                            
-                            <div class="row">
-                                <label for="phone">Supplier Number</label>
-                                <input type="tel" id="phone" name="phone" required>
                             </div>
 
                             <div class="row">

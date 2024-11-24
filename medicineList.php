@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'admin') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include 'connection/connection.php'
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Branches</title>
+    <title>Medication List</title>
 
     <style>
 .staff_table {
@@ -122,7 +135,7 @@
             <!------------------Dashboard Section------------------>
             <div class="inside-content">
                 <section class="staff_hub_section" id='staff_hub'>
-                    <h2 class="page_title">Verifed Medication</h2>
+                    <h2 class="page_title">Verifed Medication:</h2>
 
                     <div class="staff_hub_top_container">
                         <div class="buttons-container">
@@ -138,6 +151,18 @@
                         <input type="text" placeholder="search">
                     </div>
             </div>
+
+                <?php 
+                   $query = "SELECT * FROM drugs_list";
+                   $result = $conn->query($query);
+                   
+                   // Check if there are any records
+                   if ($result->num_rows > 0) {
+                       $medicine_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                   } else {
+                       $medicine_data = []; // No records found
+                   }
+                ?>
                    
 
                     <div class="scrollable-table">
@@ -146,105 +171,26 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Drug Type</th>
-                                <th>Side Effects</th>
                                 <th>Supplier</th>
-                                <th>Number</th>
+                                <th>Side Effects</th>
                                 <th>Price</th>
                                 <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>3001</td>
-                            <td>Paracetamol</td>
-                            <td>Painkiller</td>
-                            <td>Headache, Dizziness</td>
-                            <td>Pharma Co.</td>
-                            <td>+1 555-1122</td>
-                            <td>£5.20</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3002</td>
-                            <td>Amoxicillin</td>
-                            <td>Antibiotic</td>
-                            <td>Nausea, Diarrhea</td>
-                            <td>MedSupply Ltd.</td>
-                            <td>+1 555-2233</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3003</td>
-                            <td>Ibuprofen</td>
-                            <td>Painkiller</td>
-                            <td>Stomach upset, Dizziness</td>
-                            <td>HealthCorp</td>
-                            <td>+1 555-3344</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3004</td>
-                            <td>Loratadine</td>
-                            <td>Antihistamine</td>
-                            <td>Dry mouth, Drowsiness</td>
-                            <td>AllergyMed</td>
-                            <td>+1 555-4455</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3005</td>
-                            <td>Aspirin</td>
-                            <td>Painkiller</td>
-                            <td>Gastric discomfort, Nausea</td>
-                            <td>Pharmalink</td>
-                            <td>+1 555-5566</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3006</td>
-                            <td>Metformin</td>
-                            <td>Antidiabetic</td>
-                            <td>Stomach upset, Lactic acidosis</td>
-                            <td>Diabetes Meds</td>
-                            <td>+1 555-6677</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3007</td>
-                            <td>Salbutamol</td>
-                            <td>Bronchodilator</td>
-                            <td>Shaky hands, Increased heart rate</td>
-                            <td>RespiraTech</td>
-                            <td>+1 555-7788</td>
-                            <td>£8.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3008</td>
-                            <td>Omeprazole</td>
-                            <td>Proton pump inhibitor</td>
-                            <td>Headache, Diarrhea</td>
-                            <td>GastroMed</td>
-                            <td>+1 555-8899</td>
-                            <td>£4.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        <tr>
-                            <td>3009</td>
-                            <td>Simvastatin</td>
-                            <td>Cholesterol-lowering</td>
-                            <td>Muscle pain, Headache</td>
-                            <td>CardioMed</td>
-                            <td>+1 555-9900</td>
-                            <td>£9.50</td>
-                            <td><button>Edit</button></td>
-                        </tr>
+                        <?php 
+                            
+                            foreach ($medicine_data as $medicineList) {
+                                echo "<tr>";
+                                echo "<td>" . $medicineList['drugID'] . "</td>";
+                                echo "<td>" . $medicineList['drugName'] . "</td>";
+                                echo "<td>" . $medicineList['manufacturer'] . "</td>";
+                                echo "<td>" . $medicineList['description'] . "</td>";
+                                echo "<td>" . $medicineList['price'] . "</td>";
+                                echo "<td><a href='edit_medicine.php?id=" . $medicineList['drugID'] . "' class='edit-button'>Edit</a></td>";
+                                echo "</tr>";
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </section>

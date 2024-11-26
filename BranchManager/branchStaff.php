@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include '../connection/connection.php';
+
 $current_page = 'staff';
 
 // Check if the user is an branch manager
@@ -166,122 +168,54 @@ if ($_SESSION['role'] != 'branchManager') {
             </div>
                    
 
+            <?php 
+                   $query = "SELECT staff_id, fname, lname, email, staff_phone_no, email, role, department FROM staff_records";
+                   $result = $conn->query($query);
+                   
+                   // Check if there are any records
+                   if ($result->num_rows > 0) {
+                       $staff_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                   } else {
+                       $staff_data = []; // No records found
+                   }
+                   ?>
+                   
+
                     <div class="scrollable-table">
                     <table class="staff_table">
-                        <thead>
-                        <tr>
-                            <th>Staff ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Dial-Code</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1001</td>
-                            <td>John</td>
-                            <td>Doe</td>
-                            <td>john.doe@example.com</td>
-                            <td>Nurse</td>
-                            <td>Active</td>
-                            <td>456</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1002</td>
-                            <td>Jane</td>
-                            <td>Smith</td>
-                            <td>jane.smith@example.com</td>
-                            <td>Doctor</td>
-                            <td>Active</td>
-                            <td>126</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1003</td>
-                            <td>Mary</td>
-                            <td>Johnson</td>
-                            <td>mary.johnson@example.com</td>
-                            <td>Receptionist</td>
-                            <td>Active</td>
-                            <td>123</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1004</td>
-                            <td>James</td>
-                            <td>Williams</td>
-                            <td>james.williams@example.com</td>
-                            <td>Nurse</td>
-                            <td>Inactive</td>
-                            <td>678</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>1005</td>
-                            <td>Linda</td>
-                            <td>Brown</td>
-                            <td>linda.brown@example.com</td>
-                            <td>Nurse</td>
-                            <td>Active</td>
-                            <td>890</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>1006</td>
-                            <td>Robert</td>
-                            <td>Davis</td>
-                            <td>robert.davis@example.com</td>
-                            <td>Doctor</td>
-                            <td>Active</td>
-                            <td>345</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>1007</td>
-                            <td>Sarah</td>
-                            <td>Wilson</td>
-                            <td>sarah.wilson@example.com</td>
-                            <td>Pharmacist</td>
-                            <td>Active</td>
-                            <td>479</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>1008</td>
-                            <td>Christopher</td>
-                            <td>Lee</td>
-                            <td>christopher.lee@example.com</td>
-                            <td>Doctor</td>
-                            <td>Active</td>
-                            <td>234</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>1009</td>
-                            <td>Emily</td>
-                            <td>Clark</td>
-                            <td>emily.clark@example.com</td>
-                            <td>Nurse</td>
-                            <td>Inactive</td>
-                            <td>890</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            // Loop through staff data and display it in the table
+                            foreach ($staff_data as $staff) {
+                                echo "<tr>";
+                                echo "<td>" . $staff['staff_id'] . "</td>";
+                                echo "<td>" . $staff['fname'] . "</td>";
+                                echo "<td>" . $staff['lname'] . "</td>";
+                                echo "<td>" . $staff['email'] . "</td>";
+                                echo "<td>" . $staff['staff_phone_no'] . "</td>";
+                                echo "<td>" . $staff['role'] . "</td>";
+                                echo "<td>" . $staff['department'] . "</td>";
+                                echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
+                                echo "</tr>";
+                            }
+                            $conn->close();
+                            ?>
+                        </tbody>
+                    </table>
                 </section>
+                        
             </div>
         </div>
     </div>

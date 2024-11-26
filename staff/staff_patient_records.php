@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'gp') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include '../connection/connection.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,24 +22,25 @@
     <title>Patient Records</title>
 
     <style>
+/* Your existing styles */
 .patient_table {
     width: 90%;
     border-collapse: collapse;
     margin-left: 2rem;
-    margin-top:2rem;
-    margin-bottom: 2rem
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .patient_table thead {
     background-color: #001f3f; /* Dark navy blue */
     color: white; /* White text */
 }
-        
+
 .patient_table th, .patient_table td {
     padding: 12px;
     border: 1px solid #ddd;
 }
-        
+
 .patient_table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
@@ -52,7 +65,7 @@
 
 .scrollable-table {
     display: block;
-    max-height: 535px; 
+    max-height: 535px;
     overflow-y: auto;
 }
 
@@ -62,7 +75,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-     
 }
 
 .buttons-container {
@@ -84,166 +96,87 @@
 }
 
 .search_filter i {
-    color: #888; 
-    font-size: 20px; 
-}      
-       
+    color: #888;
+    font-size: 20px;
+}
 </style>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu------------ -->
+        <!-------------------- Side Menu ------------ -->
         <?php include("../common/staff_sidebar.php"); ?>
 
-        <!-------------------Header------------------->
+        <!------------------- Header ------------------->
         <div class="main-content">
             <?php include("../common/staff_navbar.php"); ?>
 
-            <!------------------Dashboard Section------------------>
+            <!------------------ Dashboard Section ------------------>
             <div class="inside-content">
-                <section class="patient_records_section" id='patient_hub'>
+                <section class="patient_records_section" id="patient_hub">
                     <h2 class="page_title">Patient Records:</h2>
 
                     <div class="patient_records_b_top_container">
                         <div class="buttons-container">
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
-                   
+                            <!-- Add buttons if needed -->
+                        </div>
+                        <div class="search_filter">
+                            <i class="ri-search-line"></i>
+                            <input type="text" placeholder="Search">
+                        </div>
+                    </div> <!-- End of patient_records_b_top_container -->
+
+                    <?php 
+                    $query = "SELECT patient_id, firstName, lastName, email, phone_no, dateOfBirth, emergency_contact, emergency_contact_name 
+                              FROM patient_records";
+                    $result = $conn->query($query);
+
+                    // Check if there are any records
+                    if ($result->num_rows > 0) {
+                        $patient_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                    } else {
+                        $patient_data = []; // No records found
+                    }
+                    ?>
 
                     <div class="scrollable-table">
-                    <table class="patient_table">
-                        <thead>
-                            <tr>
-                                <th>Patient ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>GP</th>
-                                <th>Contact No</th>
-                                <th>Emergency Contact No</th>
-                                <th>Dial-Code</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <td>1001</td>
-                          <td>John</td>
-                          <td>Doe</td>
-                          <td>john.doe@example.com</td>
-                          <td>Paramedic</td>
-                          <td>ER</td>
-                          <td>Active</td>
-                          <td>456</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1002</td>
-                          <td>Jane</td>
-                          <td>Smith</td>
-                          <td>jane.smith@example.com</td>
-                          <td>Doctor</td>
-                          <td>Radiology</td>
-                          <td>Active</td>
-                          <td>126</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1003</td>
-                          <td>Mary</td>
-                          <td>Johnson</td>
-                            <td>mary.johnson@example.com</td>
-                            <td>Nurse</td>
-                            <td>Maternity</td>
-                            <td>Active</td>
-                            <td>123</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1004</td>
-                          <td>James</td>
-                          <td>Williams</td>
-                          <td>james.williams@example.com</td>
-                          <td>Nurse</td>
-                          <td>ICU</td>
-                          <td>Active</td>
-                          <td>678</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1005</td>
-                          <td>Linda</td>
-                          <td>Brown</td>
-                          <td>linda.brown@example.com</td>
-                          <td>Doctor</td>
-                          <td>Cardiology</td>
-                          <td>Active</td>
-                          <td>890</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                          <td>1006</td>
-                          <td>Robert</td>
-                          <td>Davis</td>
-                          <td>robert.davis@example.com</td>
-                          <td>Doctor</td>
-                          <td>General Surgery</td>
-                          <td>Active</td>
-                          <td>345</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                      <tr>
-                          <td>1056</td>
-                          <td>Sarah</td>
-                          <td>Smith</td>
-                          <td>sarah@example.com</td>
-                          <td>Doctor</td>
-                          <td>Oncology</td>
-                          <td>Active</td>
-                          <td>479</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                        <tr>
-                          <td>1012</td>
-                          <td>Christopher</td>
-                          <td>Lee</td>
-                          <td>christopher.lee@example.com</td>
-                          <td>Surgeon</td>
-                          <td>Orthopedics</td>
-                          <td>Active</td>
-                          <td>234</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                      <tr>
-                        <td>1011</td>
-                        <td>Emily</td>
-                        <td>Clark</td>
-                        <td>emily.clark@example.com</td>
-                        <td>Doctor</td>
-                        <td>Pediatrics</td>
-                        <td>Active</td>
-                        <td>890</td>
-                        <td><button>Edit</button></td>
-                    </tr>
-                        </tbody>
-                    </table>
-                </section>
-            </div>
-        </div>
-    </div>
-</div>
+                        <table class="patient_table">
+                            <thead>
+                                <tr>
+                                    <th>Patient ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Date Of Birth</th>
+                                    <th>Contact No</th>
+                                    <th>Emergency Contact No</th>
+                                    <th>Emergency Contact Name</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                // Loop through patient data and display it in the table
+                                foreach ($patient_data as $patient) {
+                                    echo "<tr>";
+                                    echo "<td>" . $patient['patient_id'] . "</td>";
+                                    echo "<td>" . $patient['firstName'] . "</td>";
+                                    echo "<td>" . $patient['lastName'] . "</td>";
+                                    echo "<td>" . $patient['email'] . "</td>";
+                                    echo "<td>" . $patient['dateOfBirth'] . "</td>";
+                                    echo "<td>" . $patient['phone_no'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact_name'] . "</td>";
+                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>Edit</a></td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div> <!-- End of scrollable-table -->
+                </section> <!-- End of patient_records_section -->
+            </div> <!-- End of inside-content -->
+        </div> <!-- End of main-content -->
+    </div> <!-- End of container -->
 
     <script src="assets/js/main.js"></script>
 </body>

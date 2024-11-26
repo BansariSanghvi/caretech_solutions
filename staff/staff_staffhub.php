@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'gp') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include '../connection/connection.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,24 +22,25 @@
     <title>Staff Hub</title>
 
     <style>
+/* Your existing styles */
 .staff_table {
     width: 90%;
     border-collapse: collapse;
     margin-left: 2rem;
-    margin-top:2rem;
-    margin-bottom: 2rem
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .staff_table thead {
     background-color: #001f3f; /* Dark navy blue */
     color: white; /* White text */
 }
-        
+
 .staff_table th, .staff_table td {
     padding: 12px;
     border: 1px solid #ddd;
 }
-        
+
 .staff_table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
@@ -52,7 +65,7 @@
 
 .scrollable-table {
     display: block;
-    max-height: 535px; 
+    max-height: 535px;
     overflow-y: auto;
 }
 
@@ -62,7 +75,6 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-     
 }
 
 .buttons-container {
@@ -88,8 +100,8 @@
     font-size: 20px; 
 }
 
-.add_staff_btn{
-    background-color: #4CAF50; 
+.add_staff_btn {
+    background-color: #4CAF50;
     color: white;
     padding: 5px 10px;
     border: none;
@@ -98,8 +110,8 @@
     margin-left: 30px;
 }
 
-.remove_staff_btn{
-    background-color: #4CAF50; 
+.remove_staff_btn {
+    background-color: #4CAF50;
     color: white;
     padding: 5px 10px;
     border: none;
@@ -108,182 +120,85 @@
 }
 
 .upload_btn {
-    background-color: #ff5733; 
+    background-color: #ff5733;
     color: white;
     padding: 5px 10px;
     border: none;
     font-size: 14px;
     border-radius: 4px;
 }
-        
-       
 </style>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu------------ -->
+        <!-------------------- Side Menu ------------------>
         <?php include("../common/staff_sidebar.php"); ?>
 
-        <!-------------------Header------------------->
+        <!------------------- Header ------------------->
         <div class="main-content">
             <?php include("../common/staff_navbar.php"); ?>
 
-            <!------------------Dashboard Section------------------>
+            <!------------------ Dashboard Section ------------------>
             <div class="inside-content">
-                <section class="staff_hub_section" id='staff_hub'>
+                <section class="staff_hub_section" id="staff_hub">
                     <h2 class="page_title">Staff Hub:</h2>
 
                     <div class="staff_hub_top_container">
-                        <div class="buttons-container">
-                            <div class="add_staff_box">
-                                <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
-                            </div>
-                            <div class="remove_staff_box">
-                                <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
-                            </div>
+                        <div class="search_filter">
+                            <i class="ri-search-line"></i>
+                            <input type="text" placeholder="Search">
+                        </div>
+                    </div> <!-- End of staff_hub_top_container -->
 
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='upload_staff.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
+                    <?php 
+                    $query = "SELECT staff_id, fname, lname, email, staff_phone_no, email, role, department FROM staff_records";
+                    $result = $conn->query($query);
 
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
-                   
+                    // Check if there are any records
+                    if ($result->num_rows > 0) {
+                        $staff_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                    } else {
+                        $staff_data = []; // No records found
+                    }
+                    ?>
 
                     <div class="scrollable-table">
-                    <table class="staff_table">
-                        <thead>
-                            <tr>
-                                <th>Staff ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Department</th>
-                                <th>Status</th>
-                                <th>Dial-Code</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <td>1001</td>
-                          <td>John</td>
-                          <td>Doe</td>
-                          <td>john.doe@example.com</td>
-                          <td>Paramedic</td>
-                          <td>ER</td>
-                          <td>Active</td>
-                          <td>456</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1002</td>
-                          <td>Jane</td>
-                          <td>Smith</td>
-                          <td>jane.smith@example.com</td>
-                          <td>Doctor</td>
-                          <td>Radiology</td>
-                          <td>Active</td>
-                          <td>126</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1003</td>
-                          <td>Mary</td>
-                          <td>Johnson</td>
-                            <td>mary.johnson@example.com</td>
-                            <td>Nurse</td>
-                            <td>Maternity</td>
-                            <td>Active</td>
-                            <td>123</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1004</td>
-                          <td>James</td>
-                          <td>Williams</td>
-                          <td>james.williams@example.com</td>
-                          <td>Nurse</td>
-                          <td>ICU</td>
-                          <td>Active</td>
-                          <td>678</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                          <td>1005</td>
-                          <td>Linda</td>
-                          <td>Brown</td>
-                          <td>linda.brown@example.com</td>
-                          <td>Doctor</td>
-                          <td>Cardiology</td>
-                          <td>Active</td>
-                          <td>890</td>
-                          <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                          <td>1006</td>
-                          <td>Robert</td>
-                          <td>Davis</td>
-                          <td>robert.davis@example.com</td>
-                          <td>Doctor</td>
-                          <td>General Surgery</td>
-                          <td>Active</td>
-                          <td>345</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                      <tr>
-                          <td>1056</td>
-                          <td>Sarah</td>
-                          <td>Smith</td>
-                          <td>sarah@example.com</td>
-                          <td>Doctor</td>
-                          <td>Oncology</td>
-                          <td>Active</td>
-                          <td>479</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                        <tr>
-                          <td>1012</td>
-                          <td>Christopher</td>
-                          <td>Lee</td>
-                          <td>christopher.lee@example.com</td>
-                          <td>Surgeon</td>
-                          <td>Orthopedics</td>
-                          <td>Active</td>
-                          <td>234</td>
-                          <td><button>Edit</button></td>
-                      </tr>
-
-                      <tr>
-                        <td>1011</td>
-                        <td>Emily</td>
-                        <td>Clark</td>
-                        <td>emily.clark@example.com</td>
-                        <td>Doctor</td>
-                        <td>Pediatrics</td>
-                        <td>Active</td>
-                        <td>890</td>
-                        <td><button>Edit</button></td>
-                    </tr>
-                        </tbody>
-                    </table>
-                </section>
-            </div>
-        </div>
-    </div>
-</div>
+                        <table class="staff_table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                // Loop through staff data and display it in the table
+                                foreach ($staff_data as $staff) {
+                                    echo "<tr>";
+                                    echo "<td>" . $staff['staff_id'] . "</td>";
+                                    echo "<td>" . $staff['fname'] . "</td>";
+                                    echo "<td>" . $staff['lname'] . "</td>";
+                                    echo "<td>" . $staff['email'] . "</td>";
+                                    echo "<td>" . $staff['staff_phone_no'] . "</td>";
+                                    echo "<td>" . $staff['role'] . "</td>";
+                                    echo "<td>" . $staff['department'] . "</td>";
+                                    echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div> <!-- End of scrollable-table -->
+                </section> <!-- End of staff_hub_section -->
+            </div> <!-- End of inside-content -->
+        </div> <!-- End of main-content -->
+    </div> <!-- End of container -->
 
     <script src="assets/js/main.js"></script>
 </body>

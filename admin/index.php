@@ -16,7 +16,7 @@ if ($_SESSION['role'] != 'admin') {
     
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/main_theme.css">
+    <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Admin Dashboard</title>
 
@@ -153,11 +153,11 @@ if ($_SESSION['role'] != 'admin') {
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("common/sidebar.php"); ?>
+        <?php include("../common/sidebar.php"); ?>
 
         <!-- Main Content -->
         <div class="main-content">
-            <?php include("common/navbar.php"); ?>
+            <?php include("../common/navbar.php"); ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">
@@ -170,15 +170,15 @@ if ($_SESSION['role'] != 'admin') {
                             <!-- Box 1 -->
                             <div class="col-md-3">
                                 <div class="count-box">
-                                    <h5><i class="ri-currency-fill"></i>Total Revenue</h5>
-                                    <h6>£20,000</h6>
+                                    <h5><i class="ri-currency-fill"></i>Total Staff</h5>
+                                    <h6>150</h6>
                                 </div>
                             </div>
 
                             <!-- Box 2 -->
                             <div class="col-md-3">
                                 <div class="count-box">
-                                    <h5><i class="ri-hospital-line"></i>Total Branches</h5>
+                                    <h5><i class="ri-hospital-line"></i>Total Department</h5>
                                     <h6>25</h6>
                                 </div>
                             </div>
@@ -221,12 +221,12 @@ if ($_SESSION['role'] != 'admin') {
                                                     <i class="ri-group-2-fill"></i> Staff Hub
                                                 </button>
 
-                                                <button class="btn btn-default big-button" onclick="window.location.href='medicalBranches.php'">
-                                                    <i class="ri-hospital-fill"></i> Branches
+                                                <button class="btn btn-default big-button" onclick="window.location.href='#'">
+                                                    <i class="ri-hospital-fill"></i> Stock Inventory
                                                 </button>
 
-                                                <button class="btn btn-default big-button" onclick="window.location.href='analytics.php'">
-                                                    <i class="ri-line-chart-fill"></i> Analytics
+                                                <button class="btn btn-default big-button" onclick="window.location.href='#'">
+                                                    <i class="ri-line-chart-fill"></i> Referals
                                                 </button>
 
                                                 <button class="btn btn-default big-button">

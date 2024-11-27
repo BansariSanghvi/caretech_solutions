@@ -26,6 +26,8 @@
                   
                     <!-------Add the other elements under this------>
 
+                    - Manage Accounts
+
                   </section>
                   
 

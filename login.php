@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
 
             // Redirect based on role
             if ($user['role'] == 'admin') {
-                header('Location: index.php');
+                header('Location: admin/index.php');
             } elseif ($user['role'] == 'branchManager') {
                 header('Location: BranchManager/branchDashboard.php');
             } elseif ($user['role'] == 'gp') {

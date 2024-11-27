@@ -1,258 +1,269 @@
 /* SECTION 1 - TABLE CREATION */
 
--- Table for patient records
-CREATE TABLE patient_records (
-    patient_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    firstName VARCHAR(20),
-    lastName VARCHAR(20),
-    email VARCHAR(50),
-    phone_no CHAR(11),
-    dateOfBirth INT(10),  -- You may want to change this to DATE for better date handling
-    emergency_contact INT(10),
-    emergency_contact_name CHAR(255),
-    patient_history VARCHAR(255),
-    isRegistered_NHS BOOLEAN,
-    staff_id INT(10),
-    hospital_id INT(10),
-    last_seen_date INT(8),  -- Again, change this to DATE if you want proper date handling
-    branch_id INT(10),    
-
-    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
-    FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
+/* Table for hospital information */
+CREATE TABLE hospital_info (
+    hospital_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    hname VARCHAR(255),
+    hospital_address VARCHAR(255),
+    hospital_phone CHAR(11),
+    hospital_email VARCHAR(255)
 );
 
--- Table for staff records
+/* Table for staff records within the hospital */
 CREATE TABLE staff_records (
     staff_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     fname VARCHAR(20),
     lname VARCHAR(20),
     address VARCHAR(255),
-    staff_phone_no CHAR(10),  -- Changed to CHAR(10) for phone numbers
+    staff_phone_no CHAR(10),
     email VARCHAR(255),
     role VARCHAR(255),
     department VARCHAR(200),
     hospital_id INT(10),
-    
+    isActive BOOLEAN,  
+    reasonToLeave VARCHAR(255) NULL,
+
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id)
 );
 
--- Table for hospital information
-CREATE TABLE hospital_info (
-    hospital_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    hname VARCHAR(255),
-    hospital_address VARCHAR(255),
-    hospital_phone CHAR(11),  -- Changed to CHAR(11) for phone numbers
-    hospital_email VARCHAR(255)
+/* Table for patient records */
+CREATE TABLE patient_records (
+    patient_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(20),
+    last_name VARCHAR(20),
+    email VARCHAR(50),
+    phone_no CHAR(11),
+    date_of_birth INT(8)
+    emergency_contact CHAR(10),
+    emergency_contact_name VARCHAR(255),
+    patient_history VARCHAR(255),
+    isRegistered_NHS BOOLEAN,
+    staff_id INT(10),
+    hospital_id INT(10),
+    medical_association_id INT(10),
+    last_seen_date INT(8),  
+
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
+    FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
+    FOREIGN KEY (medical_association_id) REFERENCES external_associations(medical_association_id)
 );
 
--- Table for branches of hospitals
-CREATE TABLE branches (
-    branch_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
-    branch_name VARCHAR(255),
-    branch_email VARCHAR(255),   
+/* Table for hospital departments (branches) */
+CREATE TABLE hospital_branches (
+    hospital_department_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(255),
+    department_email VARCHAR(255),
+    department_type VARCHAR(255), -- Department Type
+    department_phone CHAR(11),
     hospital_id INT(10),
 
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id)
 );
 
--- Table for request forms
-CREATE TABLE request_form (
-    request_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
-    request_type VARCHAR(255),
-    summary_notes VARCHAR(255),
-    staff_id INT(10),
-    hospital_id INT(10),    
-    branch_id INT(10),
+/* Table for external medical associations such as GP Surgery */
+CREATE TABLE external_associations (
+    medical_association_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    medical_association_name VARCHAR(25),
+    associations_location VARCHAR(255),
+    associations_phone CHAR(11),
+    associations_email VARCHAR(255),
+    hospital_id INT(10),
 
-    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
-    FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
-    FOREIGN KEY (branch_id) REFERENCES branches(branch_id)
+    FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id)
 );
 
--- Table for prescription orders
+/* Table for referral forms */
+CREATE TABLE referal_form (
+    request_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    request_type VARCHAR(255),
+    summary_notes VARCHAR(255),
+    hospital_department_id INT(10),
+    staff_id INT(10),
+    hospital_id INT(10),
+    medical_association_id INT(10),
+    patient_id INT(10),
+
+    FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
+    FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
+    FOREIGN KEY (medical_association_id) REFERENCES external_associations(medical_association_id)
+);
+
+/* Table for prescription orders */
 CREATE TABLE prescription_order (
-    prescription_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+    prescription_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     patient_id INT(10),
     hospital_id INT(10),
     to_address VARCHAR(255),
     from_address VARCHAR(255),
-    date_issued INT(8),  -- Consider changing this to DATE for better date handling
-    isrepeat BOOLEAN,
-    isNHSCovered BOOLEAN,
+    date_issued INT(8), 
+    is_repeat BOOLEAN,
+    is_NHS_covered BOOLEAN,
     order_status VARCHAR(20) DEFAULT 'Pending',
 
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
     FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id)
 );
 
--- Table for prescription items
+/* Table for prescription items */
 CREATE TABLE prescription_items (
-    item_ID INT PRIMARY KEY AUTO_INCREMENT,          
-    prescription_id INT NOT NULL,                    
-    drugID INT NOT NULL,                            
-    dosage VARCHAR(50) NOT NULL,                    
-    frequency VARCHAR(50) NOT NULL,               
-    duration VARCHAR(50) NOT NULL,                
+    item_ID INT PRIMARY KEY AUTO_INCREMENT,
+    prescription_id INT NOT NULL,
+    drugID INT NOT NULL,
+    dosage VARCHAR(50) NOT NULL,
+    frequency VARCHAR(50) NOT NULL,
+    duration VARCHAR(50) NOT NULL,
     notes VARCHAR(255),
-    
-    FOREIGN KEY (drugID) REFERENCES drugs_list(drugID), 
+
+    FOREIGN KEY (drugID) REFERENCES drugs_list(drugID),
     FOREIGN KEY (prescription_id) REFERENCES prescription_order(prescription_id)
 );
 
--- Table for drugs list
+/* Table for drugs list */
 CREATE TABLE drugs_list (
-    drugID INT PRIMARY KEY AUTO_INCREMENT,          
-    drugName VARCHAR(100) NOT NULL,                 
-    manufacturer VARCHAR(100),                      
+    drugID INT PRIMARY KEY AUTO_INCREMENT,
+    drugName VARCHAR(100) NOT NULL,
+    supplier_id INT(10),
     description VARCHAR(255),
-    price INT(10)
+    qty INT(10),
+    price INT(10),
+
+    FOREIGN KEY (supplier_id) REFERENCES manufacturers(supplier_id)
 );
 
--- Table for users (e.g., for login and permissions)
+/* Table for medical equipment list */
+CREATE TABLE medicalEquipment_list (
+    equipment_ID INT PRIMARY KEY AUTO_INCREMENT,
+    equipment_Name VARCHAR(100) NOT NULL,
+    equipment_description VARCHAR(255),
+    qty INT(10),
+    price INT(10),
+    isUrgent BOOLEAN 
+);
+
+/* Table for medical equipment orders */
+CREATE TABLE equipment_orders (
+    order_number INT PRIMARY KEY AUTO_INCREMENT, 
+    equipment_ID INT(10),
+    order_qty INT(10),
+    order_date INT(8),  
+    hospital_department_id INT(10),
+    delivery_status VARCHAR(20) DEFAULT 'Pending',
+    user_id INT(10),
+
+    FOREIGN KEY (equipment_ID) REFERENCES medicalEquipment_list(equipment_ID),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+/* Table for generating referral letters */
+CREATE TABLE referal_letters (
+    letter_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    date_generated INT(8),  
+    hospital_department_id INT(10),
+    staff_id INT(10),
+    patient_id INT(10),
+
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
+    FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id)
+);
+
+/* Table for appointments */
+CREATE TABLE appointments (
+    appointment_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    patient_id INT(10),
+    hospital_department_id INT(10),
+    staff_id INT(10),
+    appointment_date DATE, 
+    appointment_time TIME,  
+
+    FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id)
+);
+
+/* Manufacturer Table */
+CREATE TABLE manufacturers (
+    supplier_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    supplier_email VARCHAR(255),
+    supplier_location VARCHAR(255),
+    supplier_phone CHAR(11),
+    supplier_status VARCHAR(255)
+);
+
+/* Announcements Table */
+CREATE TABLE annoucments (
+    annoucment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    annoucment_duration INT(100),
+    annoucment_description VARCHAR(255)
+);
+
+/* Table for users (e.g., for login and permissions) */
 CREATE TABLE users (
-    user_id INT PRIMARY KEY AUTO_INCREMENT, 
-    user_type VARCHAR(255), 
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_type VARCHAR(255),
     user_name VARCHAR(255),
     user_email VARCHAR(255),
     user_password VARCHAR(255),
     user_level_id INT(3),
-    
+    hospital_department_id INT(10) NULL,
+    external_associations_id INT(10) NULL,
+
+
     FOREIGN KEY (user_level_id) REFERENCES user_level(user_level_id)
 );
 
--- Table for user levels (roles, access levels)
+/* Table for user levels (roles, access levels) */
 CREATE TABLE user_level (
-    user_level_id INT PRIMARY KEY AUTO_INCREMENT, 
-    user_type VARCHAR(255), 
+    user_level_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_type VARCHAR(255),
     description VARCHAR(255)
 );
 
+/* SECTION 2 - INSERTION */ 
 
-/* SECTION 2 - Adding Data */
-
-INSERT INTO patient_records 
-(firstName, lastName, email, phone_no, dateOfBirth, emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, staff_id, hospital_id, last_seen_date, branch_id) 
-VALUES
-('John', 'Doe', 'john.doe@example.com', '12345678901', 25012004, 9876543210, 'Jane Doe', 'Diabetes', 1, 1, 1, 20231101, 1),
-('Jane', 'Smith', 'jane.smith@example.com', '12345678902', 13051998, 9876543211, 'John Smith', 'Asthma', 1, 2, 1, 20231028, 2),
-('Michael', 'Brown', 'michael.brown@example.com', '12345678903', 19021981, 9876543212, 'Sarah Brown', 'Hypertension', 0, 3, 2, 20231115, 2),
-('Emily', 'Davis', 'emily.davis@example.com', '12345678904', 14072001, 9876543213, 'Thomas Davis', 'None', 1, 4, 3, 20231103, 3),
-('Daniel', 'Wilson', 'daniel.wilson@example.com', '12345678905', 22032006, 9876543214, 'Laura Wilson', 'Chronic Pain', 0, 5, 3, 20231030, 3),
-('Sophia', 'Taylor', 'sophia.taylor@example.com', '12345678906', 15022003, 9876543215, 'Mark Taylor', 'None', 1, 6, 4, 20231104, 4),
-('Liam', 'Anderson', 'liam.anderson@example.com', '12345678907', 20091975, 9876543216, 'Nora Anderson', 'Epilepsy', 0, 7, 4, 20231106, 4),
-('Ava', 'Thomas', 'ava.thomas@example.com', '12345678908', 19051963, 9876543217, 'Jake Thomas', 'Heart Disease', 1, 8, 5, 20231020, 5),
-('Noah', 'Jackson', 'noah.jackson@example.com', '12345678909', 23121921, 9876543218, 'Ethan Jackson', 'Arthritis', 0, 9, 5, 20231101, 5),
-('Mia', 'White', 'mia.white@example.com', '12345678910', 05012004, 9876543219, 'Emma White', 'None', 1, 10, 6, 20231105, 6);
+INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES
+('City Hospital', '123 Main St, Sheffield, UK', '01142345678', 'contact@cityhospital.com');
 
 
-INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, department, hospital_id)
-VALUES
-('Mark', 'Carter', '123 Main St, City', '0123456789', 'mark.carter@cityhospital.com', 'Doctor', 'General Medicine', 1),
-('Susan', 'Adams', '456 Oak St, Valley', '0123456790', 'susan.adams@greenvalleyhospital.com', 'Doctor', 'Pediatrics', 2),
-('James', 'Wilson', '789 Pine St, City', '0123456791', 'james.wilson@cityhospital.com', 'Nurse', 'Emergency', 1),
-('Alan', 'Garcia', '101 Maple St, Valley', '0123456792', 'alan.garcia@greenvalleyhospital.com', 'Doctor', 'Cardiology', 2),
-('Emily', 'Martinez', '102 Birch St, Lakeside', '0123456793', 'emily.martinez@lakesidemedical.com', 'Nurse', 'ICU', 3),
-('Linda', 'Moore', '103 Elm St, City', '0123456794', 'linda.moore@cityhospital.com', 'Doctor', 'Orthopedics', 1),
-('Robert', 'Lee', '104 Cedar St, Lakeside', '0123456795', 'robert.lee@lakesidemedical.com', 'Doctor', 'Neurology', 3),
-('Sarah', 'Kim', '105 Walnut St, Valley', '0123456796', 'sarah.kim@greenvalleyhospital.com', 'Nurse', 'Surgery', 2),
-('Brian', 'Davis', '106 Willow St, City', '0123456797', 'brian.davis@cityhospital.com', 'Doctor', 'General Surgery', 1),
-('Olivia', 'Jackson', '107 Pine St, Lakeside', '0123456798', 'olivia.jackson@lakesidemedical.com', 'Doctor', 'Pediatrics', 3);
+INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, department, hospital_id, isActive, reasonToLeave) VALUES
+('John', 'Smith', '12 Elm St, Sheffield', '07123456789', 'john.smith@cityhospital.com', 'Doctor', 'Cardiology', 1, TRUE, NULL),
+('Emily', 'Johnson', '34 Oak Rd, Sheffield', '07987654321', 'emily.johnson@cityhospital.com', 'Nurse', 'Emergency', 1, TRUE, NULL),
+('Michael', 'Davis', '56 Maple St, Liverpool', '07865432123', 'michael.davis@cityhospital.com', 'Surgeon', 'Orthopedics', 1, TRUE, NULL),
+('Sarah', 'Taylor', '78 Pine Ave, Sheffield', '07712341234', 'sarah.taylor@cityhospital.com', 'Physiotherapist', 'Rehabilitation', 1, TRUE, NULL),
+('David', 'Wilson', '90 Cedar St, Sheffield', '07698765432', 'david.wilson@cityhospital.com', 'Consultant', 'General Medicine', 1, TRUE, NULL);
+
+INSERT INTO patient_records (first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, staff_id, hospital_id, medical_association_id, last_seen_date) VALUES
+('Alice', 'Williams', 'alice.williams@email.com', '07123456789', '1985-06-15', '07812345678', 'John Williams', 'No history of major illnesses', TRUE, 1, 1, 1, '2024-11-15'),
+('Bob', 'Brown', 'bob.brown@email.com', '07987654321', '1990-12-25', '07898765432', 'Emily Brown', 'Asthma', TRUE, 2, 2, 2, '2024-11-10'),
+('Charlie', 'Davis', 'charlie.davis@email.com', '07865432123', '1982-09-12', '07765432123', 'Sarah Davis', 'Diabetes', TRUE, 3, 3, 3, '2024-11-18'),
+('Deborah', 'Miller', 'deborah.miller@email.com', '07712341234', '1975-03-09', '07987654321', 'Michael Miller', 'High blood pressure', TRUE, 4, 4, 4, '2024-11-20'),
+('Eve', 'Wilson', 'eve.wilson@email.com', '07698765432', '1995-08-30', '07654321876', 'David Wilson', 'No history', TRUE, 5, 5, 5, '2024-11-12');
+
+INSERT INTO hospital_branches (department_name, department_email, department_type, department_phone, hospital_id) VALUES
+('Cardiology', 'cardiology@cityhospital.com', 'Medical', '01142345679', 1),
+('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
+('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 3),
+('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 4),
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 5);
+
+INSERT INTO external_associations (medical_association_name, associations_location, associations_phone, associations_email, hospital_id) VALUES
+('Greenwood GP Surgery', '12 Green St, Sheffield, UK', '01142345555', 'contact@greenwoodgp.com', 1),
+('Mancity Medical Centre', '56 Central Rd, Manchester, UK', '01618230000', 'info@mancitymedical.com', 2),
+('Liverpool Family Practice', '23 Riverside Dr, Liverpool, UK', '01512340000', 'support@liverpoolfamily.co.uk', 3),
+('Bristol Care Clinic', '32 West End Rd, Bristol, UK', '01173216500', 'help@bristolcare.com', 4),
+('Oxford Health Center', '10 Oxford High St, Oxford, UK', '01865782222', 'contact@oxfordhealthcenter.com', 5);
+
+INSERT INTO users (user_type, user_name, user_email, user_password, user_level_id, hospital_department_id, external_associations_id) VALUES
+('Admin', 'admin_user', 'admin@caretech.com', 'admin123', 1),
+('Manager', 'manager', 'manager@caretech.com', 'manager123', 2),
+('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3);
 
 
-
-INSERT INTO hospital_info (hospital_id, hname, hospital_address, hospital_phone, hospital_email) 
-VALUES
-(1, 'General Hospital', '100 Main Street', 9876543210, 'contact@generalhospital.com'),
-(2, 'City Medical Center', '200 City Avenue', 9876543211, 'info@citymedical.com'),
-(3, 'Community Health', '300 State Road', 9876543212, 'help@communityhealth.com'),
-(4, 'Wellness Hospital', '400 Wellness Blvd', 9876543213, 'wellness@hospital.com'),
-(5, 'CarePoint Clinic', '500 Care Street', 9876543214, 'contact@carepoint.com'),
-(6, 'Advanced Medical', '600 Advanced Road', 9876543215, 'support@advancedmedical.com'),
-(7, 'Northside Hospital', '700 North Avenue', 9876543216, 'northside@hospital.com'),
-(8, 'Lakeside Clinic', '800 Lake Drive', 9876543217, 'lakeside@clinic.com'),
-(9, 'RiverHealth Center', '900 River Street', 9876543218, 'riverhealth@hospital.com'),
-(10, 'MetroCare Hospital', '1000 Metro Parkway', 9876543219, 'metrocare@hospital.com');
-
-
-INSERT INTO branches (branch_name, branch_email, hospital_id) 
-VALUES
-('Branch A', 'branchA@generalhospital.com', 1),
-('Branch B', 'branchB@citymedical.com', 2),
-('Branch C', 'branchC@communityhealth.com', 3),
-('Branch D', 'branchD@wellnesshospital.com', 4),
-('Branch E', 'branchE@carepointclinic.com', 5),
-('Branch F', 'branchF@advancedmedical.com', 6),
-('Branch G', 'branchG@northsidehospital.com', 7),
-('Branch H', 'branchH@lakesideclinic.com', 8),
-('Branch I', 'branchI@riverhealthcenter.com', 9),
-('Branch J', 'branchJ@metrocarehospital.com', 10);
-
-
-INSERT INTO request_form (request_type, summary_notes, staff_id, hospital_id, branch_id) 
-VALUES
-('Medication', 'Request for painkillers', 1, 1, 1),
-('Appointment', 'Follow-up visit', 2, 2, 2),
-('Referral', 'Refer to specialist', 3, 1, 3),
-('Lab Test', 'Blood work needed', 4, 3, 4),
-('Radiology', 'X-ray required', 5, 2, 5),
-('Medication', 'Prescription refill', 6, 3, 6),
-('Surgery', 'Schedule procedure', 7, 1, 7),
-('Therapy', 'Request for therapy', 8, 2, 8),
-('Medical Records', 'Retrieve patient history', 9, 3, 9),
-('Billing', 'Invoice request', 10, 1, 10);
-
-INSERT INTO prescription_order (patient_id, hospital_id, to_address, from_address, date_issued, isrepeat, isNHSCovered, order_status) 
-VALUES
-(1, 1, '123 Elm St', 'Hospital Pharmacy', 20231101, 0, 1, 'Pending'),
-(2, 2, '456 Oak Ave', 'City Medical', 20231102, 1, 1, 'Approved'),
-(3, 3, '789 Pine Rd', 'Community Health', 20231103, 1, 0, 'Dispensed'),
-(4, 4, '321 Cedar Ln', 'Wellness Pharmacy', 20231104, 0, 0, 'Pending'),
-(5, 5, '654 Maple Dr', 'CarePoint Clinic', 20231105, 1, 1, 'Rejected'),
-(6, 6, '987 Spruce Wy', 'Advanced Medical', 20231106, 0, 1, 'Pending'),
-(7, 7, '135 Birch St', 'Northside Pharmacy', 20231107, 0, 0, 'Dispensed'),
-(8, 8, '246 Aspen Ct', 'Lakeside Clinic', 20231108, 1, 1, 'Approved'),
-(9, 9, '369 Willow Ln', 'RiverHealth', 20231109, 0, 0, 'Pending'),
-(10, 10, '975 Poplar Rd', 'MetroCare Pharmacy', 20231110, 1, 1, 'Pending');
-
-
-
-INSERT INTO prescription_items (prescription_id, drugID, dosage, frequency, duration, notes)
-VALUES 
-(1, 1, '500 mg', 'Twice a day', '7 days', 'Take with food'),
-(2, 2, '1 tablet', 'Once a day', '5 days', 'Morning only'),
-(3, 3, '250 mg', 'Three times a day', '10 days', ''),
-(4, 4, '10 ml', 'Every 6 hours', '3 days', 'Shake well'),
-(5, 5, '100 mg', 'Once a day', '7 days', 'Before sleep'),
-(6, 6, '500 mg', 'Twice a day', '5 days', 'Take after meals'),
-(7, 7, '50 mg', 'Once a day', '3 days', 'Take in the morning'),
-(8, 8, '200 mg', 'Three times a day', '7 days', ''),
-(9, 9, '75 mg', 'Twice a day', '10 days', 'Take with plenty of water'),
-(10, 10, '250 mg', 'Once a day', '7 days', 'Take with food');
-
-
-INSERT INTO drugs_list (drugName, manufacturer, description, price)
-VALUES 
-('Paracetamol', 'ABC Pharma', 'Pain reliever/fever reducer', 5),
-('Vitamin D3', 'XYZ Pharma', 'Vitamin D supplement', 8),
-('Amoxicillin', 'HealthCorp', 'Antibiotic for infections', 10),
-('Cough Syrup', 'Wellness Inc.', 'Cough suppressant', 7),
-('Aspirin', 'PharmaCare', 'Anti-inflammatory', 6),
-('Ibuprofen', 'MedPro', 'Pain and fever reducer', 4),
-('Lisinopril', 'CardioHealth', 'Blood pressure medication', 12),
-('Metformin', 'LifeScience', 'Diabetes medication', 9),
-('Omeprazole', 'GastroCare', 'Acid reflux medication', 11),
-('Simvastatin', 'HeartGuard', 'Cholesterol reducer', 14);
-
-INSERT INTO users (user_type, user_name, user_email, user_password, user_level_id) 
-VALUES ('Admin', 'admin1', 'admin@caretech.com', 'admin123', 1),
-('BranchAdmin', 'branchManager', 'manager@caretech.com', 'manager123', 2),
-('company', 'GP', 'gp@caretech.com', 'gp123', 3);
-
-INSERT INTO user_level (user_type, description)
-VALUES 
-('Admin', 'System administrator with full access'),
-('branchAdmin', 'Head of Department of Hospital'),
-('company','These are the medical branches of the hosptials such as GP, Clinics etc.')
-
+INSERT INTO user_level (user_type, description) VALUES
+('Admin', 'Administrator with full access'),
+('Manager', 'Hospital manager with access to hospital data and settings'),
+('GP',' External General Practitioner');
 

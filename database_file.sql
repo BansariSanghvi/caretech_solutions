@@ -18,11 +18,13 @@ CREATE TABLE staff_records (
     staff_phone_no CHAR(10),
     email VARCHAR(255),
     role VARCHAR(255),
-    department VARCHAR(200),
+    hospital_department_id INT(10),
     hospital_id INT(10),
     isActive BOOLEAN,  
     reasonToLeave VARCHAR(255) NULL,
 
+
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id)
 );
 
@@ -229,12 +231,14 @@ INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_ema
 ('City Hospital', '123 Main St, Sheffield, UK', '01142345678', 'contact@cityhospital.com');
 
 
-INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, department, hospital_id, isActive, reasonToLeave) VALUES
-('John', 'Smith', '12 Elm St, Sheffield', '07123456789', 'john.smith@cityhospital.com', 'Doctor', 'Cardiology', 1, TRUE, NULL),
-('Emily', 'Johnson', '34 Oak Rd, Sheffield', '07987654321', 'emily.johnson@cityhospital.com', 'Nurse', 'Emergency', 1, TRUE, NULL),
-('Michael', 'Davis', '56 Maple St, Liverpool', '07865432123', 'michael.davis@cityhospital.com', 'Surgeon', 'Orthopedics', 1, TRUE, NULL),
-('Sarah', 'Taylor', '78 Pine Ave, Sheffield', '07712341234', 'sarah.taylor@cityhospital.com', 'Physiotherapist', 'Rehabilitation', 1, TRUE, NULL),
-('David', 'Wilson', '90 Cedar St, Sheffield', '07698765432', 'david.wilson@cityhospital.com', 'Consultant', 'General Medicine', 1, TRUE, NULL);
+INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, hospital_department_id, hospital_id, isActive, reasonToLeave) 
+VALUES 
+('John', 'Doe', '123 Main St', '1234567890', 'john.doe@cityhospital.com', 'Doctor', 1, 1, TRUE, NULL),
+('Jane', 'Smith', '456 Elm St', '2345678901', 'jane.smith@cityhospital.com', 'Nurse', 2, 1, TRUE, NULL),
+('Michael', 'Johnson', '789 Oak St', '3456789012', 'michael.johnson@cityhospital.com', 'Assistant', 3, 1, TRUE, NULL),
+('Emily', 'Davis', '101 Pine St', '4567890123', 'emily.davis@cityhospital.com', 'Manager', 4, 1, TRUE, NULL),
+('David', 'Brown', '202 Cedar St', '5678901234', 'david.brown@cityhospital.com', 'Doctor', 1, 1, TRUE, NULL);
+
 
 INSERT INTO patient_records (first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, staff_id, hospital_id, medical_association_id, last_seen_date) VALUES
 ('Alice', 'Williams', 'alice.williams@email.com', '07123456789', '1985-06-15', '07812345678', 'John Williams', 'No history of major illnesses', TRUE, 1, 1, 1, '2024-11-15'),

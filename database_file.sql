@@ -187,6 +187,7 @@ CREATE TABLE appointments (
 /* Manufacturer Table */
 CREATE TABLE manufacturers (
     supplier_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    supplier_name VARCHAR(255),
     supplier_email VARCHAR(255),
     supplier_location VARCHAR(255),
     supplier_phone CHAR(11),
@@ -245,9 +246,9 @@ INSERT INTO patient_records (first_name, last_name, email, phone_no, date_of_bir
 INSERT INTO hospital_branches (department_name, department_email, department_type, department_phone, hospital_id) VALUES
 ('Cardiology', 'cardiology@cityhospital.com', 'Medical', '01142345679', 1),
 ('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
-('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 3),
-('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 4),
-('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 5);
+('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
+('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1);
 
 INSERT INTO external_associations (medical_association_name, associations_location, associations_phone, associations_email, hospital_id) VALUES
 ('Greenwood GP Surgery', '12 Green St, Sheffield, UK', '01142345555', 'contact@greenwoodgp.com', 1),
@@ -257,9 +258,9 @@ INSERT INTO external_associations (medical_association_name, associations_locati
 ('Oxford Health Center', '10 Oxford High St, Oxford, UK', '01865782222', 'contact@oxfordhealthcenter.com', 5);
 
 INSERT INTO users (user_type, user_name, user_email, user_password, user_level_id, hospital_department_id, external_associations_id) VALUES
-('Admin', 'admin_user', 'admin@caretech.com', 'admin123', 1),
-('Manager', 'manager', 'manager@caretech.com', 'manager123', 2),
-('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3);
+('Admin', 'admin_user', 'admin@caretech.com', 'admin123', 1, NULL ,NULL),
+('Manager', 'manager', 'manager@caretech.com', 'manager123', 2,2,NULL),
+('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3,NULL, 1);
 
 
 INSERT INTO user_level (user_type, description) VALUES
@@ -267,3 +268,23 @@ INSERT INTO user_level (user_type, description) VALUES
 ('Manager', 'Hospital manager with access to hospital data and settings'),
 ('GP',' External General Practitioner');
 
+INSERT INTO manufacturers (supplier_name,supplier_email, supplier_location, supplier_phone, supplier_status) VALUES
+('MedSupplies Ltd', 'info@medsupplies.com', 'London, UK', '02079460001', 'Active'),
+("HealthCare Ltd",'contact@healthcaretech.com', 'Birmingham, UK', '01214560023', 'Active'),
+("BioTech Solutions",'sales@biohealthsolutions.com', 'Manchester, UK', '01612345001', 'Active'),
+("MedicalTech World",'support@medicaltechworld.com', 'Edinburgh, Scotland', '01314450099', 'Inactive'),
+("AdvancedMedSupply",'service@advancedmedsupply.com', 'Cardiff, Wales', '02920010034', 'Active');
+
+INSERT INTO drugs_list (drugName, supplier_id, description, qty, price) VALUES
+('Aspirin', 1, 'Pain reliever, anti-inflammatory', 100, 10),
+('Ibuprofen', 2, 'Anti-inflammatory drug used for fever and pain', 200, 15),
+('Amoxicillin', 3, 'Antibiotic used to treat bacterial infections', 150, 25),
+('Paracetamol', 4, 'Painkiller used for mild to moderate pain relief', 250, 5),
+('Lisinopril', 5, 'ACE inhibitor used for high blood pressure treatment', 120, 30);
+
+INSERT INTO medicalEquipment_list (equipment_Name, equipment_description, qty, price, isUrgent) VALUES
+('Defibrillator', 'Used for emergency treatment of life-threatening heart arrhythmias', 10, 1200, TRUE),
+('X-ray Machine', 'Medical imaging device used for diagnosing conditions through X-rays', 5, 50000, TRUE),
+('MRI Scanner', 'Magnetic Resonance Imaging scanner for detailed body scans', 3, 150000, TRUE),
+('Stethoscope', 'Medical instrument used to listen to heart and lung sounds', 50, 100, FALSE),
+('Wheelchair', 'Used for transporting patients who are unable to walk', 30, 300, FALSE);

@@ -7,7 +7,7 @@ if ($_SESSION['role'] != 'admin') {
     exit;
 }
 
-include 'connection/connection.php'
+include '../connection/connection.php'
 
 ?>
 
@@ -165,7 +165,7 @@ include 'connection/connection.php'
                             </div>
 
                             <div class="row">
-                                <label for="last_name">Reason for Leave:</label>
+                                <label for="reason_to_leave">Reason for Leave:</label>
                                 <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Enter notes here..."></textarea>
                             </div>
 

@@ -7,7 +7,7 @@ if ($_SESSION['role'] != 'admin') {
     exit;
 }
 
-include 'connection/connection.php'
+include '../connection/connection.php'
 
 ?>
 
@@ -19,7 +19,7 @@ include 'connection/connection.php'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/main_theme.css">
+    <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Add Staff</title>
 
@@ -117,11 +117,11 @@ include 'connection/connection.php'
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("common/sidebar.php"); ?>
+        <?php include("../common/sidebar.php"); ?>
 
         <!-- Header -->
         <div class="main-content">
-            <?php include("common/navbar.php"); ?>
+            <?php include("../common/navbar.php"); ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">
@@ -158,22 +158,21 @@ include 'connection/connection.php'
                             </div>
 
                             <div class="row">
-                                <label for="department">Department:</label>
-                                <select id="department" name="department" required>
-                                    <option value="HR">HR</option>
-                                    <option value="Engineering">Engineering</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Sales">Sales</option>
-                                    <option value="Finance">Finance</option>
-                                </select>
-                            </div>
+                                <label for="hospital_department_id ">Department:</label>
+                                <?php
+                                // Fetch hospitals branches
+                                $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
 
-                            <div class="row">
-                                <label for="status">Status:</label>
-                                <select id="status" name="status" required>
-                                    <option value="Active">Active</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
+                                if ($result->num_rows > 0) { 
+                                    echo '<select id="hospital_department_id" name="hospital_department_id" required>'; 
+                                    while ($row = $result->fetch_assoc()) { 
+                                        echo '<option value="' . $row['hospital_department_id'] . '">' . $row['department_name'] . '</option>'; 
+                                    }
+                                    echo '</select>'; 
+                                } else { 
+                                    echo '<p>No departments available</p>'; 
+                                }
+                                ?>
                             </div>
 
                             <div class="row">
@@ -182,13 +181,13 @@ include 'connection/connection.php'
                             </div>
 
                             <div class="row">
-                                <label for="hospital">Hospital:</label>
+                                <label for="hospital_id">Hospital:</label>
                                 <?php
                                 // Fetch hospitals
                                 $result = $conn->query("SELECT hospital_id, hname FROM hospital_info");
 
                                 if ($result->num_rows > 0) { 
-                                    echo '<select id="hospital" name="hospital" required>'; 
+                                    echo '<select id="hospital_id" name="hospital_id" required>'; 
                                     while ($row = $result->fetch_assoc()) { 
                                         echo '<option value="' . $row['hospital_id'] . '">' . $row['hname'] . '</option>'; 
                                     }
@@ -200,7 +199,7 @@ include 'connection/connection.php'
                             </div>
                             
 
-                            <button type="submit" onclick= addStaff() >Add Staff Member</button>
+                            <button type="submit" >Add Staff Member</button>
                             <button class="cancel" onclick="window.location.href='staff_hub.php'">Cancel</button>
 
                         </form>

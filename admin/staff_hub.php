@@ -148,7 +148,7 @@ include '../connection/connection.php'
                     <div class="staff_hub_top_container">
                         <div class="buttons-container">
                             <div class="add_staff_box">
-                                <button class = "add_staff_btn" onclick="window.location.href='add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
+                                <button class = "add_staff_btn" onclick="window.location.href='../admin/add_staff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
                             </div>
                             <div class="remove_staff_box">
                                 <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
@@ -165,7 +165,10 @@ include '../connection/connection.php'
                             </div>
             </div>
                    <?php 
-                   $query = "SELECT staff_id, fname, lname, email, staff_phone_no, email, role, department FROM staff_records";
+                   $query = "SELECT staff_id, fname, lname, email, staff_phone_no, email, role, department_name 
+                   FROM staff_records, hospital_branches 
+                   WHERE isActive = 1 AND staff_records.hospital_department_id = hospital_branches.hospital_department_id;";
+         
                    $result = $conn->query($query);
                    
                    // Check if there are any records
@@ -202,7 +205,7 @@ include '../connection/connection.php'
                                 echo "<td>" . $staff['email'] . "</td>";
                                 echo "<td>" . $staff['staff_phone_no'] . "</td>";
                                 echo "<td>" . $staff['role'] . "</td>";
-                                echo "<td>" . $staff['department'] . "</td>";
+                                echo "<td>" . $staff['department_name'] . "</td>";
                                 echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
                                 echo "</tr>";
                             }

@@ -1,18 +1,18 @@
-// Note to self: Come back to this. Doubt about Reason for Leave. 
-
 <?php
-include("connection/connection.php"); 
+include("../connection/connection.php"); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
+    // Retrieve form data 
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
-    $id = $POST['staff_id'];
-    $hospital_id = $_POST['hospital']; 
-
-    // Prepare and execute the SQL query
-    $sql = "DELETE FROM staff_records (fname, lname, , hospital_id) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $staff_id = $_POST['staff_id'];
+    // Check if reason_to_leave are set
+    $reason_to_leave = isset($_POST['reason_to_leave']) ? $_POST['reason_to_leave'] : ''; 
+    
+    // Prepare and execute the SQL query to update the staff member
+    $sql = "UPDATE staff_records 
+            SET fname = ?, lname = ?, isActive = 0, reasonToLeave = ?, hospital_id = NULL, hospital_department_id = NULL 
+            WHERE staff_id = ?"; 
 
     // Create a prepared statement
     $stmt = $conn->prepare($sql);
@@ -22,12 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Bind parameters
-    $stmt->bind_param("sssssss", $first_name, $last_name, $email, $role, $department, $phone, $hospital_id);
+
+    $stmt->bind_param("sssi", $first_name, $last_name, $reason_to_leave, $staff_id);
 
     // Execute the query
     if ($stmt->execute()) {
-        echo "Staff member added successfully!";
-        header("Location: staff_hub.php"); // Redirect to another page
+        echo "Staff member updated successfully!";
+        header("Location: ../admin/staff_hub.php"); // Redirect to another page
         exit();
     } else {
         echo "Error: " . $stmt->error;
@@ -40,4 +41,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     echo "Invalid request.";
 }
 ?>
-

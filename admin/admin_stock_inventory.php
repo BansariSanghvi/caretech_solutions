@@ -1,0 +1,254 @@
+<?php
+session_start();
+
+// Check if the user is an branch manager
+if ($_SESSION['role'] != 'admin') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include '../connection/connection.php'
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/branch_theme.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>Admin Inventory</title>
+    <style>
+
+        .data_table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-left: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .data_table thead {
+            background-color: #001f3f; /* Dark navy blue */
+            color: white; /* White text */
+        }
+
+        .data_table th, .data_table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        
+
+        .data_table tr:hover {
+            background-color: #ddd;
+        }
+
+        .edit-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 2px 1px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+   
+
+        .scrollable-table {
+            display: block;
+            max-height: 535px; 
+            overflow-y: auto;
+        }
+
+        .top_container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;  
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 10px; 
+        }
+
+        .search_filter {
+            display: flex;
+            align-items: center;
+            margin-right: 100px; 
+            gap: 5px; 
+        }
+
+        .search_filter input {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search_filter i {
+            color: #888; 
+            font-size: 20px; 
+        }
+
+        .add_btn {
+            background-color: #4CAF50; 
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            font-size: 14px;
+            border-radius: 4px;
+            margin-left: 30px;
+        }
+
+        .remove_btn {
+            background-color: #4CAF50; 
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .upload_btn {
+            background-color: #ff5733; 
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            font-size: 14px;
+            border-radius: 4px;
+        } 
+
+        .order_btn {
+            background-color: #da21be; 
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+                
+        .low-stock {
+            background-color: #ba0a0a; /* Red for low stock */
+            color: white;
+        }
+
+        .approaching-stock {
+            background-color: #dfd81b; /* Yellow for approaching stock */
+        }
+
+        .normal-stock {
+            background-color: white; 
+            
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+      <!--------------------Side Menu------------ -->
+         <!--------------------Side Menu------------ -->
+      <?php  include("../common/sidebar.php"); ?>
+
+<!-------------------Header------------------->
+<div class="main-content">
+    
+<?php  include("../common/navbar.php"); ?>
+            <!------------------Stock Section------------------>
+            <div class="inside-content">
+               <section class="stock_section" id ='stock'>
+                  <h2 class="page_title">Admin View: Medical Equipment Inventory:</h2>
+
+                  <div class="top_container">
+                        <div class="buttons-container">
+                            <div class="add_box">
+                                <button class = "add_btn" onclick="window.location.href='#'"><i class='bx bxs-plus-square'></i>   Add Item</button>
+                            </div>
+                            <div class="remove_box">
+                                <button class="remove_btn" onclick="window.location.href='#'"><i class='bx bxs-minus-square'></i> Remove Item</button>
+                            </div>
+
+                            <div class="upload_box">
+                                <button class="upload_btn" onclick="window.location.href='#'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
+                            </div>
+
+                            <div class="submit_order_box">
+                                <button class="order_btn" onclick="window.location.href='#'"><i class="ri-file-upload-fill"></i> Place Order</button>
+                            </div>
+
+                            </div>
+                                <div class="search_filter">
+                                <i class="ri-search-line"></i>  
+                                <input type="text" placeholder="search">
+                            </div>
+            </div>
+
+            <?php
+            $query = "SELECT equipment_ID,equipment_Name,equipment_description,qty FROM medicalEquipment_list ";
+
+            $result = $conn->query($query);
+                   
+                   // Check if there are any records
+                   if ($result->num_rows > 0) {
+                       $inventory_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                   } else {
+                       $inventory_data = []; // No records found
+                   }
+            ?>
+            <div class="scrollable-table">
+                <table class="data_table">
+                    <thead>
+                        <tr>
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            // Loop through inventory data and display it in the table
+                            foreach ($inventory_data as $inventory) {
+                                // Determine row color based on quantity
+                                $row_class = "";
+                                if ($inventory['qty'] < 10) {
+                                    $row_class = "low-stock"; // Red color for low stock
+                                } elseif ($inventory['qty'] >= 10 && $inventory['qty'] <= 20) {
+                                    $row_class = "approaching-stock"; // Yellow color for approaching stock
+                                } else {
+                                    $row_class = "normal-stock"; // Default color for normal stock
+                                }
+                                
+                                echo "<tr class='$row_class'>";
+                                echo "<td>" . $inventory['equipment_ID'] . "</td>";
+                                echo "<td>" . $inventory['equipment_Name'] . "</td>";
+                                echo "<td>" . $inventory['equipment_description'] . "</td>";
+                                echo "<td>" . $inventory['qty'] . "</td>";
+                                echo "<td><a href='edit_inventory.php?id=" . $inventory['equipment_ID'] . "' class='edit-button'>Edit</a></td>";
+                                echo "</tr>";
+                            }
+                        ?>
+                    </tbody>
+
+                </table>
+            </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
+

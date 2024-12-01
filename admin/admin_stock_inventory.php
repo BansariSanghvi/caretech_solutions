@@ -41,12 +41,6 @@ include '../connection/connection.php'
             border: 1px solid #ddd;
         }
 
-        
-
-        .data_table tr:hover {
-            background-color: #ddd;
-        }
-
         .edit-button {
             background-color: #4CAF50; /* Green */
             color: white;
@@ -193,7 +187,20 @@ include '../connection/connection.php'
             </div>
 
             <?php
-            $query = "SELECT equipment_ID,equipment_Name,equipment_description,qty FROM medicalEquipment_list ";
+            $query = "SELECT 
+                medicalEquipment_list.equipment_ID,
+                medicalEquipment_list.equipment_Name,
+                medicalEquipment_list.equipment_description,
+                medicalEquipment_list.qty,
+                medicalEquipment_list.hospital_department_id,
+                hospital_branches.department_name
+                FROM 
+                medicalEquipment_list
+                INNER JOIN 
+                hospital_branches 
+                ON 
+                medicalEquipment_list.hospital_department_id = hospital_branches.hospital_department_id;
+                ";
 
             $result = $conn->query($query);
                    
@@ -212,6 +219,7 @@ include '../connection/connection.php'
                             <th>Item Name</th>
                             <th>Description</th>
                             <th>Quantity</th>
+                            <th>Hospital Branch</th>
                             <th>Edit</th>
                         </tr>
                     </thead>
@@ -234,6 +242,7 @@ include '../connection/connection.php'
                                 echo "<td>" . $inventory['equipment_Name'] . "</td>";
                                 echo "<td>" . $inventory['equipment_description'] . "</td>";
                                 echo "<td>" . $inventory['qty'] . "</td>";
+                                echo "<td>" . $inventory['department_name'] . "</td>";
                                 echo "<td><a href='edit_inventory.php?id=" . $inventory['equipment_ID'] . "' class='edit-button'>Edit</a></td>";
                                 echo "</tr>";
                             }

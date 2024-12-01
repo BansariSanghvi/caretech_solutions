@@ -156,10 +156,12 @@ CREATE TABLE equipment_orders (
     hospital_department_id INT(10),
     delivery_status VARCHAR(20) DEFAULT 'Pending',
     user_id INT(10),
+    supplier_id INT(10),
 
     FOREIGN KEY (equipment_ID) REFERENCES medicalEquipment_list(equipment_ID),
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (supplier_id) REFERENCES manufacturers(supplier_id)
 );
 
 /* Table for generating referral letters */
@@ -189,7 +191,7 @@ CREATE TABLE appointments (
     FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id)
 );
 
-/* Manufacturer Table */
+/* Manufacturer Table - only for medical equipment  */
 CREATE TABLE manufacturers (
     supplier_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     supplier_name VARCHAR(255),

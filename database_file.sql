@@ -141,7 +141,10 @@ CREATE TABLE medicalEquipment_list (
     equipment_description VARCHAR(255),
     qty INT(10),
     price INT(10),
-    isUrgent BOOLEAN 
+    isUrgent BOOLEAN,
+    hospital_department_id INT(10),
+
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
 );
 
 /* Table for medical equipment orders */
@@ -287,9 +290,11 @@ INSERT INTO drugs_list (drugName, supplier_id, description, qty, price) VALUES
 ('Paracetamol', 4, 'Painkiller used for mild to moderate pain relief', 250, 5),
 ('Lisinopril', 5, 'ACE inhibitor used for high blood pressure treatment', 120, 30);
 
-INSERT INTO medicalEquipment_list (equipment_Name, equipment_description, qty, price, isUrgent) VALUES
-('Defibrillator', 'Used for emergency treatment of life-threatening heart arrhythmias', 10, 1200, TRUE),
-('X-ray Machine', 'Medical imaging device used for diagnosing conditions through X-rays', 5, 50000, TRUE),
-('MRI Scanner', 'Magnetic Resonance Imaging scanner for detailed body scans', 3, 150000, TRUE),
-('Stethoscope', 'Medical instrument used to listen to heart and lung sounds', 50, 100, FALSE),
-('Wheelchair', 'Used for transporting patients who are unable to walk', 30, 300, FALSE);
+INSERT INTO medicalEquipment_list (equipment_Name, equipment_description, qty, price, isUrgent, hospital_department_id)
+VALUES
+('ECG Machine', 'Used for measuring the electrical activity of the heart.', 5, 12000, TRUE, 1), -- Cardiology
+('Defibrillator', 'Essential for emergency cardiac situations.', 3, 15000, TRUE, 2), -- Emergency
+('Orthopedic Drill', 'Used in surgical orthopedic procedures.', 2, 8000, FALSE, 3), -- Orthopedics
+('Rehabilitation Chair', 'Adjustable chair for patient rehabilitation exercises.', 10, 3000, FALSE, 4), -- Rehabilitation
+('Stethoscope', 'Basic diagnostic equipment for medical practitioners.', 50, 200, FALSE, 5); -- General Medicine
+

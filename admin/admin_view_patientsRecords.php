@@ -164,7 +164,7 @@ include '../connection/connection.php';
                         <table class="patient_table">
                             <thead>
                                 <tr>
-                                    <th>Patient ID</th>
+                                    <th>ID</th>
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Email</th>
@@ -188,7 +188,7 @@ include '../connection/connection.php';
                                     echo "<td>" . $patient['phone_no'] . "</td>";
                                     echo "<td>" . $patient['emergency_contact'] . "</td>";
                                     echo "<td>" . $patient['emergency_contact_name'] . "</td>";
-                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>Edit</a></td>";
+                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
                                     echo "</tr>";
                                 }
                                 ?>

@@ -239,7 +239,7 @@
                                     <h5><i class="ri-hospital-fill"></i>Referral Form</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Discharge Summary Form</h5>
+                                    <h5><i class="ri-hospital-fill"></i>Place Prescription</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_forms.php'">
                                     <h5><i class="ri-hospital-fill"></i>Patient Feedback Form</h5>

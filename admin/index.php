@@ -213,7 +213,7 @@ if ($_SESSION['role'] != 'admin') {
                                         <div class="card-body">
                                             <div class="tag-container">
                                                 <!-- Quick Action Buttons -->
-                                                <button class="btn btn-default big-button" onclick="window.location.href='medicineList.php'">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='admin_stock_inventory.php'">
                                                     <i class="ri-folder-4-fill"></i> Inventory
                                                 </button>
 
@@ -221,16 +221,16 @@ if ($_SESSION['role'] != 'admin') {
                                                     <i class="ri-group-2-fill"></i> Staff Hub
                                                 </button>
 
-                                                <button class="btn btn-default big-button" onclick="window.location.href='#'">
-                                                    <i class="ri-hospital-fill"></i> Stock Inventory
+                                                <button class="btn btn-default big-button" onclick="window.location.href='supply_orders.php'">
+                                                    <i class="ri-hospital-fill"></i> Orders
                                                 </button>
 
                                                 <button class="btn btn-default big-button" onclick="window.location.href='#'">
                                                     <i class="ri-line-chart-fill"></i> Referals
                                                 </button>
 
-                                                <button class="btn btn-default big-button">
-                                                    <i class="ri-file-list-3-fill"></i> Orders
+                                                <button class="btn btn-default big-button" onclick="window.location.href='settings.php'">
+                                                    <i class="ri-file-list-3-fill"></i> Settings
                                                 </button>
                                             </div>
                                         </div>

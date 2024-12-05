@@ -235,7 +235,7 @@
                                 <button class="count-box" onclick="window.location.href='staff_request_form.php'">
                                     <h5><i class="ri-hospital-fill"></i>Request Form</h5>
                                 </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
+                                <button class="count-box" onclick="window.location.href='staff_referral_form.php'">
                                     <h5><i class="ri-hospital-fill"></i>Referral Form</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_forms.php'">

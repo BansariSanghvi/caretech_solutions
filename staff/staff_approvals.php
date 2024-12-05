@@ -3,7 +3,7 @@ session_start();
 
 $current_page = 'approvals';
 
-// Check if the user is a branch manager
+// Check if the user is correct
 if ($_SESSION['role'] != 'gp') {
     header('Location: unauthorized.php');
     exit;

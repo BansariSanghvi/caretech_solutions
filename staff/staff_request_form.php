@@ -26,12 +26,9 @@ if ($_SESSION['role'] != 'gp') {
         }
 
         .form-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px; 
         }
 
         .form-container h2 {
@@ -57,15 +54,25 @@ if ($_SESSION['role'] != 'gp') {
             width: 100%;
             padding: 10px;
             font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 2px solid #ccc; /* Increased border thickness */
+            border-radius: 6px; /* More rounded corners */
+            transition: border-color 0.3s; /* Smooth transition for border color */
         }
 
-        .form-group select {
-            background-color: #fff;
-            cursor: pointer;
+        /* Hover effect for inputs and textareas */
+        .form-group select:hover,
+        .form-group input:hover {
+            border-color: #007bff; /* Blue border on hover */
         }
 
+        /* Focus effect for inputs and textareas */
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #0056b3; /* Darker blue border on focus */
+            outline: none; /* Remove default outline */
+        }
+
+        /* Button styles */
         .form-group button {
             background-color: #007bff;
             color: white;

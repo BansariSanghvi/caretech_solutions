@@ -15,7 +15,7 @@
         .settings-container {
             padding: 20px;
             border-radius: 8px;
-            width: 80%;
+            width: 95%;
             margin-left: 10px;
         }
 
@@ -108,9 +108,9 @@
                             <div class="settings-section">
                                 <h4>External</h4>
                                 <ul>
-                                    <li>Medical Equipment</li>
-                                    <li><a href = "medicalSupplierList.php"></a>Supplier Hub</li>
-                                    <li><a href = "medical_associationsList.php"></a>Medical Associations</li>
+                                    <li onclick = "window.location.href='admin_stock_inventory.php'">Medical Equipment</li>
+                                    <li onclick="window.location.href='medicalSupplierList.php'">Supplier Hub</li>
+                                    <li onclick="window.location.href='medical_associations_list.php'">Medical Associations</li>
                                 </ul>
                             </div>
 
@@ -121,6 +121,15 @@
                                     <li>Update Language</li>
                                     <li>Update Theme</li>
 
+                                </ul>
+                            </div>
+
+                            <!-- Report Problem Section -->
+                            <div class="settings-section">
+                                <h4 style = "background-color: #8b0303;">Report Problem</h4>
+                                <ul>
+                                    <li onclick = "window.location.href='report_problem.php'">Report Problem</li>
+                                    <li><a href = "#"></a>Table of Problems</li>
                                 </ul>
                             </div>
                         </div>

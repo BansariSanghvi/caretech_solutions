@@ -9,7 +9,7 @@
             <li><i class='bx bxs-user-detail'></i><a href="staff_hub.php">Staff Hub</a></li>
             <li><i class='bx bxs-capsule'></i><a href="admin_stock_inventory.php">Stock Inventory</a></li>
             <li><i class='bx bxs-file-find'></i><a href="admin_view_patientsRecords.php">Patient Records</a></li>
-            <li><i class='bx bx-cabinet'></i><a href="#">Referals</a></li>
+            <li><i class='bx bx-cabinet'></i><a href="admin_referal_view.php">Referals</a></li>
             <li><i class='bx bxs-cart-alt'></i><a href="supply_orders.php">Supply Orders</a></li>
             <li><i class='bx bx-line-chart'></i><a href="#">Analytics</a></li>
             <li><i class='bx bxs-cog'></i><a href="settings.php">Settings</a></li>

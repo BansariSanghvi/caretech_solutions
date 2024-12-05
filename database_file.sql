@@ -229,6 +229,25 @@ CREATE TABLE user_level (
     description VARCHAR(255)
 );
 
+/* Approvals Table */
+CREATE TABLE approvals (
+    approval_id INT PRIMARY KEY AUTO_INCREMENT, 
+    user_id INT(10),
+    hospital_department_id INT(10), 
+    equipment_ID INT(10),
+    approval_qty INT(10),
+    approval_description VARCHAR(255),
+    approval_sent_date DATE CURRENT_TIMESTAMP,
+    approval_date INT(8) NULL, 
+    approval_status VARCHAR(255) DEFAULT 'Waiting Approval',
+     
+
+    FOREIGN KEY (equipment_ID) REFERENCES medicalEquipment_list(equipment_ID),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY(user_id) REFERENCES users(user_id)
+    
+)
+
 /* SECTION 2 - INSERTION */ 
 
 INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES
@@ -302,4 +321,3 @@ INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipmen
 (8, 'Medical Gloves', 'Required for various tasks .', 500, 2000, 0, 3),
 (9, 'Walking Frame', 'Support equipment for patients learning to walk again.', 12, 1500, 0, 4),
 (10, 'Thermometer', 'Used to measure patient body temperature.', 100, 50, 0, 5);
-    

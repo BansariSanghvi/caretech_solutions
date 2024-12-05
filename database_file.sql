@@ -85,6 +85,8 @@ CREATE TABLE referal_form (
     hospital_id INT(10),
     medical_association_id INT(10),
     patient_id INT(10),
+    isViewed VARCHAR(20) DEFAULT 'Pending',
+
 
     FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id),
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
@@ -321,3 +323,10 @@ INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipmen
 (8, 'Medical Gloves', 'Required for various tasks .', 500, 2000, 0, 3),
 (9, 'Walking Frame', 'Support equipment for patients learning to walk again.', 12, 1500, 0, 4),
 (10, 'Thermometer', 'Used to measure patient body temperature.', 100, 50, 0, 5);
+
+INSERT INTO referal_form (request_type, summary_notes, hospital_department_id, staff_id, hospital_id, medical_association_id, patient_id) VALUES
+('Cardiology Consultation', 'Patient experiencing chest pain, requires specialist opinion.', 1, 1, 1, 1, 1),
+('Emergency Trauma', 'Patient with multiple fractures from an accident.', 2, 2, 2, 1, 2),
+('Rehabilitation Assessment', 'Patient recovering from knee surgery.', 4, 3, 1, 1, 3),
+('General Checkup', 'Routine physical examination for the patient.', 5, 4, 1, 1, 4),
+('Orthopedic Surgery', 'Patient requires surgical intervention for a broken arm.', 3, 5, 1, 1, 5);

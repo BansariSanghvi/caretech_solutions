@@ -291,11 +291,15 @@ INSERT INTO drugs_list (drugName, supplier_id, description, qty, price) VALUES
 ('Paracetamol', 4, 'Painkiller used for mild to moderate pain relief', 250, 5),
 ('Lisinopril', 5, 'ACE inhibitor used for high blood pressure treatment', 120, 30);
 
-INSERT INTO medicalEquipment_list (equipment_Name, equipment_description, qty, price, isUrgent, hospital_department_id)
-VALUES
-('ECG Machine', 'Used for measuring the electrical activity of the heart.', 5, 12000, TRUE, 1), -- Cardiology
-('Defibrillator', 'Essential for emergency cardiac situations.', 3, 15000, TRUE, 2), -- Emergency
-('Orthopedic Drill', 'Used in surgical orthopedic procedures.', 2, 8000, FALSE, 3), -- Orthopedics
-('Rehabilitation Chair', 'Adjustable chair for patient rehabilitation exercises.', 10, 3000, FALSE, 4), -- Rehabilitation
-('Stethoscope', 'Basic diagnostic equipment for medical practitioners.', 50, 200, FALSE, 5); -- General Medicine
-
+INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipment_description`, `qty`, `price`, `isUrgent`, `hospital_department_id`) VALUES
+(1, 'ECG Machine', 'Used for measuring the electrical activity of the heart.', 5, 12000, 1, 1),
+(2, 'Defibrillator', 'Essential for emergency cardiac situations.', 25, 15000, 1, 2),
+(3, 'Orthopedic Drill', 'Used in surgical orthopedic procedures.', 2, 8000, 0, 3),
+(4, 'Rehabilitation Chair', 'Adjustable chair for patient rehabilitation exercises.', 10, 3000, 0, 4),
+(5, 'Stethoscope', 'Basic diagnostic equipment for medical practitioners.', 50, 200, 0, 5),
+(6, 'Heart Monitor', 'Device for continuous monitoring of heart activity.', 4, 25000, 1, 1),
+(7, 'Ventilator', 'Critical equipment for patients with breathing difficulties.', 6, 45000, 1, 2),
+(8, 'Medical Gloves', 'Required for various tasks .', 500, 2000, 0, 3),
+(9, 'Walking Frame', 'Support equipment for patients learning to walk again.', 12, 1500, 0, 4),
+(10, 'Thermometer', 'Used to measure patient body temperature.', 100, 50, 0, 5);
+    

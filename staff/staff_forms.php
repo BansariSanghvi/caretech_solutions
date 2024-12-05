@@ -232,14 +232,14 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <!-- Metric Boxes -->
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
+                                <button class="count-box" onclick="window.location.href='staff_request_form.php'">
                                     <h5><i class="ri-hospital-fill"></i>Request Form</h5>
                                 </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
+                                <button class="count-box" onclick="window.location.href='staff_referral_form.php'">
                                     <h5><i class="ri-hospital-fill"></i>Referral Form</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Discharge Summary Form</h5>
+                                    <h5><i class="ri-hospital-fill"></i>Place Prescription</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_forms.php'">
                                     <h5><i class="ri-hospital-fill"></i>Patient Feedback Form</h5>

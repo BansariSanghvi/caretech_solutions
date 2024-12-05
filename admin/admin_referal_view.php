@@ -1,16 +1,14 @@
 <?php
 session_start();
 
-// Check if the user is an branch manager
+// Check if the user is an admin
 if ($_SESSION['role'] != 'admin') {
     header('Location: unauthorized.php');
     exit;
 }
 
-include '../connection/connection.php'
-
+include '../connection/connection.php';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +23,7 @@ include '../connection/connection.php'
 
     <style>
 .staff_table {
-    width: 90%;
+    width: 93%;
     border-collapse: collapse;
     margin-left: 2rem;
     margin-top:2rem;
@@ -129,8 +127,6 @@ include '../connection/connection.php'
     font-size: 14px;
     border-radius: 4px;
 }
-        
-       
 </style>
 </head>
 <body>
@@ -150,66 +146,101 @@ include '../connection/connection.php'
                     <div class="referal_top_container">
                         <div class="buttons-container">
                             <div class="add_staff_box">
-                                <button class = "add_supplier_btn" onclick="window.location.href='add_supplier.php'"><i class="ri-user-add-line"></i>   Add Referal</button>
+                                <button class="add_supplier_btn" onclick="window.location.href='add_supplier.php'">
+                                    <i class="ri-user-add-line"></i> Add Referal
+                                </button>
                             </div>
+                        </div>
 
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
-
+                        <div class="search_filter">
+                            <form method="GET" action="">
+                                <label for="department">Filter by Department:</label>
+                                <select name="department" id="department" onchange="this.form.submit()">
+                                    <option value="">All Departments</option>
+                                    <?php
+                                    $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+                                    $dept_result = $conn->query($dept_query);
+                                    while ($row = $dept_result->fetch_assoc()) {
+                                        $selected = (isset($_GET['department']) && $row['hospital_department_id'] == $_GET['department']) ? 'selected' : '';
+                                        echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
 
                     <?php
-                    $query = "SELECT referal_form.request_id, referal_form.patient_id,
-                    referal_form.request_type,referal_form.hospital_department_id,
-                    referal_form.medical_association_id FROM `referal_form`; ";
-    
+                    // Filtering logic
+                    $where_clause = "";
+                    if (isset($_GET['department']) && !empty($_GET['department'])) {
+                        $department_id = $conn->real_escape_string($_GET['department']);
+                        $where_clause = " WHERE hospital_branches.hospital_department_id = '$department_id'";
+                    }
+
+                    $query = "SELECT 
+                                referal_form.request_id, 
+                                referal_form.patient_id, 
+                                referal_form.request_type, 
+                                referal_form.hospital_department_id, 
+                                hospital_branches.department_name, 
+                                referal_form.medical_association_id, 
+                                external_associations.medical_association_name, 
+                                referal_form.isViewed 
+                              FROM 
+                                referal_form 
+                              INNER JOIN 
+                                hospital_branches 
+                              ON 
+                                referal_form.hospital_department_id = hospital_branches.hospital_department_id 
+                              INNER JOIN 
+                                external_associations 
+                              ON 
+                                referal_form.medical_association_id = external_associations.medical_association_id" 
+                              . $where_clause;
+
                     $result = $conn->query($query);
-                   
-                   // Check if there are any records
-                   if ($result->num_rows > 0) {
-                       $ref_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-                   } else {
-                       $ref_data = []; // No records found
-                   }
+
+                    // Fetch records
+                    $ref_data = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
                     ?>
-                   
 
                     <div class="scrollable-table">
-                    <table class="staff_table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Patient ID</th>
-                                <th>Type</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Status</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php 
-                            // Loop through inventory data and display it in the table
-                            foreach ($ref_data as $ref) {
-                                echo "<tr>";
-                                echo "<td>" . $ref['request_id'] . "</td>";
-                                echo "<td>" . $ref['patient_id'] . "</td>";
-                                echo "<td>" . $ref['request_type'] . "</td>";
-                                echo "<td>" . $ref['hospital_department_id'] . "</td>";
-                                echo "<td>" . $ref['medical_association_id'] . "</td>";
-                                echo "</tr>";
-                            }
-                        ?>
-                        </tbody>
-                    </table>
+                        <table class="staff_table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient ID</th>
+                                    <th>Type</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                foreach ($ref_data as $ref) {
+                                    echo "<tr";
+                                    if ($ref['department_name'] === 'Emergency') {
+                                        echo " style='background-color: #ba0a0a; color: white;'";
+                                    }
+                                    echo ">";
+                                    echo "<td>" . $ref['request_id'] . "</td>";
+                                    echo "<td>" . $ref['patient_id'] . "</td>";
+                                    echo "<td>" . $ref['request_type'] . "</td>";
+                                    echo "<td>" . $ref['medical_association_name'] . "</td>";
+                                    echo "<td>" . $ref['department_name'] . "</td>";
+                                    echo "<td>" . $ref['isViewed'] . "</td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </div>
     </div>
-</div>
 
     <script src="assets/js/main.js"></script>
 </body>

@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include '../connection/connection.php';
+
 $current_page = 'stock';
 
 // Check if the user is an branch manager
@@ -40,13 +42,6 @@ if ($_SESSION['role'] != 'branchManager') {
             border: 1px solid #ddd;
         }
 
-        .data_table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .data_table tr:hover {
-            background-color: #ddd;
-        }
 
         .edit-button {
             background-color: #4CAF50; /* Green */
@@ -82,23 +77,7 @@ if ($_SESSION['role'] != 'branchManager') {
             gap: 10px; /* Space between buttons */
         }
 
-        .search_filter {
-            display: flex;
-            align-items: center;
-            margin-right: 100px; /* Adjust as needed */
-            gap: 5px; /* Space between the icon and input */
-        }
 
-        .search_filter input {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .search_filter i {
-            color: #888; 
-            font-size: 20px; 
-        }
 
         .add_btn {
             background-color: #4CAF50; 
@@ -127,6 +106,55 @@ if ($_SESSION['role'] != 'branchManager') {
             font-size: 14px;
             border-radius: 4px;
         } 
+
+        .low-stock {
+            background-color: #ba0a0a; /* Red for low stock */
+            color: white;
+        }
+
+        .approaching-stock {
+            background-color: #dfd81b; /* Yellow for approaching stock */
+        }
+
+        .normal-stock {
+            background-color: white; 
+            
+        }
+
+
+        .buttons-container {
+            display: flex;
+            gap: 10px; 
+        }
+
+        .department_filter {
+            display: flex;
+            align-items: center;
+            margin-right: 100px;    
+        }
+
+        .department_filter label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #063478;
+        }
+
+        .department_filter select {
+            appearance: none;
+            width: 200px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .department_filter select:hover {
+            background-color: #e6e6e6;
+        }
+                
     </style>
 </head>
 <body>
@@ -145,110 +173,104 @@ if ($_SESSION['role'] != 'branchManager') {
                   <h2 class="page_title">Stock / Inventory:</h2>
 
                   <div class="top_container">
-                        <div class="buttons-container">
-                            <div class="add_box">
-                                <button class = "add_btn" onclick="window.location.href='add_branchStock.php'"><i class='bx bxs-plus-square'></i>   Add Item</button>
-                            </div>
-                            <div class="remove_box">
-                                <button class="remove_btn" onclick="window.location.href='remove_branchStock.php'"><i class='bx bxs-minus-square'></i> Remove Item</button>
-                            </div>
+                <div class="buttons-container">
+                    <div class="add_box">
+                        <button class="add_btn" onclick="window.location.href='add_branchStock.php'"><i class='bx bxs-plus-square'></i> Add Item</button>
+                    </div>
+                    <div class="remove_box">
+                        <button class="remove_btn" onclick="window.location.href='remove_branchStock.php'"><i class='bx bxs-minus-square'></i> Remove Item</button>
+                    </div>
+                    <div class="upload_box">
+                        <button class="upload_btn" onclick="window.location.href='upload_branchStock.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
+                    </div>
+                </div>
+                <div class="department_filter">
+    <form method="GET" action="">
+        <label for="department">Filter by Department:</label>
+        <select name="department" id="department" onchange="this.form.submit()">
+            <option value="">All Departments</option>
+            <?php
+            $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+            $dept_result = $conn->query($dept_query);
+            while ($row = $dept_result->fetch_assoc()) {
+                $selected = (isset($_GET['department']) && $_GET['department'] == $row['hospital_department_id']) ? 'selected' : '';
+                echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+            }
+                   ?>
+                        </select>
+                    </form>
+                    </div>
+                    </div>
+                    </div>
+                    <?php
+                    $query = "SELECT 
+                        medicalEquipment_list.equipment_ID,
+                        medicalEquipment_list.equipment_Name,
+                        medicalEquipment_list.equipment_description,
+                        medicalEquipment_list.qty,
+                        medicalEquipment_list.hospital_department_id,
+                        hospital_branches.department_name
+                        FROM 
+                        medicalEquipment_list
+                        INNER JOIN 
+                        hospital_branches 
+                        ON 
+                        medicalEquipment_list.hospital_department_id = hospital_branches.hospital_department_id";
 
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='upload_branchStock.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
+                   
+                    if (isset($_GET['department']) && $_GET['department'] != '') {
+                        $department_id = $conn->real_escape_string($_GET['department']);
+                        $query .= " WHERE medicalEquipment_list.hospital_department_id = '$department_id'";
+                    }
 
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
-            <div class="scrollable-table">
-                <table class="data_table">
-                    <thead>
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Item Name</th>
-                            <th>Category</th>
-                            <th>Current Quantity</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>I1001</td>
-                            <td>Surgical Gloves</td>
-                            <td>Protective Equipment</td>
-                            <td>5000</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>I1002</td>
-                            <td>Paracetamol 500mg</td>
-                            <td>Medication</td>
-                            <td>10000</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>I1003</td>
-                            <td>Syringe 10ml</td>
-                            <td>Medical Supplies</td>
-                            <td>2000</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>I1004</td>
-                            <td>Bandage Roll</td>
-                            <td>First Aid</td>
-                            <td>500</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>I1005</td>
-                            <td>Stethoscope</td>
-                            <td>Medical Equipment</td>
-                            <td>50</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
+                    $result = $conn->query($query);
 
-                        <tr>
-                            <td>I1006</td>
-                            <td>Ibuprofen 200mg</td>
-                            <td>Medication</td>
-                            <td>8000</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>I1007</td>
-                            <td>Disposable Masks</td>
-                            <td>Protective Equipment</td>
-                            <td>10000</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>I1008</td>
-                            <td>Blood Pressure Monitor</td>
-                            <td>Medical Equipment</td>
-                            <td>30</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>I1009</td>
-                            <td>Antiseptic Solution</td>
-                            <td>First Aid</td>
-                            <td>200</td>
-                            <td><button class="edit-button">Edit</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                   
+                    if ($result->num_rows > 0) {
+                        $inventory_data = $result->fetch_all(MYSQLI_ASSOC); 
+                    } else {
+                        $inventory_data = []; 
+                    }
+                    ?>
+                    <div class="scrollable-table">
+                        <table class="data_table">
+                            <thead>
+                                <tr>
+                                    <th>Item ID</th>
+                                    <th>Item Name</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Hospital Branch</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    // Loop through inventory data and display it in the table
+                                    foreach ($inventory_data as $inventory) {
+                                        // Determine row color based on quantity
+                                        $row_class = "";
+                                        if ($inventory['qty'] < 10) {
+                                            $row_class = "low-stock"; // Red color for low stock
+                                        } elseif ($inventory['qty'] >= 10 && $inventory['qty'] <= 20) {
+                                            $row_class = "approaching-stock"; // Yellow color for approaching stock
+                                        } else {
+                                            $row_class = "normal-stock"; // Default color for normal stock
+                                        }
+                                        
+                                        echo "<tr class='$row_class'>";
+                                        echo "<td>" . $inventory['equipment_ID'] . "</td>";
+                                        echo "<td>" . $inventory['equipment_Name'] . "</td>";
+                                        echo "<td>" . $inventory['equipment_description'] . "</td>";
+                                        echo "<td>" . $inventory['qty'] . "</td>";
+                                        echo "<td>" . $inventory['department_name'] . "</td>";
+                                        echo "<td><a href='edit_inventory.php?id=" . $inventory['equipment_ID'] . "' class='edit-button'>Edit</a></td>";
+                                        echo "</tr>";
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </div>

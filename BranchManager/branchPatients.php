@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+include '../connection/connection.php';
+
 $current_page = 'patients';
 
 // Check if the user is an branch manager
@@ -165,133 +167,54 @@ if ($_SESSION['role'] != 'branchManager') {
             </div>
 
                    
+            <?php 
+                    $query = "SELECT patient_id, first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name 
+                              FROM patient_records";
+                    $result = $conn->query($query);
+
+                    // Check if there are any records
+                    if ($result->num_rows > 0) {
+                        $patient_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                    } else {
+                        $patient_data = []; // No records found
+                    }
+                    ?>
 
                     <div class="scrollable-table">
-                    <table class="patient_table">
-                    <thead>
-                        <tr>
-                            <th>Patient ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Email</th>
-                            <th>GP Practice</th>
-                            <th>Contact No</th>
-                            <th>Emergency Contact No</th>
-                            <th>Dial-Code</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>P1001</td>
-                            <td>Emma</td>
-                            <td>Thompson</td>
-                            <td>emma.thompson@email.com</td>
-                            <td>Oakwood Medical Centre</td>
-                            <td>07700 900123</td>
-                            <td>07700 900124</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>P1002</td>
-                            <td>Oliver</td>
-                            <td>Brown</td>
-                            <td>oliver.brown@email.com</td>
-                            <td>Riverside Health Practice</td>
-                            <td>07700 900125</td>
-                            <td>07700 900126</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>P1003</td>
-                            <td>Sophia</td>
-                            <td>Taylor</td>
-                            <td>sophia.taylor@email.com</td>
-                            <td>Greenfield Family Clinic</td>
-                            <td>07700 900127</td>
-                            <td>07700 900128</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>P1004</td>
-                            <td>James</td>
-                            <td>Wilson</td>
-                            <td>james.wilson@email.com</td>
-                            <td>Hillside Surgery</td>
-                            <td>07700 900129</td>
-                            <td>07700 900130</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                        
-                        <tr>
-                            <td>P1005</td>
-                            <td>Ava</td>
-                            <td>Martin</td>
-                            <td>ava.martin@email.com</td>
-                            <td>Central City Medical</td>
-                            <td>07700 900131</td>
-                            <td>07700 900132</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>P1006</td>
-                            <td>Ethan</td>
-                            <td>Clark</td>
-                            <td>ethan.clark@email.com</td>
-                            <td>Lakeview Health Centre</td>
-                            <td>07700 900133</td>
-                            <td>07700 900134</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>P1007</td>
-                            <td>Mia</td>
-                            <td>Harris</td>
-                            <td>mia.harris@email.com</td>
-                            <td>Meadowbrook GP Practice</td>
-                            <td>07700 900135</td>
-                            <td>07700 900136</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>P1008</td>
-                            <td>Noah</td>
-                            <td>Lewis</td>
-                            <td>noah.lewis@email.com</td>
-                            <td>Sunnydale Medical Group</td>
-                            <td>07700 900137</td>
-                            <td>07700 900138</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-
-                        <tr>
-                            <td>P1009</td>
-                            <td>Isabella</td>
-                            <td>Walker</td>
-                            <td>isabella.walker@email.com</td>
-                            <td>Westfield Community Clinic</td>
-                            <td>07700 900139</td>
-                            <td>07700 900140</td>
-                            <td>+44</td>
-                            <td><button>Edit</button></td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </section>
+                        <table class="patient_table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>DOB</th>
+                                    <th>Contact No</th>
+                                    <th>Emergency Contact No</th>
+                                    <th>Emergency Contact Name</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                // Loop through patient data and display it in the table
+                                foreach ($patient_data as $patient) {
+                                    echo "<tr>";
+                                    echo "<td>" . $patient['patient_id'] . "</td>";
+                                    echo "<td>" . $patient['first_name'] . "</td>";
+                                    echo "<td>" . $patient['last_name'] . "</td>";
+                                    echo "<td>" . $patient['email'] . "</td>";
+                                    echo "<td>" . $patient['date_of_birth'] . "</td>";
+                                    echo "<td>" . $patient['phone_no'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact_name'] . "</td>";
+                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
             </div>
         </div>
     </div>

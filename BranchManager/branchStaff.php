@@ -70,14 +70,6 @@ if ($_SESSION['role'] != 'branchManager') {
     overflow-y: auto;
 }
 
-.staff_hub_top_container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-     
-}
 
 .buttons-container {
     display: flex;
@@ -128,7 +120,46 @@ if ($_SESSION['role'] != 'branchManager') {
     border: none;
     font-size: 14px;
     border-radius: 4px;
+
 }
+
+.staff_hub_top_container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width 100%;
+}
+
+.staff_hub_top_container form {
+    display: flex; /* Flexbox for form elements */
+    align-items: center; /* Center items vertically */
+}
+
+.staff_hub_top_container select {
+    appearance: none;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+.staff_hub_top_container select:hover {
+    background-color: #e6e6e6;
+}
+
+.staff_hub_top_container label {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #063478;
+}
+
+
         
        
 </style>
@@ -148,29 +179,36 @@ if ($_SESSION['role'] != 'branchManager') {
                     <h2 class="page_title">Staff Hub:</h2>
 
                     <div class="staff_hub_top_container">
-                        <div class="buttons-container">
-                            <div class="add_staff_box">
-                                <button class = "add_staff_btn" onclick="window.location.href='add_branchStaff.php'"><i class="ri-user-add-line"></i>   Add Staff Member</button>
-                            </div>
-                            <div class="remove_staff_box">
-                                <button class="remove_staff_btn" onclick="window.location.href='remove_branchStaff.php'"><i class='bx bxs-minus-square'></i> Remove Staff Member</button>
-                            </div>
-
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='upload_branchStaff.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
-
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
+    <form method="GET" action="">
+        <label for="department">Filter by Department:</label>
+        <select name="department" id="department" onchange="this.form.submit()">
+            <option value="">All Departments</option>
+            <?php
+            $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+            $dept_result = $conn->query($dept_query);
+            while ($row = $dept_result->fetch_assoc()) {
+                $selected = ($row['hospital_department_id'] == $_GET['department']) ? 'selected' : '';
+                echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+            }
+            ?>
+        </select>
+    </form>
+</div>
                    
 
             <?php 
-                   $query = "SELECT staff_id, fname, lname, email, staff_phone_no, email, role, department FROM staff_records";
-                   $result = $conn->query($query);
+                $selected_department = isset($_GET['department']) ? $_GET['department'] : '';
+
+                $query = "SELECT staff_id, fname, lname, email, staff_phone_no, role, department_name 
+                        FROM staff_records 
+                        JOIN hospital_branches ON staff_records.hospital_department_id = hospital_branches.hospital_department_id 
+                        WHERE isActive = 1";
+
+                if ($selected_department) {
+                    $query .= " AND staff_records.hospital_department_id = " . intval($selected_department);
+                }
+
+                $result = $conn->query($query);
                    
                    // Check if there are any records
                    if ($result->num_rows > 0) {
@@ -179,7 +217,6 @@ if ($_SESSION['role'] != 'branchManager') {
                        $staff_data = []; // No records found
                    }
                    ?>
-                   
 
                     <div class="scrollable-table">
                     <table class="staff_table">
@@ -206,7 +243,7 @@ if ($_SESSION['role'] != 'branchManager') {
                                 echo "<td>" . $staff['email'] . "</td>";
                                 echo "<td>" . $staff['staff_phone_no'] . "</td>";
                                 echo "<td>" . $staff['role'] . "</td>";
-                                echo "<td>" . $staff['department'] . "</td>";
+                                echo "<td>" . $staff['department_name'] . "</td>";
                                 echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
                                 echo "</tr>";
                             }

@@ -109,8 +109,8 @@
                                 <h4>External</h4>
                                 <ul>
                                     <li>Medical Equipment</li>
-                                    <li>Supplier Hub</li>
-                                    <li>Medical Associations</li>
+                                    <li><a href = "medicalSupplierList.php"></a>Supplier Hub</li>
+                                    <li><a href = "medical_associationsList.php"></a>Medical Associations</li>
                                 </ul>
                             </div>
 

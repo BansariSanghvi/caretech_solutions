@@ -63,13 +63,14 @@ CREATE TABLE hospital_branches (
 );
 
 /* Table for external medical associations such as GP Surgery */
+-- Maybe I need Catagory onto this? Primary Care 
 CREATE TABLE external_associations (
     medical_association_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     medical_association_name VARCHAR(25),
     associations_location VARCHAR(255),
     associations_phone CHAR(11),
     associations_email VARCHAR(255),
-    hospital_id INT(10),
+    hospital_id INT(10), -- main hosptial branch
 
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id)
 );

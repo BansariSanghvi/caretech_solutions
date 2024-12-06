@@ -67,9 +67,10 @@ if ($_SESSION['role'] != 'branchManager') {
         .top_container {
             margin-top: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 10px;  
+            padding: 10px;
+            width 100%;
         }
 
         .buttons-container {
@@ -173,17 +174,6 @@ if ($_SESSION['role'] != 'branchManager') {
                   <h2 class="page_title">Stock / Inventory:</h2>
 
                   <div class="top_container">
-                <div class="buttons-container">
-                    <div class="add_box">
-                        <button class="add_btn" onclick="window.location.href='add_branchStock.php'"><i class='bx bxs-plus-square'></i> Add Item</button>
-                    </div>
-                    <div class="remove_box">
-                        <button class="remove_btn" onclick="window.location.href='remove_branchStock.php'"><i class='bx bxs-minus-square'></i> Remove Item</button>
-                    </div>
-                    <div class="upload_box">
-                        <button class="upload_btn" onclick="window.location.href='upload_branchStock.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                    </div>
-                </div>
                 <div class="department_filter">
     <form method="GET" action="">
         <label for="department">Filter by Department:</label>

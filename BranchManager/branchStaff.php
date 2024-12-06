@@ -179,9 +179,9 @@ if ($_SESSION['role'] != 'branchManager') {
                     <h2 class="page_title">Staff Hub:</h2>
 
                     <div class="staff_hub_top_container">
-    <form method="GET" action="">
-        <label for="department">Filter by Department:</label>
-        <select name="department" id="department" onchange="this.form.submit()">
+                    <form method="GET" action="">
+                    <label for="department">Filter by Department:</label>
+                    <select name="department" id="department" onchange="this.form.submit()">
             <option value="">All Departments</option>
             <?php
             $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";

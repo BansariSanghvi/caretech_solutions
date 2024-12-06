@@ -25,8 +25,8 @@
         <li class="dropdown <?php echo ($current_page == 'forms') ? 'active' : ''; ?>">
             <i class='bx bxs-file'></i><a href="#">Forms</a>
             <ul class="dropdown-menu">
-                <li><a href="branchForm1.php">Form 1</a></li>
-                <li><a href="branchForm2.php">Form 2</a></li>
+                <li><a href="branchLetter.php">Letter Generation</a></li>
+                <li><a href="branchReferral.php">Referal Form</a></li>
             </ul>
         </li>
         <li class="<?php echo ($current_page == 'settings') ? 'active' : ''; ?>">

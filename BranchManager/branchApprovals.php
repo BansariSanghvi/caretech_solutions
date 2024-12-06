@@ -72,13 +72,31 @@ if ($_SESSION['role'] != 'branchManager') {
     .deny-btn:hover {
         background-color: #d32f2f; 
     }
+
+    .filter-container {
+        display: flex;
+        margin-bottom: 20px;
+        justify-content: center;
+        align-items: center;
+        width 100%;
+    }
+
+    .filter-container select {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+    }
+
 </style>
 </head>
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-         <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+            <?php include("../common/branch_sidebar.php"); ?>
+        
+
 
 <!-------------------Header------------------->
 <div class="main-content">
@@ -88,44 +106,75 @@ if ($_SESSION['role'] != 'branchManager') {
             <section id="approvals">
     <h2 class="page_title">Approvals</h2>
 
+    <div class="filter-container">
+    <select id="departmentFilter" onchange="filterApprovals()">
+        <option value="all">All Departments</option>
+        <option value="Cardiology">Cardiology</option>
+        <option value="Emergency">Emergency</option>
+        <option value="Orthodontics">Orthodontics</option>
+        <option value="Rehabilitation">Rehabilitation</option>
+    </select>
+</div>
+    
     <div class="approvals-container">
-        <!-- Example Approval Request Box -->
-        <div class="approval-request">
-            <h3>Equipment Request</h3>
-            <p><strong>Requested By:</strong> Dr. John Smith</p>
-            <p><strong>Item:</strong> MRI Machine</p>
-            <p><strong>Justification:</strong> Replacement of outdated equipment.</p>
-            <p><strong>Status:</strong> Pending Approval</p>
-            <button class="approve-btn">Approve</button>
-            <button class="deny-btn">Deny</button>
-        </div>
-
-        <div class="approval-request">
-            <h3>Staff Overtime Request</h3>
-            <p><strong>Requested By:</strong> Nurse Emily Clarke</p>
-            <p><strong>Date:</strong> November 25, 2024</p>
-            <p><strong>Hours Requested:</strong> 4 hours</p>
-            <p><strong>Status:</strong> Pending Approval</p>
-            <button class="approve-btn">Approve</button>
-            <button class="deny-btn">Deny</button>
-        </div>
-
-        <div class="approval-request">
-            <h3>Training Request</h3>
-            <p><strong>Requested By:</strong> Technician Robert Davis</p>
-            <p><strong>Training Program:</strong> Advanced CPR Training</p>
-            <p><strong>Date:</strong> December 10, 2024</p>
-            <p><strong>Status:</strong> Pending Approval</p>
-            <button class="approve-btn">Approve</button>
-            <button class="deny-btn">Deny</button>
-        </div>
-
-        
+    <div class="approval-request">
+        <h3>Equipment Request</h3>
+        <p><strong>Department:</strong> Rehabilitation</p>
+        <p><strong>Equipment Name:</strong> MRI Machine</p>
+        <p><strong>Quantity:</strong> 1</p>
+        <p><strong>Description:</strong> 3T MRI scanner for high-resolution imaging</p>
+        <p><strong>Approval Sent Date:</strong> December 1, 2024</p>
+        <p><strong>Status:</strong> Waiting Approval</p>
+        <button class="approve-btn">Approve</button>
+        <button class="deny-btn">Deny</button>
     </div>
+
+    <div class="approval-request">
+    <h3>Cardiology Equipment Approval Request</h3>
+    <p><strong>Department:</strong> Cardiology</p>
+    <p><strong>Equipment Name:</strong> Advanced Cardiac Ultrasound Machine</p>
+    <p><strong>Quantity:</strong> 2</p>
+    <p><strong>Description:</strong> High-resolution echocardiography system with 4D imaging capabilities and strain analysis</p>
+    <p><strong>Approval Sent Date:</strong> December 6, 2024</p>
+    <p><strong>Status:</strong> Waiting Approval</p>
+    <button class="approve-btn">Approve</button>
+    <button class="deny-btn">Deny</button>
+</div>
+
+    <div class="approval-request">
+        <h3>Equipment Request</h3>
+        <p><strong>Department:</strong> Emergency</p>
+        <p><strong>Equipment Name:</strong> Surgical Microscope</p>
+        <p><strong>Quantity:</strong> 2</p>
+        <p><strong>Description:</strong> High-precision microscopes for microsurgery</p>
+        <p><strong>Approval Sent Date:</strong> December 5, 2024</p>
+        <p><strong>Status:</strong> Waiting Approval</p>
+        <button class="approve-btn">Approve</button>
+        <button class="deny-btn">Deny</button>
+    </div>
+
+
+
+</div>
 </section>
 
 
 
-    <script src="assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
+    <script>
+        function filterApprovals() {
+            var filter = document.getElementById("departmentFilter").value;
+            var requests = document.getElementsByClassName("approval-request");
+
+            for (var i = 0; i < requests.length; i++) {
+                var department = requests[i].getElementsByTagName("p")[0].innerText;
+                if (filter === "all" || department.includes(filter)) {
+                    requests[i].style.display = "";
+                } else {
+                    requests[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>

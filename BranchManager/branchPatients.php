@@ -85,9 +85,12 @@ if ($_SESSION['role'] != 'branchManager') {
 
         .search_filter {
             display: flex;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            margin-right: 100px;
-            gap: 5px; /* Space between the icon and input */
+            padding: 10px;
+            gap: 5px;
+            width 100%;
         }
 
         .search_filter input {
@@ -147,17 +150,7 @@ if ($_SESSION['role'] != 'branchManager') {
                     <h2 class="page_title">Patient Records:</h2>
 
                     <div class="top_container">
-                        <div class="buttons-container">
-                            <div class="add_box">
-                                <button class = "add_btn" onclick="window.location.href='add_branchPatients.php'"><i class="ri-user-add-line"></i>   Add Patient</button>
-                            </div>
-                            <div class="remove_box">
-                                <button class="remove_btn" onclick="window.location.href='remove_branchPatients.php'"><i class='bx bxs-minus-square'></i> Remove Patient</button>
-                            </div>
 
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='upload_branchPatients.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
 
                             </div>
                                 <div class="search_filter">

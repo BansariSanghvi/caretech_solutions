@@ -21,10 +21,6 @@ if ($_SESSION['role'] != 'gp') {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Staff Approval</title>
     <style>
-        #approvals {
-            padding: 20px;
-        }
-
         .approvals-container {
             display: flex;
             flex-direction: column;
@@ -55,34 +51,6 @@ if ($_SESSION['role'] != 'gp') {
             gap: 10px;
         }
 
-        .approve-btn {
-            background-color: #4CAF50; 
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .deny-btn {
-            background-color: #f44336; 
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .approve-btn:hover {
-            background-color: #45a049; 
-        }
-
-        .deny-btn:hover {
-            background-color: #d32f2f; 
-        }
-
         /* Send Approval Section */
         .send-approval {
             margin-top: 20px;
@@ -97,13 +65,14 @@ if ($_SESSION['role'] != 'gp') {
             margin-bottom: 15px;
         }
 
+        .send-approval select,
+        .send-approval input,
         .send-approval textarea {
             width: 100%;
-            height: 100px;
             padding: 10px;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            resize: none;
             font-size: 14px;
         }
 
@@ -134,14 +103,53 @@ if ($_SESSION['role'] != 'gp') {
 
             <!------------------Approval Section------------------>
             <section id="approvals">
-                <h2 class="page_title">Approvals</h2>
+                <h2 class="page_title">Equipment Requests</h2>
                 
                 <!-- Send Approval Section -->
                 <div class="send-approval">
                     <h3>Send an Approval Request</h3>
                     <form action="process_approval.php" method="POST">
-                        <textarea name="approval_request" placeholder="Type your approval request here..." required></textarea>
-                        <button type="submit">Send Approval</button>
+                        <!-- Department Selection -->
+                        <label for="department">Select Department:</label>
+                        <select id="department" name="department" required>
+                            <option value="" disabled selected>-- Select Department --</option>
+                            <option value="Emergency">Emergency</option>
+                            <option value="ICU">ICU</option>
+                            <option value="Radiology">Radiology</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Oncology">Oncology</option>
+                        </select>
+
+                        <!-- Staff Selection -->
+                        <label for="staff">Select Staff Name:</label>
+                        <select id="staff" name="staff" required>
+                            <option value="" disabled selected>-- Select Staff Name --</option>
+                            <option value="Dr. Smith">Dr. Smith</option>
+                            <option value="Nurse Johnson">Nurse Johnson</option>
+                            <option value="Technician Lee">Technician Lee</option>
+                            <option value="Dr. Patel">Dr. Patel</option>
+                        </select>
+
+                        <!-- Equipment Selection -->
+                        <label for="equipment">Select Equipment:</label>
+                        <select id="equipment" name="equipment" required>
+                            <option value="" disabled selected>-- Select Equipment --</option>
+                            <option value="Ventilator">Ventilator</option>
+                            <option value="Defibrillator">Defibrillator</option>
+                            <option value="Syringe Pump">Syringe Pump</option>
+                            <option value="ECG Machine">ECG Machine</option>
+                            <option value="Ultrasound Machine">Ultrasound Machine</option>
+                        </select>
+
+                        <!-- Quantity Input -->
+                        <label for="quantity">Quantity Requested:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required>
+
+                        <!-- Comments Section -->
+                        <label for="comments">Additional Comments:</label>
+                        <textarea id="comments" name="comments" rows="4" placeholder="Type your comments or details here..." required></textarea>
+
+                        <button type="submit">Send Request</button>
                     </form>
                 </div>
             </section>

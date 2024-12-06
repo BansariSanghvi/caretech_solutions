@@ -209,7 +209,7 @@ if ($_SESSION['role'] != 'gp') {
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             height: 250px;
-            width: 300px;
+            width: 400px;
             margin-right: 25px;
         }
     </style>
@@ -298,15 +298,11 @@ if ($_SESSION['role'] != 'gp') {
                                 <!-- Sample Data -->
                                 <?php
                                 $appointments = [
-                                    ["3001", "Paracetamol", "Painkiller", "Headache, Dizziness"],
-                                    ["3002", "Amoxicillin", "Antibiotic", "Nausea, Diarrhea"],
-                                    ["3003", "Ibuprofen", "Painkiller", "Stomach upset, Dizziness"],
-                                    ["3004", "Loratadine", "Antihistamine", "Dry mouth, Drowsiness"],
-                                    ["3005", "Aspirin", "Painkiller", "Gastric discomfort, Nausea"],
-                                    ["3006", "Metformin", "Antidiabetic", "Stomach upset, Lactic acidosis"],
-                                    ["3007", "Salbutamol", "Bronchodilator", "Shaky hands, Increased heart rate"],
-                                    ["3008", "Omeprazole", "Proton pump inhibitor", "Headache, Diarrhea"],
-                                    ["3009", "Warfarin", "Anticoagulant", "Bleeding, Bruising"],
+                                    ["John Doe", "10:00", "Online", "Headache, Dizziness"],
+                                    ["Jane Smith", "10:30", "In-Person", "Nausea, Diarrhea"],
+                                    ["Deborah Miller", "11:00", "Online", "Stomach upset, Dizziness"],
+                                    ["Eve Wilson", "11:30", "In-Person", "Dry mouth, Drowsiness"],
+                                    ["Alice Williams", "12:00", "In-Person", "Gastric discomfort, Nausea"],
                                 ];
                                 foreach ($appointments as $appointment) {
                                     echo "<tr>
@@ -325,6 +321,8 @@ if ($_SESSION['role'] != 'gp') {
                         <!-- Right Graph: Revenue per Quarter -->
                         <div class="announcement_box">
                             <h5>Announcements</h5>
+                            <h5>Make sure to log all patient's records from today.</h5>
+
                         </div>
                     </div>
                 </section>

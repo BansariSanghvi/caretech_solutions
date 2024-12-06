@@ -3,7 +3,7 @@ session_start();
 
 $current_page = 'analytics';
 
-// Check if the user is a correct
+// Check if the user is correct
 if ($_SESSION['role'] != 'gp') {
     header('Location: unauthorized.php');
     exit;
@@ -30,32 +30,32 @@ if ($_SESSION['role'] != 'gp') {
         .row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0;
             justify-content: space-between;
+            gap: 20px;
         }
 
         /* Graph Styles */
         .graph-container {
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 20px;
-            margin-top: 20px;
-            margin-left: 33px;
-            margin-right: 33px;
-            height: 400px; 
+            margin: 20px;
+            justify-content: space-evenly;
         }
 
         .graph-container .graph {
-            flex: 1; 
+            flex: 1 1 calc(45% - 20px); /* Allows two graphs per row on large screens */
+            max-width: 48%;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            height: 100%; 
         }
+
         canvas {
+            display: block;
             width: 100% !important;
-            height: 100% !important; 
+            height: auto !important;
         }
 
         /* General Styles */
@@ -64,15 +64,23 @@ if ($_SESSION['role'] != 'gp') {
             color: white;
             text-align: center;
             font-weight: bold;
-            width: 1150px;
+            width: 100%;
             height: 30px;
         }
+
         .graph h5 {
             text-align: center;
             margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .graph-container .graph {
+                flex: 1 1 100%; /* Full width on small screens */
+                max-width: 100%;
+            }
         }
     </style>
-    <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -90,15 +98,12 @@ if ($_SESSION['role'] != 'gp') {
                     <h2 class="page_title">Analytics:</h2>
                     <p class="desc" style="margin-left: 20px; margin-top: 20px;"></p>
                     
-                    <!-- Graphs Split into Two Equal Parts -->
+                    <!-- First Row of Graphs -->
                     <div class="graph-container">
-                        <!-- Left Graph: Appointments per Month -->
                         <div class="graph">
                             <h5>Appointments per Month</h5>
                             <canvas id="appointmentsBarChart"></canvas>
                         </div>
-
-                        <!-- Right Graph: Staff Performance Metrics -->
                         <div class="graph">
                             <h5>Team Performance Metrics</h5>
                             <canvas id="staffPerformanceChart"></canvas>
@@ -106,7 +111,7 @@ if ($_SESSION['role'] != 'gp') {
                     </div>
 
                     <!-- Second Row of Graphs -->
-                    <div class="graph-container" style="margin-top: 20px;">
+                    <div class="graph-container">
                         <div class="graph">
                             <h5>Patient Demographics</h5>
                             <canvas id="patientDemographicsPieChart"></canvas>

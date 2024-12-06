@@ -7,7 +7,7 @@
                         </div>
                     </div>
                     <div class="profile">
-                        <h3 class="name" id="profile_name">gp</h3>
+                        <h3 class="name" id="profile_name">Staff</h3>
                         <i class="ri-account-circle-fill"></i>
                         <a href = "../login.php"><i class='bx bx-exit' ></i></a>
                         

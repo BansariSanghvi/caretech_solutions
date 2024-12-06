@@ -19,13 +19,14 @@ include '../connection/connection.php'
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>User Accounts</title>
+    <title>User Permissons</title>
 
     <style>
 .staff_table {
-    width: 90%;
+    width: 95%;
     border-collapse: collapse;
-    margin-left: 2rem;
+    margin-left: 1rem;
+    margin-right: 2rem;
     margin-top:2rem;
     margin-bottom: 2rem
 }
@@ -143,70 +144,67 @@ include '../connection/connection.php'
             <!------------------Dashboard Section------------------>
             <div class="inside-content">
                 <section class="accounts_section" id='accounts_hub'>
-                    <h2 class="page_title">User Accounts:</h2>
+                    <h2 class="page_title" style="margin-left: 50px;">User Permissions:</h2>
 
                     <div class="staff_hub_top_container">
                         <div class="buttons-container">
-                            <div class="add_staff_box">
-                                <button class = "add_staff_btn" onclick="window.location.href='../admin/add_staff.php'"><i class="ri-user-add-line"></i>   Add User Account</button>
-                            </div>
-                            <div class="remove_staff_box">
-                                <button class="remove_staff_btn" onclick="window.location.href='remove_staff.php'"><i class='bx bxs-minus-square'></i> Remove User Account</button>
-                            </div>
-
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='upload_staff.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
-
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
+                        
+                            
             </div>
-                   <?php 
-                   $query = "SELECT users.user_id, users.user_name,user_email,users.user_type,users.hospital_department_id, hospital_branches.department_name 
-                   FROM `users` INNER JOIN `hospital_branches` ON users.hospital_department_id = hospital_branches.hospital_department_id; ";
-         
-                   $result = $conn->query($query);
-                   
-                   // Check if there are any records
-                   if ($result->num_rows > 0) {
-                       $account_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-                   } else {
-                       $account_data = []; // No records found
-                   }
-                   ?>
-                   
-
+                
                     <div class="scrollable-table">
                     <table class="staff_table">
                     <thead>
                             <tr>
-                                <th>Account ID</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Type</th>
-                                <th>Department</th>
-                                <th>Actions</th>
+                                <th>Role</th>
+                                <th>Staff Hub</th>
+                                <th>Stock Inventory</th>
+                                <th>Patient Records</th>
+                                <th>Referals</th>
+                                <th>Supply Orders</th>
+                                <th>Analytics</th>
+                                <th>Admin Settings</th>
+                                <th>Report Problem</th>
                                
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
-                            // Loop through staff data and display it in the table
-                            foreach ($account_data as $account) {
-                                echo "<tr>";
-                                echo "<td>". $account['user_id']; "</td>";
-                                echo "<td>". $account['user_name'] . "</td>";
-                                echo "<td>" . $account['user_email'] . "</td>";
-                                echo "<td>" . $account['user_type'] . "</td>";
-                                echo "<td>" . $account['department_name'] . "</td>";
-                                echo "<td><a href='edit_staff.php?id=" . $account['user_id'] . "' class='edit-button'>View More</a></td>";
-                                
-                                echo "</tr>";
-                            }
-                            ?>
+
+                        <tr>
+                            <td>Admin</td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                        </tr>
+
+                        <tr>
+                            <td>Staff</td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox" checked></td>
+                        </tr>
+                        <tr>
+                            <td>Manager</td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox" checked></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                        </tr>
+                           
                         </tbody>
                     </table>
                 </section>

@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-// Check if the user is correct
+$current_page = 'forms';
+
+// Check if the user is a staff
 if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
@@ -16,144 +18,131 @@ if ($_SESSION['role'] != 'staff') {
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
-    <title>Referral Form</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>BranchManager Form2</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
+.form-container {
+    background-color: #ffffff; 
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
 
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-        }
+.form-group {
+    margin-bottom: 15px;
+}
 
-        .form-container h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #063478;
+}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd; 
+    border-radius: 4px;
+}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #555;
-        }
+.form-group textarea {
+    height: 150px; 
+}
 
-        .form-group select,
-        .form-group input,
-        .form-group textarea,
-        .form-group button {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 2px solid #ccc; /* Slightly thicker border for visibility */
-            border-radius: 6px; /* More rounded corners */
-            transition: border-color 0.3s; /* Smooth transition for border color */
-        }
+.form-group input[type="submit"] {
+    background-color: #063478; 
+    color: white; 
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        /* Hover effect for inputs and textareas */
-        .form-group select:hover,
-        .form-group input:hover,
-        .form-group textarea:hover {
-            border-color: #007bff; /* Blue border on hover */
-        }
-
-        /* Focus effect for inputs and textareas */
-        .form-group select:focus,
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #0056b3; /* Darker blue border on focus */
-            outline: none; /* Remove default outline */
-        }
-
-        /* Button styles */
-        .form-group button {
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .form-group button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+.form-group input[type="submit"]:hover {
+    background-color: #042456; 
+}
+</style>
 </head>
 <body>
     <div class="container">
-        <!-- Side Menu -->
-        <?php include("../common/staff_sidebar.php"); ?>
+      <!--------------------Side Menu------------ -->
+      <?php  include("../common/staff_sidebar.php"); ?>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Navbar -->
-            <?php include("../common/staff_navbar.php"); ?>
-
-            <!-- Form Section -->
+<!-------------------Header------------------->
+<div class="main-content">
+    
+<?php  include("../common/staff_navbar.php"); ?>
+            <!------------------Patient Section------------------>
+            <section id="referral_form">
+            <h2 class="page_title">Referral Form</h2>
             <div class="form-container">
-                <h2>Referral Form</h2>
-                <form action="process_referral.php" method="POST">
-                    <!-- Hospital Selection -->
-                    <div class="form-group">
-                        <label for="hospital">Referred From (Hospital):</label>
-                        <select id="hospital" name="hospital" required>
-                            <option value="" disabled selected>-- Select Hospital --</option>
-                            <option value="City Hospital">City Hospital</option>
-                            <option value="Central General">Central General</option>
-                            <option value="Northside Clinic">Northside Clinic</option>
-                            <option value="Westend Medical">Westend Medical</option>
-                        </select>
-                    </div>
-
-                    <!-- Clinic/GP Selection -->
-                    <div class="form-group">
-                        <label for="gp">Referred To (Clinic/GP):</label>
-                        <select id="gp" name="gp" required>
-                            <option value="" disabled selected>-- Select Clinic/GP --</option>
-                            <option value="Dr. Smith's Clinic">Dr. Smith's Clinic</option>
-                            <option value="Green Valley GP">Green Valley GP</option>
-                            <option value="Downtown Medical Center">Downtown Medical Center</option>
-                            <option value="Sunrise Family Health">Sunrise Family Health</option>
-                        </select>
-                    </div>
-
-                    <!-- Patient Name -->
-                    <div class="form-group">
-                        <label for="patient_name">Patient's Name:</label>
-                        <input type="text" id="patient_name" name="patient_name" placeholder="Enter patient's name" required>
-                    </div>
-
-                    <!-- Patient Number -->
-                    <div class="form-group">
-                        <label for="patient_no">Patient Number:</label>
-                        <input type="text" id="patient_no" name="patient_no" placeholder="Enter patient number" required>
-                    </div>
-
-                    <!-- Referral Summary -->
-                    <div class="form-group">
-                        <label for="summary">Reason for Referral:</label>
-                        <textarea id="summary" name="summary" rows="5" placeholder="Enter the summary of the referral" required></textarea>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="form-group">
-                        <button type="submit">Submit Referral</button>
-                    </div>
-                </form>
+        <form action="process_referral.php" method="post">
+            <div class="form-group">
+                <label for="patient_name">Patient Name:</label>
+                <input type="text" id="patient_name" name="patient_name" required>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="patient_id">Patient ID:</label>
+                <input type="text" id="patient_id" name="patient_id" required>
+            </div>
+            <div class="form-group">
+                <label for="referral_type">Referral Type:</label>
+                <select id="referral_type" name="referral_type" required onchange="toggleReferralFields()">
+                    <option value="">Select Referral Type</option>
+                    <option value="internal">Internal Department</option>
+                    <option value="external">External Facility</option>
+                </select>
+            </div>
+            <div id="internal_fields" style="display:none;">
+                <div class="form-group">
+                    <label for="internal_department">Department:</label>
+                    <select id="internal_department" name="internal_department">
+                        <option value="">Select Department</option>
+                        <option value="Cardiology">Cardiology</option>
+                     <option value="Emergency">Emergency</option>
+                     <option value="Orthodontics">Orthodontics</option>
+                     <option value="Rehabilitation">Rehabilitation</option>
+                    </select>
+                </div>
+            </div>
+            <div id="external_fields" style="display:none;">
+                <div class="form-group">
+                    <label for="external_facility">External Facility:</label>
+                    <input type="text" id="external_facility" name="external_facility" placeholder="Hospital or GP Surgery Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="reason_for_referral">Reason for Referral:</label>
+                <textarea id="reason_for_referral" name="reason_for_referral" required></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit Referral">
+            </div>
+        </form>
     </div>
-</body>
+</section>
+
+
+
+<script>
+function toggleReferralFields() {
+    var referralType = document.getElementById('referral_type').value;
+    var internalFields = document.getElementById('internal_fields');
+    var externalFields = document.getElementById('external_fields');
+
+    if (referralType === 'internal') {
+        internalFields.style.display = 'block';
+        externalFields.style.display = 'none';
+    } else if (referralType === 'external') {
+        internalFields.style.display = 'none';
+        externalFields.style.display = 'block';
+    } else {
+        internalFields.style.display = 'none';
+        externalFields.style.display = 'none';
+    }
+}
+</script>
 </html>

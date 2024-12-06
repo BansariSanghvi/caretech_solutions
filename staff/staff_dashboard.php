@@ -2,7 +2,7 @@
 session_start();
 
 // Check if the user is an admin
-if ($_SESSION['role'] != 'gp') {
+if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
 }

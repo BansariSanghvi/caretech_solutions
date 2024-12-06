@@ -4,7 +4,7 @@ session_start();
 include '../connection/connection.php';
 
 // Check if the user is correct
-if ($_SESSION['role'] != 'gp') {
+if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
 }

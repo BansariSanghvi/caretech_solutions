@@ -1,26 +1,17 @@
-<?php
-session_start();
-
-$current_page = 'analytics';
-
-// Check if the user is correct
-if ($_SESSION['role'] != 'gp') {
-    header('Location: unauthorized.php');
-    exit;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Staff Analytics</title>
+
     <style>
+        /* General Styles */
         .container-fluid {
             max-width: 1200px;
             margin: 0 auto;
@@ -34,18 +25,17 @@ if ($_SESSION['role'] != 'gp') {
             gap: 20px;
         }
 
-        /* Graph Styles */
         .graph-container {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin: 20px;
-            justify-content: space-evenly;
+            justify-content: center;
+            margin-top: 20px;
         }
 
-        .graph-container .graph {
-            flex: 1 1 calc(45% - 20px); /* Allows two graphs per row on large screens */
-            max-width: 48%;
+        .graph {
+            flex: 1 1 calc(45% - 20px); /* Adjust to fit two graphs per row with spacing */
+            max-width: 45%;
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -53,9 +43,8 @@ if ($_SESSION['role'] != 'gp') {
         }
 
         canvas {
-            display: block;
-            width: 100% !important;
-            height: auto !important;
+            max-width: 100% !important;
+            height: 200px !important; /* Adjust the height to avoid large charts */
         }
 
         /* General Styles */
@@ -64,58 +53,68 @@ if ($_SESSION['role'] != 'gp') {
             color: white;
             text-align: center;
             font-weight: bold;
-            width: 100%;
-            height: 30px;
-        }
-
-        .graph h5 {
-            text-align: center;
             margin-bottom: 10px;
-            font-size: 18px;
+            padding: 5px 0;
         }
 
-        @media screen and (max-width: 768px) {
-            .graph-container .graph {
-                flex: 1 1 100%; /* Full width on small screens */
-                max-width: 100%;
-            }
+        h5 {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Disable scrolling */
         }
     </style>
+
+    <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu------------ -->
-        <?php include("../common/staff_sidebar.php"); ?>
+        <!-- Side Menu -->
+        <div class="sidebar-container">
+            <?php include("../common/staff_sidebar.php"); ?>
+        </div>
 
-        <!-------------------Header------------------->
+        <!-- Main Content -->
         <div class="main-content">
-            <?php include("../common/staff_navbar.php"); ?>
+            <!-- Navbar -->
+            <div class="navbar-container">
+                <?php include("../common/staff_navbar.php"); ?>
+            </div>
 
-            <!------------------Analytics Section------------------>
+            <!-- Analytics Section -->
             <div class="inside-content">
                 <section class="analytics_section" id="analytics">
                     <h2 class="page_title">Analytics:</h2>
-                    <p class="desc" style="margin-left: 20px; margin-top: 20px;"></p>
-                    
-                    <!-- First Row of Graphs -->
+
+                    <!-- Graphs Container -->
                     <div class="graph-container">
+                        <!-- Left Graph -->
                         <div class="graph">
                             <h5>Appointments per Month</h5>
                             <canvas id="appointmentsBarChart"></canvas>
                         </div>
+
+                        <!-- Right Graph -->
                         <div class="graph">
                             <h5>Team Performance Metrics</h5>
                             <canvas id="staffPerformanceChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Second Row of Graphs -->
                     <div class="graph-container">
+                        <!-- Left Graph -->
                         <div class="graph">
                             <h5>Patient Demographics</h5>
                             <canvas id="patientDemographicsPieChart"></canvas>
                         </div>
+
+                        <!-- Right Graph -->
                         <div class="graph">
                             <h5>Appointments Seen</h5>
                             <canvas id="appointmentsSeenPieChart"></canvas>
@@ -144,6 +143,7 @@ if ($_SESSION['role'] != 'gp') {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true
@@ -165,6 +165,7 @@ if ($_SESSION['role'] != 'gp') {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom'
@@ -190,6 +191,7 @@ if ($_SESSION['role'] != 'gp') {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'bottom'
@@ -223,6 +225,7 @@ if ($_SESSION['role'] != 'gp') {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { stacked: true },
                     y: { stacked: true, beginAtZero: true }
@@ -230,6 +233,5 @@ if ($_SESSION['role'] != 'gp') {
             }
         });
     </script>
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@ $users = [
     ['username' => 'admin@caretech.com', 'password' => 'admin123', 'role' => 'admin'],
     ['username' => 'manager@caretech.com', 'password' => 'manager123', 'role' => 'branchManager'],
     ['username' => 'gp@caretech.com', 'password' => 'gp123', 'role' => 'gp'],
+    ['username' => 'staff@caretech.com', 'password' => 'staff123', 'role' => 'staff'],
 ];
 
 $errorMessage = '';
@@ -28,7 +29,7 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
                 header('Location: admin/index.php');
             } elseif ($user['role'] == 'branchManager') {
                 header('Location: BranchManager/branchDashboard.php');
-            } elseif ($user['role'] == 'gp') {
+            } elseif ($user['role'] == 'staff') {
                 header('Location: staff/staff_dashboard.php');
             }
             exit;

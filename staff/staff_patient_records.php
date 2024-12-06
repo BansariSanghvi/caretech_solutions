@@ -6,7 +6,7 @@ include '../connection/connection.php';
 $current_page = 'patients';
 
 // Check if the user is staff
-if ($_SESSION['role'] != 'gp') {
+if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
 }

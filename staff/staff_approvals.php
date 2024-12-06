@@ -1,15 +1,3 @@
-<?php
-session_start();
-
-$current_page = 'approvals';
-
-// Check if the user is correct
-if ($_SESSION['role'] != 'gp') {
-    header('Location: unauthorized.php');
-    exit;
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,142 +7,92 @@ if ($_SESSION['role'] != 'gp') {
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Staff Approval</title>
+    <title>BranchManager Form2</title>
     <style>
-        .approvals-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px; 
-        }
+.form-container {
+    background-color: #ffffff; 
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
 
-        .approval-request {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #f9f9f9; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+.form-group {
+    margin-bottom: 15px;
+}
 
-        .approval-request h3 {
-            margin: 0 0 10px 0;
-            font-size: 18px;
-        }
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #063478;
+}
 
-        .approval-details {
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #555;
-        }
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd; 
+    border-radius: 4px;
+}
 
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
+.form-group textarea {
+    height: 150px; 
+}
 
-        /* Send Approval Section */
-        .send-approval {
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f4f4f4;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+.form-group input[type="submit"] {
+    background-color: #063478; 
+    color: white; 
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        .send-approval h3 {
-            margin-bottom: 15px;
-        }
-
-        .send-approval select,
-        .send-approval input,
-        .send-approval textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .send-approval button {
-            margin-top: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .send-approval button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+.form-group input[type="submit"]:hover {
+    background-color: #042456; 
+}
+</style>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu-------------->
-        <?php include("../common/staff_sidebar.php"); ?>
+      <!--------------------Side Menu------------ -->
+         <!--------------------Side Menu------------ -->
+      <?php  include("../common/staff_sidebar.php"); ?>
 
-        <!-------------------Header------------------->
-        <div class="main-content">
-            <?php include("../common/staff_navbar.php"); ?>
-
-            <!------------------Approval Section------------------>
-            <section id="approvals">
-                <h2 class="page_title">Equipment Requests</h2>
-                
-                <!-- Send Approval Section -->
-                <div class="send-approval">
-                    <h3>Send an Approval Request</h3>
-                    <form action="process_approval.php" method="POST">
-                        <!-- Department Selection -->
-                        <label for="department">Select Department:</label>
-                        <select id="department" name="department" required>
-                            <option value="" disabled selected>-- Select Department --</option>
-                            <option value="Emergency">Emergency</option>
-                            <option value="ICU">ICU</option>
-                            <option value="Radiology">Radiology</option>
-                            <option value="Pediatrics">Pediatrics</option>
-                            <option value="Oncology">Oncology</option>
-                        </select>
-
-                        <!-- Staff Selection -->
-                        <label for="staff">Select Staff Name:</label>
-                        <select id="staff" name="staff" required>
-                            <option value="" disabled selected>-- Select Staff Name --</option>
-                            <option value="Dr. Smith">Dr. Smith</option>
-                            <option value="Nurse Johnson">Nurse Johnson</option>
-                            <option value="Technician Lee">Technician Lee</option>
-                            <option value="Dr. Patel">Dr. Patel</option>
-                        </select>
-
-                        <!-- Equipment Selection -->
-                        <label for="equipment">Select Equipment:</label>
-                        <select id="equipment" name="equipment" required>
-                            <option value="" disabled selected>-- Select Equipment --</option>
-                            <option value="Ventilator">Ventilator</option>
-                            <option value="Defibrillator">Defibrillator</option>
-                            <option value="Syringe Pump">Syringe Pump</option>
-                            <option value="ECG Machine">ECG Machine</option>
-                            <option value="Ultrasound Machine">Ultrasound Machine</option>
-                        </select>
-
-                        <!-- Quantity Input -->
-                        <label for="quantity">Quantity Requested:</label>
-                        <input type="number" id="quantity" name="quantity" min="1" placeholder="Enter quantity" required>
-
-                        <!-- Comments Section -->
-                        <label for="comments">Additional Comments:</label>
-                        <textarea id="comments" name="comments" rows="4" placeholder="Type your comments or details here..." required></textarea>
-
-                        <button type="submit">Send Request</button>
-                    </form>
-                </div>
-            </section>
-        </div>
+<!-------------------Header------------------->
+<div class="main-content">
+    
+<?php  include("../common/staff_navbar.php"); ?>
+            <!------------------Patient Section------------------>
+            <section id="referral_form">
+            <h2 class="page_title">Referral Form</h2>
+            <div class="form-container">
+        <form action="process_referral.php" method="post">
+            <div class="form-group">
+                <label for="patient_name">Patient Name:</label>
+                <input type="text" id="patient_name" name="patient_name" required>
+            </div>
+            <div class="form-group">
+                <label for="patient_id">Patient ID:</label>
+                <input type="text" id="patient_id" name="patient_id" required>
+            </div>
+            <div class="form-group">
+                <label for="specialist">Specialist:</label>
+                <input type="text" id="specialist" name="specialist" required placeholder="Name of the specialist">
+            </div>
+            <div class="form-group">
+                <label for="reason_for_referral">Reason for Referral:</label>
+                <textarea id="reason_for_referral" name="reason_for_referral" required></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit Referral">
+            </div>
+        </form>
     </div>
+</section>
+
+
 
     <script src="assets/js/main.js"></script>
 </body>

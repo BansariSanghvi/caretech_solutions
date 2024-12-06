@@ -98,8 +98,8 @@
                             <div class="settings-section">
                                 <h4>Admin Account</h4>
                                 <ul>
-                                    <li>User Accounts</li>
-                                    <li>User Permissions</li>
+                                    <li onclick="window.location.href='user_accounts.php'">User Accounts</li>
+                                    <li onclick="window.location.href='user_permissons_table.php'">User Permissions</li>
                                     <li>User Levels</li>
                                     
                                 </ul>

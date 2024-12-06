@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,8 @@
         .row {
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
+            gap: 20px; /* Add a consistent gap between items */
+            justify-content: flex-start; /* Align boxes to the left */
         }
 
         .count-box {
@@ -37,16 +37,17 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin-bottom: 20px; /* Add spacing below for wrapping rows */
         }
 
         .count-box:hover {
-            transform: translateY(-5px); 
+            transform: translateY(-5px);
             box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .count-box h5 i {
             font-size: 24px;
-            color: #4a90e2; 
+            color: #4a90e2;
             margin-right: 8px;
             vertical-align: middle;
         }
@@ -56,12 +57,6 @@
             color: #333;
             font-weight: 600;
             margin-bottom: 10px;
-        }
-
-        .count-box h6 {
-            font-size: 24px;
-            font-weight: 700;
-            color: #27ae60;
         }
 
         /* Quick Actions Styles */
@@ -104,109 +99,7 @@
             margin-right: 8px;
             font-size: 20px;
         }
-
-        .graph-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin: 5px 0px;
-            height: 320px;
-        }
-
-        .graph-container .graph {
-            flex: 1;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        canvas {
-            width: 100% !important;
-            height: 260px !important;
-        }
-
-        .appointment_table {
-            width: 93%;
-            border-collapse: collapse;
-            margin: 2rem;
-        }
-
-        .appointment_table thead {
-            background-color: #001f3f;
-            color: white;
-        }
-
-        .appointment_table th, .appointment_table td {
-            padding: 12px;
-            border: 1px solid #ddd;
-        }
-
-        .appointment_table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        .appointment_table tr:hover {
-            background-color: #ddd;
-        }
-
-        .edit-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .scrollable-table {
-            max-height: 250px; 
-            overflow-y: auto;
-        }
-
-        .staff_hub_top_container {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .buttons-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .search_filter {
-            display: flex;
-            align-items: center;
-            margin-right: 100px;
-            gap: 5px;
-        }
-
-        .search_filter input {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .search_filter i {
-            color: #888;
-            font-size: 20px;
-        }
-        .announcement_box {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            height: 250px;
-            width: 300px;
-            margin-right: 25px;
-        }
     </style>
-
-    <!-- Include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -232,37 +125,11 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <!-- Metric Boxes -->
-                                <button class="count-box" onclick="window.location.href='staff_request_form.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Request Form</h5>
+                                <button class="count-box" onclick="window.location.href='staff_approvals.php'">
+                                    <h5><i class="ri-hospital-fill"></i>Equipment Request Form</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_referral_form.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Referral Form</h5>
-                                </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Place Prescription</h5>
-                                </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Patient Feedback Form</h5>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Additional Metrics -->
-                    <div class="additional-metrics-container">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Shift Scheduling Form</h5>
-                                </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Leave Application Form</h5>
-                                </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Surgical Checklist Form</h5>
-                                </button>
-                                <button class="count-box" onclick="window.location.href='staff_forms.php'">
-                                    <h5><i class="ri-hospital-fill"></i>Incident Report Form</h5>
+                                    <h5><i class="ri-hospital-fill"></i>Patient Referral Form</h5>
                                 </button>
                             </div>
                         </div>
@@ -273,7 +140,7 @@
     </div>
 
     <script>
-        // JavaScript for Chart.js or other interactive elements
+        // JavaScript for Chart.js or other interactive elements (if needed)
     </script>
 </body>
 </html>

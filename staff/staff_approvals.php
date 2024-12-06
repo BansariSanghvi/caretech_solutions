@@ -103,7 +103,7 @@ if ($_SESSION['role'] != 'gp') {
 
             <!------------------Approval Section------------------>
             <section id="approvals">
-                <h2 class="page_title">Approvals</h2>
+                <h2 class="page_title">Equipment Requests</h2>
                 
                 <!-- Send Approval Section -->
                 <div class="send-approval">
@@ -149,7 +149,7 @@ if ($_SESSION['role'] != 'gp') {
                         <label for="comments">Additional Comments:</label>
                         <textarea id="comments" name="comments" rows="4" placeholder="Type your comments or details here..." required></textarea>
 
-                        <button type="submit">Send Approval</button>
+                        <button type="submit">Send Request</button>
                     </form>
                 </div>
             </section>

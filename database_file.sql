@@ -278,6 +278,7 @@ INSERT INTO hospital_branches (department_name, department_email, department_typ
 ('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
 ('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
 ('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1);
+('Adminstration','admin@caretech.com','Admin','1234689300','1');
 
 
 INSERT INTO external_associations (medical_association_name, associations_location, associations_phone, associations_email, hospital_id) VALUES

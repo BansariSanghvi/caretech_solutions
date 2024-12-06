@@ -29,7 +29,7 @@
 
                     <!-------Add the other elements under this------>
 
-                    <h3 class="title" id="test">Hello World</h3>
+                    
 
                   </section>
                   

@@ -269,8 +269,8 @@ if ($_SESSION['role'] != 'staff') {
                                     <button class="big-button" onclick="window.location.href='staff_patient_records.php'">
                                         <i class="ri-user-fill"></i> Patient Records
                                     </button>
-                                    <button class="big-button" onclick="window.location.href='staff_patient_records.php'">
-                                        <i class="ri-hospital-fill"></i> Manager Approval
+                                    <button class="big-button" onclick="window.location.href='staff_approvals.php'">
+                                        <i class="ri-hospital-fill"></i> Equipment Requests
                                     </button>
                                     <button class="big-button" onclick="window.location.href='staff_settings.php'">
                                         <i class="bx bxs-cog"></i> Settings

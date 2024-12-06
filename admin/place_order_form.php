@@ -130,15 +130,12 @@ include '../connection/connection.php'
                     <!-- Form to add new medication -->
                     <div class="form-container">
                         <form action="place_order_process.php" method="POST">
-                            
                             <div class="row">
-                                <label for="Equipment Item">Item Name:</label>
+                                <label for="Equipment-Item">Item Name:</label>
                                 <?php
-                                // Fetch Items
                                 $result = $conn->query("SELECT equipment_ID, equipment_Name FROM `medicalEquipment_list`;");
-
                                 if ($result->num_rows > 0) { 
-                                    echo '<select id="equipment_ID" name="equipment_Name" required>'; 
+                                    echo '<select id="equipment_ID" name="equipment_ID" required>'; 
                                     while ($row = $result->fetch_assoc()) { 
                                         echo '<option value="' . $row['equipment_ID'] . '">' . $row['equipment_Name'] . '</option>'; 
                                     }
@@ -148,7 +145,7 @@ include '../connection/connection.php'
                                 }
                                 ?>
                             </div>
-                            
+
                             <div class="row">
                                 <label for="quantity">Quantity:</label>
                                 <input type="number" id="order_qty" name="order_qty" required>
@@ -156,13 +153,10 @@ include '../connection/connection.php'
 
                             <div class="row">
                                 <label for="hospital">Hospital Department:</label>
-                            
                                 <?php
-                                // Fetch Items
                                 $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
-
                                 if ($result->num_rows > 0) { 
-                                    echo '<select id="hospital_department_id" name="department_name" required>'; 
+                                    echo '<select id="hospital_department_id" name="hospital_department_id" required>'; 
                                     while ($row = $result->fetch_assoc()) { 
                                         echo '<option value="' . $row['hospital_department_id'] . '">' . $row['department_name'] . '</option>'; 
                                     }
@@ -175,26 +169,22 @@ include '../connection/connection.php'
 
                             <div class="row">
                                 <label for="supplier">Supplier:</label>
-
                                 <?php
-                                // Fetch Items
                                 $result = $conn->query("SELECT supplier_id, supplier_name FROM `manufacturers`;");
                                 if ($result->num_rows > 0) { 
-                                    echo '<select id="supplier_id" name="supplier_name" required>'; 
+                                    echo '<select id="supplier_id" name="supplier_id" required>'; 
                                     while ($row = $result->fetch_assoc()) { 
                                         echo '<option value="' . $row['supplier_id'] . '">' . $row['supplier_name'] . '</option>'; 
                                     }
                                     echo '</select>'; 
                                 } else { 
-                                    echo '<p>No Items available</p>'; 
+                                    echo '<p>No Suppliers available</p>'; 
                                 }
                                 ?>
                             </div>
-                            
-                            
-                            <button type="submit">Place Order</button>
-                            <button class="cancel" onclick="window.location.href='medicineList.php'">Cancel</button>
 
+                            <button type="submit">Place Order</button>
+                            <button type="button" class="cancel" onclick="window.location.href='admin_stock_inventory.php'">Cancel</button>
                         </form>
                     </div>
                 </section>

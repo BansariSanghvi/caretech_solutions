@@ -138,18 +138,40 @@ include '../connection/connection.php'
                         
                             </div>
                                 <div class="search_filter">
-                                <i class="ri-search-line"></i>
-                                <input type="text" placeholder="search">
+                                <form method="GET" action="">
+                                <label for="department">Filter by Department:</label>
+                                <select name="department" id="department" onchange="this.form.submit()">
+                                    <option value="">All Departments</option>
+                                    <?php
+                                    $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+                                    $dept_result = $conn->query($dept_query);
+                                    while ($row = $dept_result->fetch_assoc()) {
+                                        $selected = (isset($_GET['department']) && $row['hospital_department_id'] == $_GET['department']) ? 'selected' : '';
+                                        echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </form>
                             </div>
+
+
             </div>
 
 
                     <?php
-                    $query = "SELECT equipment_orders.order_number, equipment_orders.equipment_ID, equipment_orders.order_qty,
-                    equipment_orders.order_date, equipment_orders.hospital_department_id, equipment_orders.delivery_status 
+                    $where_clause = "";
+                    if (isset($_GET['department']) && !empty($_GET['department'])) {
+                        $department_id = $conn->real_escape_string($_GET['department']);
+                        $where_clause = " WHERE hospital_branches.hospital_department_id = '$department_id'";
+                    }
+
+                    $query = "SELECT equipment_orders.order_number, equipment_orders.equipment_ID, medicalequipment_list.equipment_Name ,equipment_orders.order_qty,
+                    equipment_orders.order_date, equipment_orders.hospital_department_id, equipment_orders.delivery_status, hospital_branches.department_name  
                     FROM equipment_orders INNER JOIN medicalequipment_list 
                     ON medicalequipment_list.equipment_ID = equipment_orders.equipment_ID 
-                    INNER JOIN hospital_branches ON hospital_branches.hospital_department_id = equipment_orders.hospital_department_id; ";
+                    INNER JOIN hospital_branches ON hospital_branches.hospital_department_id = equipment_orders.hospital_department_id
+                   
+                    "  . $where_clause;
     
                     $result = $conn->query($query);
                    
@@ -180,10 +202,10 @@ include '../connection/connection.php'
                             foreach ($orders_data as $order) {
                                 echo "<tr>";
                                 echo "<td>" . $order['order_number'] . "</td>";
-                                echo "<td>" . $order['equipment_ID'] . "</td>";
+                                echo "<td>" . $order['equipment_Name'] . "</td>";
                                 echo "<td>" . $order['order_qty'] . "</td>";
                                 echo "<td>" . $order['order_date'] . "</td>";
-                                echo "<td>" . $order['hospital_department_id'] . "</td>";
+                                echo "<td>" . $order['department_name'] . "</td>";
                                 echo "<td>" . $order['delivery_status'] . "</td>";
                                 echo "</tr>";
                             }

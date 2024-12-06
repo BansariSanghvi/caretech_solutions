@@ -176,7 +176,7 @@ include '../connection/connection.php'
                             </div>
 
                             <div class="submit_order_box">
-                                <button class="order_btn" onclick="window.location.href='#'"><i class="ri-file-upload-fill"></i> Place Order</button>
+                                <button class="order_btn" onclick="window.location.href='place_order_form.php'"><i class="ri-file-upload-fill"></i> Place Order</button>
                             </div>
 
                             </div>

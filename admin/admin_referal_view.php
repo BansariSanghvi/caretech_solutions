@@ -146,7 +146,7 @@ include '../connection/connection.php';
                     <div class="referal_top_container">
                         <div class="buttons-container">
                             <div class="add_staff_box">
-                                <button class="add_supplier_btn" onclick="window.location.href='add_supplier.php'">
+                                <button class="add_supplier_btn" onclick="window.location.href='add_referal.php'">
                                     <i class="ri-user-add-line"></i> Add Referal
                                 </button>
                             </div>

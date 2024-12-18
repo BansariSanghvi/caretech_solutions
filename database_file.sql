@@ -77,21 +77,25 @@ CREATE TABLE external_associations (
 
 /* Table for referral forms */
 CREATE TABLE referal_form (
-    request_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    request_type VARCHAR(255),
+    request_id INT PRIMARY KEY AUTO_INCREMENT,
+    request_type VARCHAR(255), -- Consultation, Follow-Up, etc.
     summary_notes VARCHAR(255),
-    priority_catagory VARCHAR(255),
-    hospital_department_id INT(10),
-    staff_id INT(10),
-    hospital_id INT(10),
-    medical_association_id INT(10),
-    patient_id INT(10),
-    isViewed VARCHAR(20) DEFAULT 'Pending',
-    FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id),
+    priority_category VARCHAR(255), -- Urgent, Standard, Non-Priority
+    sending_department_id INT, -- The department initiating the referral
+    hospital_department_id INT, -- Target department for internal referral
+    medical_association_id INT, -- Target facility for external referral
+    staff_id INT, -- The staff making the referral
+    hospital_id INT, -- Hospital to which the referral belongs
+    patient_id INT, -- Patient involved in the referral
+    is_external BOOLEAN DEFAULT FALSE, -- True for external, False for internal
+    isViewed VARCHAR(20) DEFAULT 'Pending', -- Status of referral
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sending_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (medical_association_id) REFERENCES external_associations(medical_association_id),
     FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
-    FOREIGN KEY (medical_association_id) REFERENCES external_associations(medical_association_id)
+    FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id)
 );
 
 

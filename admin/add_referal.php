@@ -98,7 +98,7 @@ include '../connection/connection.php';
                         </div>
 
                         <div class="form-group">
-                            <label for="department_from">Department Selected:</label>
+                            <label for="department_id">Department:</label>
                             <?php
                                 $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
                                 if ($result->num_rows > 0) {
@@ -123,7 +123,7 @@ include '../connection/connection.php';
 
                         <div id="internal_fields" style="display:none;">
                             <div class="form-group">
-                                <label for="internal_department">Department:</label>
+                                <label for="internal_department">Target Department:</label>
                                 <?php
                                     $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
                                     if ($result->num_rows > 0) {
@@ -155,6 +155,18 @@ include '../connection/connection.php';
                                     }
                                 ?>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="request_type">Request Type:</label>
+                            <select id="request_type" name="request_type">
+                                <option value="consult">Consultation</option>
+                                <option value="e-surgery">Emergency Surgery</option>
+                                <option value="surgury">Surgery</option>
+                                <option value="follow-up">Follow Up</option>
+                                <option value="blood-work">Blood Work</option>
+                                <option value="x-ray">X-Rays</option>
+                            </select>
                         </div>
 
                         <div class="form-group">

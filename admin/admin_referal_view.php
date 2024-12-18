@@ -140,7 +140,7 @@ include '../connection/connection.php';
 
             <!------------------Dashboard Section------------------>
             <div class="inside-content">
-                <section class="providers_section" id='supplier_hub'>
+                <section class="referal_section" id='referal_hub'>
                     <h2 class="page_title">Patient Referals:</h2>
 
                     <div class="referal_top_container">

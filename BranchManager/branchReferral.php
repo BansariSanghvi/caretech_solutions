@@ -100,13 +100,23 @@ if ($_SESSION['role'] != 'branchManager') {
                 <div class="form-group">
                     <label for="internal_department">Department:</label>
                     <select id="internal_department" name="internal_department">
-                        <option value="">Select Department</option>
-                        <option value="Cardiology">Cardiology</option>
+                    <option value="">Select Department</option>
+                    <option value="Cardiology">Cardiology</option>
                      <option value="Emergency">Emergency</option>
                      <option value="Orthodontics">Orthodontics</option>
                      <option value="Rehabilitation">Rehabilitation</option>
+                     <option value="General Medicine">General Medicine</option>
                     </select>
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="urgency_level">Urgency Level:</label>
+                <select id="urgency_level" name="urgency_level" required>
+                    <option value="">Select Urgency Level</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="standard">Standard</option>
+                    <option value="non_priority">Non-Priority</option>
+                </select>
             </div>
             <div id="external_fields" style="display:none;">
                 <div class="form-group">

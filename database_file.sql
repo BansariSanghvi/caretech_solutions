@@ -178,6 +178,8 @@ CREATE TABLE referal_letters (
     hospital_department_id INT(10),
     staff_id INT(10),
     patient_id INT(10),
+    letter_type VARCHAR(255),
+    letter_description VARCHAR(255),
 
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),

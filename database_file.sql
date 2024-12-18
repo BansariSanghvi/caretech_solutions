@@ -35,7 +35,7 @@ CREATE TABLE patient_records (
     last_name VARCHAR(20),
     email VARCHAR(50),
     phone_no CHAR(11),
-    date_of_birth INT(8)
+    date_of_birth INT(8),
     emergency_contact CHAR(10),
     emergency_contact_name VARCHAR(255),
     patient_history VARCHAR(255),
@@ -76,7 +76,7 @@ CREATE TABLE external_associations (
 );
 
 /* Table for referral forms */
-CREATE TABLE referal_form (
+CREATE TABLE referral_form (
     request_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     request_type VARCHAR(255),
     summary_notes VARCHAR(255),
@@ -149,7 +149,7 @@ CREATE TABLE medicalEquipment_list (
     isUrgent BOOLEAN,
     hospital_department_id INT(10),
 
-    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id)
 );
 
 /* Table for medical equipment orders */
@@ -205,10 +205,10 @@ CREATE TABLE manufacturers (
 );
 
 /* Announcements Table */
-CREATE TABLE annoucments (
-    annoucment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    annoucment_duration INT(100),
-    annoucment_description VARCHAR(255)
+CREATE TABLE announcements (
+    announcement_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    announcement_duration INT(100),
+    announcement_description VARCHAR(255)
 );
 
 /* Table for users (e.g., for login and permissions) */
@@ -241,7 +241,7 @@ CREATE TABLE approvals (
     equipment_ID INT(10),
     approval_qty INT(10),
     approval_description VARCHAR(255),
-    approval_sent_date DATE CURRENT_TIMESTAMP,
+    approval_sent_date DATE DEFAULT CURRENT_DATE,
     approval_date INT(8) NULL, 
     approval_status VARCHAR(255) DEFAULT 'Waiting Approval',
      
@@ -250,7 +250,7 @@ CREATE TABLE approvals (
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
     
-)
+);
 
 /* SECTION 2 - INSERTION */ 
 
@@ -279,7 +279,7 @@ INSERT INTO hospital_branches (department_name, department_email, department_typ
 ('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
 ('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
 ('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
-('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1);
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1),
 ('Adminstration','admin@caretech.com','Admin','1234689300','1');
 
 
@@ -293,15 +293,15 @@ INSERT INTO external_associations (medical_association_name, associations_locati
 INSERT INTO users (user_type, user_name, user_email, user_password, user_level_id, hospital_department_id, external_associations_id) VALUES
 ('Admin', 'admin_user', 'admin@caretech.com', 'admin123', 1, NULL ,NULL),
 ('Manager', 'manager', 'manager@caretech.com', 'manager123', 2,2,NULL),
-('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3,NULL, 1);
+('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3,NULL, 1),
 ('HStaff', 'staff', 'staff@caretech.com', 'staff123', 3,NULL, 1);
 
 
 INSERT INTO user_level (user_type, description) VALUES
 ('Admin', 'Administrator with full access'),
 ('Manager', 'Hospital manager with access to hospital data and settings'),
-('GP',' External General Practitioner');
-('Staff', "Member of Staff of Specific Department" )
+('GP',' External General Practitioner'),
+('Staff', "Member of Staff of Specific Department" );
 
 INSERT INTO manufacturers (supplier_name,supplier_email, supplier_location, supplier_phone, supplier_status) VALUES
 ('MedSupplies Ltd', 'info@medsupplies.com', 'London, UK', '02079460001', 'Active'),
@@ -329,7 +329,7 @@ INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipmen
 (9, 'Walking Frame', 'Support equipment for patients learning to walk again.', 12, 1500, 0, 4),
 (10, 'Thermometer', 'Used to measure patient body temperature.', 100, 50, 0, 5);
 
-INSERT INTO referal_form (request_type, summary_notes, hospital_department_id, staff_id, hospital_id, medical_association_id, patient_id) VALUES
+INSERT INTO referral_form (request_type, summary_notes, hospital_department_id, staff_id, hospital_id, medical_association_id, patient_id) VALUES
 ('Cardiology Consultation', 'Patient experiencing chest pain, requires specialist opinion.', 1, 1, 1, 1, 1),
 ('Emergency Trauma', 'Patient with multiple fractures from an accident.', 2, 2, 2, 1, 2),
 ('Rehabilitation Assessment', 'Patient recovering from knee surgery.', 4, 3, 1, 1, 3),

@@ -264,8 +264,6 @@ if ($_SESSION['role'] != 'branchManager') {
     <div class="announcements-container">
     <div class="announcements-box">
         <h3>Announcements</h3>
-        <div id="announcements-list">
-            <!-- Announcements will be dynamically added here -->
         </div>
         <form id="announcement-form">
             <textarea id="announcement-text" placeholder="Type your announcement here..." required></textarea>
@@ -273,6 +271,7 @@ if ($_SESSION['role'] != 'branchManager') {
         </form>
     </div>
 </div>
+
             
                     <!-- Graphs Split into Two Equal Parts -->
                     <div class="graph-container">
@@ -349,6 +348,43 @@ if ($_SESSION['role'] != 'branchManager') {
 
 
 
-    <script src="assets/js/main.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+    console.log("Document ready");
+    $('#announcement-form').submit(function(e) {
+        console.log("Form submitted");
+        e.preventDefault();
+        var announcementText = $('#announcement-text').val();
+        console.log("Announcement text:", announcementText);
+        
+        $.ajax({
+            url: 'post_announcement.php',
+            type: 'POST',
+            data: {
+                announcement_text: announcementText
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log("AJAX success:", response);
+                if (response.status === 'success') {
+                    $('#announcement-text').val('');
+                    $('#message').html('<p style="color: green;">' + response.message + '</p>');
+                } else {
+                    $('#message').html('<p style="color: red;">' + response.message + '</p>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                console.log("Response Text:", xhr.responseText);
+                $('#message').html('<p style="color: red;">An error occurred. Please try again.</p>');
+            }
+        });
+    });
+});
+</script>
+
+
 </body>
 </html>

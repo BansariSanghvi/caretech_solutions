@@ -1,14 +1,66 @@
 <?php
 session_start();
+include("../connection/connection.php");
 
 $current_page = 'approvals';
 
-// Check if the user is an branch manager
 if ($_SESSION['role'] != 'branchManager') {
     header('Location: unauthorized.php');
     exit;
 }
+
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 3;
+$offset = ($page - 1) * $limit;
+
+$approvalType = isset($_GET['type']) ? $_GET['type'] : 'equipment';
+$department = isset($_GET['department']) ? $_GET['department'] : 'all';
+
+$whereClause = $department != 'all' ? "AND hb.department_name = '" . $conn->real_escape_string($department) . "'" : "";
+
+if ($approvalType == 'equipment') {
+    $sql = "SELECT a.*, hb.department_name, m.equipment_name 
+            FROM approvals a
+            JOIN hospital_branches hb ON a.hospital_department_id = hb.hospital_department_id
+            JOIN medicalEquipment_list m ON a.equipment_ID = m.equipment_ID
+            WHERE a.approval_status = 'Waiting Approval' $whereClause
+            ORDER BY a.approval_sent_date DESC
+            LIMIT $limit OFFSET $offset";
+    
+    $count_sql = "SELECT COUNT(*) AS total FROM approvals a
+                  JOIN hospital_branches hb ON a.hospital_department_id = hb.hospital_department_id
+                  WHERE a.approval_status = 'Waiting Approval' $whereClause";
+} else {
+    $sql = "SELECT r.*, hb.department_name, s.fname AS staff_fname, s.lname AS staff_lname
+    FROM referral_form r
+    JOIN hospital_branches hb ON r.hospital_department_id = hb.hospital_department_id
+    JOIN staff_records s ON r.staff_id = s.staff_id
+    WHERE r.isViewed = 'Pending' $whereClause
+    ORDER BY r.request_id DESC
+    LIMIT $limit OFFSET $offset";
+
+$count_sql = "SELECT COUNT(*) AS total FROM referral_form r
+          JOIN hospital_branches hb ON r.hospital_department_id = hb.hospital_department_id
+          WHERE r.isViewed = 'Pending' $whereClause";
+
+}
+
+$result = $conn->query($sql);
+if (!$result) {
+    die("Error executing query: " . $conn->error);
+}
+$approvals = $result->fetch_all(MYSQLI_ASSOC);
+
+$count_result = $conn->query($count_sql);
+$total_approvals = $count_result->fetch_assoc()['total'];
+$total_pages = ceil($total_approvals / $limit);
+
+// Fetch all departments for the filter dropdown
+$dept_sql = "SELECT DISTINCT department_name FROM hospital_branches";
+$dept_result = $conn->query($dept_sql);
+$departments = $dept_result->fetch_all(MYSQLI_ASSOC);
 ?>
+
 
 
 <!DOCTYPE html>
@@ -89,6 +141,28 @@ if ($_SESSION['role'] != 'branchManager') {
         background-color: #f9f9f9;
     }
 
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .pagination .prev-btn,
+    .pagination .next-btn {
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .pagination .prev-btn:hover,
+    .pagination .next-btn:hover {
+        background-color: #45a049;
+    }
+
+
 </style>
 </head>
 <body>
@@ -107,74 +181,138 @@ if ($_SESSION['role'] != 'branchManager') {
     <h2 class="page_title">Approvals</h2>
 
     <div class="filter-container">
-    <select id="departmentFilter" onchange="filterApprovals()">
-        <option value="all">All Departments</option>
-        <option value="Cardiology">Cardiology</option>
-        <option value="Emergency">Emergency</option>
-        <option value="Orthodontics">Orthodontics</option>
-        <option value="Rehabilitation">Rehabilitation</option>
+    <select id="approvalTypeFilter" onchange="changeApprovalType()">
+        <option value="equipment" <?php echo $approvalType == 'equipment' ? 'selected' : ''; ?>>Equipment Approvals</option>
+        <option value="referral" <?php echo $approvalType == 'referral' ? 'selected' : ''; ?>>Referral Approvals</option>
+    </select>
+    <select id="departmentFilter" onchange="changeDepartment()">
+        <option value="all" <?php echo $department == 'all' ? 'selected' : ''; ?>>All Departments</option>
+        <?php foreach ($departments as $dept): ?>
+            <option value="<?php echo htmlspecialchars($dept['department_name']); ?>" 
+                    <?php echo $department == $dept['department_name'] ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($dept['department_name']); ?>
+            </option>
+        <?php endforeach; ?>
     </select>
 </div>
-    
-    <div class="approvals-container">
-    <div class="approval-request">
-        <h3>Equipment Request</h3>
-        <p><strong>Department:</strong> Rehabilitation</p>
-        <p><strong>Equipment Name:</strong> MRI Machine</p>
-        <p><strong>Quantity:</strong> 1</p>
-        <p><strong>Description:</strong> 3T MRI scanner for high-resolution imaging</p>
-        <p><strong>Approval Sent Date:</strong> December 1, 2024</p>
-        <p><strong>Status:</strong> Waiting Approval</p>
-        <button class="approve-btn">Approve</button>
-        <button class="deny-btn">Deny</button>
-    </div>
 
-    <div class="approval-request">
-    <h3>Cardiology Equipment Approval Request</h3>
-    <p><strong>Department:</strong> Cardiology</p>
-    <p><strong>Equipment Name:</strong> Advanced Cardiac Ultrasound Machine</p>
-    <p><strong>Quantity:</strong> 2</p>
-    <p><strong>Description:</strong> High-resolution echocardiography system with 4D imaging capabilities and strain analysis</p>
-    <p><strong>Approval Sent Date:</strong> December 6, 2024</p>
-    <p><strong>Status:</strong> Waiting Approval</p>
-    <button class="approve-btn">Approve</button>
-    <button class="deny-btn">Deny</button>
+<div class="pagination">
+    <?php if ($page > 1): ?>
+        <a href="?type=<?php echo $approvalType; ?>&department=<?php echo $department; ?>&page=<?php echo $page - 1; ?>" class="prev-btn">Previous</a>
+    <?php endif; ?>
+    <?php if ($page < $total_pages): ?>
+        <a href="?type=<?php echo $approvalType; ?>&department=<?php echo $department; ?>&page=<?php echo $page + 1; ?>" class="next-btn">Next</a>
+    <?php endif; ?>
 </div>
 
-    <div class="approval-request">
-        <h3>Equipment Request</h3>
-        <p><strong>Department:</strong> Emergency</p>
-        <p><strong>Equipment Name:</strong> Surgical Microscope</p>
-        <p><strong>Quantity:</strong> 2</p>
-        <p><strong>Description:</strong> High-precision microscopes for microsurgery</p>
-        <p><strong>Approval Sent Date:</strong> December 5, 2024</p>
-        <p><strong>Status:</strong> Waiting Approval</p>
-        <button class="approve-btn">Approve</button>
-        <button class="deny-btn">Deny</button>
-    </div>
-
-
-
+<div class="approvals-container">
+    <?php if (empty($approvals)): ?>
+        <p>No approvals found.</p>
+    <?php else: ?>
+        <?php foreach ($approvals as $approval): ?>
+            <?php if ($approvalType == 'equipment'): ?>
+                <div class="approval-request equipment">
+                    <h3>Equipment Request</h3>
+                    <p><strong>Department:</strong> <?php echo htmlspecialchars($approval['department_name']); ?></p>
+                    <p><strong>Equipment Name:</strong> <?php echo htmlspecialchars($approval['equipment_name']); ?></p>
+                    <p><strong>Quantity:</strong> <?php echo htmlspecialchars($approval['approval_qty']); ?></p>
+                    <p><strong>Description:</strong> <?php echo htmlspecialchars($approval['approval_description']); ?></p>
+                    <p><strong>Approval Sent Date:</strong> <?php echo htmlspecialchars($approval['approval_sent_date']); ?></p>
+                    <p><strong>Status:</strong> <?php echo htmlspecialchars($approval['approval_status']); ?></p>
+                    <button class="approve-btn" onclick="updateApprovalStatus(<?php echo $approval['approval_id']; ?>, 'Approved', 'equipment')">Approve</button>
+                    <button class="deny-btn" onclick="updateApprovalStatus(<?php echo $approval['approval_id']; ?>, 'Denied', 'equipment')">Deny</button>
+                </div>
+            <?php else: ?>
+                <div class="approval-request referral">
+                <h3>Referral Request</h3>
+                <p><strong>Department:</strong> <?php echo htmlspecialchars($approval['department_name']); ?></p>
+                <p><strong>Referring Staff:</strong> <?php echo htmlspecialchars($approval['staff_fname'] . ' ' . $approval['staff_lname']); ?></p>
+                <p><strong>Request Type:</strong> <?php echo htmlspecialchars($approval['request_type']); ?></p>
+                <p><strong>Priority:</strong> <?php echo htmlspecialchars($approval['priority_catagory']); ?></p>
+                <p><strong>Summary:</strong> <?php echo htmlspecialchars($approval['summary_notes']); ?></p>
+                <button class="approve-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Approved', 'referral')">Approve</button>
+                <button class="deny-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Denied', 'referral')">Deny</button>
+            </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </div>
 </section>
 
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="assets/js/main.js"></script>
-    <script>
-        function filterApprovals() {
-            var filter = document.getElementById("departmentFilter").value;
-            var requests = document.getElementsByClassName("approval-request");
+<script>
+    function filterApprovalType() {
+        var approvalType = document.getElementById("approvalTypeFilter").value;
+        var equipmentRequests = document.querySelectorAll(".approval-request.equipment");
+        var referralRequests = document.querySelectorAll(".approval-request.referral");
 
-            for (var i = 0; i < requests.length; i++) {
-                var department = requests[i].getElementsByTagName("p")[0].innerText;
-                if (filter === "all" || department.includes(filter)) {
-                    requests[i].style.display = "";
-                } else {
-                    requests[i].style.display = "none";
-                }
-            }
+        if (approvalType === "equipment") {
+            equipmentRequests.forEach(req => req.style.display = "");
+            referralRequests.forEach(req => req.style.display = "none");
+        } else {
+            equipmentRequests.forEach(req => req.style.display = "none");
+            referralRequests.forEach(req => req.style.display = "");
         }
-    </script>
+
+        filterApprovals(); // Apply department filter after changing approval type
+    }
+
+    function filterApprovals() {
+        var filter = document.getElementById("departmentFilter").value;
+        var approvalType = document.getElementById("approvalTypeFilter").value;
+        var requests = document.querySelectorAll(".approval-request." + approvalType);
+
+        requests.forEach(request => {
+            var department = request.querySelector("p strong").nextSibling.textContent.trim();
+            if (filter === "all" || department === filter) {
+                request.style.display = "";
+            } else {
+                request.style.display = "none";
+            }
+        });
+    }
+</script>
+
+<script>
+function changeApprovalType() {
+    var type = document.getElementById('approvalTypeFilter').value;
+    var department = document.getElementById('departmentFilter').value;
+    window.location.href = '?type=' + type + '&department=' + department;
+}
+
+function changeDepartment() {
+    var type = document.getElementById('approvalTypeFilter').value;
+    var department = document.getElementById('departmentFilter').value;
+    window.location.href = '?type=' + type + '&department=' + department;
+}
+
+function updateApprovalStatus(id, status, type) {
+    $.ajax({
+        url: 'update_approval_status.php',
+        type: 'POST',
+        data: {
+            id: id,
+            status: status,
+            type: type
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                alert('Status updated successfully to ' + status);
+                location.reload(); // Reload the page to reflect changes
+            } else {
+                alert('Failed to update status: ' + response.message);
+            }
+        },
+        error: function() {
+            alert('An error occurred while updating the status');
+        }
+    });
+}
+</script>
+
+
 </body>
 </html>

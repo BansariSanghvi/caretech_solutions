@@ -20,7 +20,7 @@ CREATE TABLE staff_records (
     role VARCHAR(255),
     hospital_department_id INT(10),
     hospital_id INT(10),
-    isActive BOOLEAN,  
+    isActive BOOLEAN,
     reasonToLeave VARCHAR(255) NULL,
 
 
@@ -35,7 +35,7 @@ CREATE TABLE patient_records (
     last_name VARCHAR(20),
     email VARCHAR(50),
     phone_no CHAR(11),
-    date_of_birth INT(8)
+    date_of_birth INT(8),
     emergency_contact CHAR(10),
     emergency_contact_name VARCHAR(255),
     patient_history VARCHAR(255),
@@ -43,7 +43,7 @@ CREATE TABLE patient_records (
     staff_id INT(10),
     hospital_id INT(10),
     medical_association_id INT(10),
-    last_seen_date INT(8),  
+    last_seen_date INT(8),
 
     FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),
     FOREIGN KEY (hospital_id) REFERENCES hospital_info(hospital_id),
@@ -63,7 +63,7 @@ CREATE TABLE hospital_branches (
 );
 
 /* Table for external medical associations such as GP Surgery */
--- Maybe I need Catagory onto this? Primary Care 
+-- Maybe I need Catagory onto this? Primary Care
 CREATE TABLE external_associations (
     medical_association_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     medical_association_name VARCHAR(25),
@@ -108,7 +108,7 @@ CREATE TABLE prescription_order (
     hospital_id INT(10),
     to_address VARCHAR(255),
     from_address VARCHAR(255),
-    date_issued INT(8), 
+    date_issued INT(8),
     is_repeat BOOLEAN,
     is_NHS_covered BOOLEAN,
     order_status VARCHAR(20) DEFAULT 'Pending',
@@ -153,15 +153,15 @@ CREATE TABLE medicalEquipment_list (
     isUrgent BOOLEAN,
     hospital_department_id INT(10),
 
-    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id)
 );
 
 /* Table for medical equipment orders */
 CREATE TABLE equipment_orders (
-    order_number INT PRIMARY KEY AUTO_INCREMENT, 
+    order_number INT PRIMARY KEY AUTO_INCREMENT,
     equipment_ID INT(10),
     order_qty INT(10),
-    order_date INT(8),  
+    order_date INT(8),
     hospital_department_id INT(10),
     delivery_status VARCHAR(20) DEFAULT 'Pending',
     supplier_id INT(10),
@@ -174,7 +174,7 @@ CREATE TABLE equipment_orders (
 /* Table for generating referral letters */
 CREATE TABLE referal_letters (
     letter_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    date_generated INT(8),  
+    date_generated INT(8),
     hospital_department_id INT(10),
     staff_id INT(10),
     patient_id INT(10),
@@ -190,8 +190,8 @@ CREATE TABLE appointments (
     patient_id INT(10),
     hospital_department_id INT(10),
     staff_id INT(10),
-    appointment_date DATE, 
-    appointment_time TIME,  
+    appointment_date DATE,
+    appointment_time TIME,
 
     FOREIGN KEY (patient_id) REFERENCES patient_records(patient_id),
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
@@ -209,10 +209,10 @@ CREATE TABLE manufacturers (
 );
 
 /* Announcements Table */
-CREATE TABLE annoucments (
-    annoucment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    annoucment_duration INT(100),
-    annoucment_description VARCHAR(255)
+CREATE TABLE announcements (
+    announcement_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    announcement_duration INT(100),
+    announcement_description VARCHAR(255)
 );
 
 /* Table for users (e.g., for login and permissions) */
@@ -239,31 +239,31 @@ CREATE TABLE user_level (
 
 /* Approvals Table */
 CREATE TABLE approvals (
-    approval_id INT PRIMARY KEY AUTO_INCREMENT, 
+    approval_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT(10),
-    hospital_department_id INT(10), 
+    hospital_department_id INT(10),
     equipment_ID INT(10),
     approval_qty INT(10),
     approval_description VARCHAR(255),
-    approval_sent_date DATE CURRENT_TIMESTAMP,
-    approval_date INT(8) NULL, 
+    approval_sent_date DATE DEFAULT CURRENT_DATE,
+    approval_date INT(8) NULL,
     approval_status VARCHAR(255) DEFAULT 'Waiting Approval',
-     
+
 
     FOREIGN KEY (equipment_ID) REFERENCES medicalEquipment_list(equipment_ID),
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
-    
-)
 
-/* SECTION 2 - INSERTION */ 
+);
+
+/* SECTION 2 - INSERTION */
 
 INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES
 ('City Hospital', '123 Main St, Sheffield, UK', '01142345678', 'contact@cityhospital.com');
 
 
-INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, hospital_department_id, hospital_id, isActive, reasonToLeave) 
-VALUES 
+INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, hospital_department_id, hospital_id, isActive, reasonToLeave)
+VALUES
 ('John', 'Doe', '123 Main St', '1234567890', 'john.doe@cityhospital.com', 'Doctor', 1, 1, TRUE, NULL),
 ('Jane', 'Smith', '456 Elm St', '2345678901', 'jane.smith@cityhospital.com', 'Nurse', 2, 1, TRUE, NULL),
 ('Michael', 'Johnson', '789 Oak St', '3456789012', 'michael.johnson@cityhospital.com', 'Assistant', 3, 1, TRUE, NULL),
@@ -283,7 +283,7 @@ INSERT INTO hospital_branches (department_name, department_email, department_typ
 ('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
 ('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
 ('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
-('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1);
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1),
 ('Adminstration','admin@caretech.com','Admin','1234689300','1');
 
 
@@ -297,15 +297,15 @@ INSERT INTO external_associations (medical_association_name, associations_locati
 INSERT INTO users (user_type, user_name, user_email, user_password, user_level_id, hospital_department_id, external_associations_id) VALUES
 ('Admin', 'admin_user', 'admin@caretech.com', 'admin123', 1, NULL ,NULL),
 ('Manager', 'manager', 'manager@caretech.com', 'manager123', 2,2,NULL),
-('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3,NULL, 1);
+('GP', 'gp_staff', 'gp@caretech.com', 'gp123', 3,NULL, 1),
 ('HStaff', 'staff', 'staff@caretech.com', 'staff123', 3,NULL, 1);
 
 
 INSERT INTO user_level (user_type, description) VALUES
 ('Admin', 'Administrator with full access'),
 ('Manager', 'Hospital manager with access to hospital data and settings'),
-('GP',' External General Practitioner');
-('Staff', "Member of Staff of Specific Department" )
+('GP',' External General Practitioner'),
+('Staff', "Member of Staff of Specific Department" );
 
 INSERT INTO manufacturers (supplier_name,supplier_email, supplier_location, supplier_phone, supplier_status) VALUES
 ('MedSupplies Ltd', 'info@medsupplies.com', 'London, UK', '02079460001', 'Active'),
@@ -333,7 +333,7 @@ INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipmen
 (9, 'Walking Frame', 'Support equipment for patients learning to walk again.', 12, 1500, 0, 4),
 (10, 'Thermometer', 'Used to measure patient body temperature.', 100, 50, 0, 5);
 
-INSERT INTO referal_form (request_type, summary_notes, hospital_department_id, staff_id, hospital_id, medical_association_id, patient_id) VALUES
+INSERT INTO referral_form (request_type, summary_notes, hospital_department_id, staff_id, hospital_id, medical_association_id, patient_id) VALUES
 ('Cardiology Consultation', 'Patient experiencing chest pain, requires specialist opinion.', 1, 1, 1, 1, 1),
 ('Emergency Trauma', 'Patient with multiple fractures from an accident.', 2, 2, 2, 1, 2),
 ('Rehabilitation Assessment', 'Patient recovering from knee surgery.', 4, 3, 1, 1, 3),

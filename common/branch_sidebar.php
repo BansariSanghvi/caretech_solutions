@@ -26,7 +26,7 @@
             <i class='bx bxs-file'></i><a href="#">Forms</a>
             <ul class="dropdown-menu">
                 <li><a href="branchLetter.php">Letter Generation</a></li>
-                <li><a href="branchReferral.php">Referal Form</a></li>
+                <li><a href="branchReferral.php">Referral Form</a></li>
             </ul>
         </li>
         <li class="<?php echo ($current_page == 'settings') ? 'active' : ''; ?>">

@@ -163,6 +163,21 @@ $departments = $dept_result->fetch_all(MYSQLI_ASSOC);
     }
 
 
+    .approval-request.urgent-priority {
+        background-color: rgba(255, 0, 0, 0.1);
+        border-left: 5px solid red;
+    }
+
+    .approval-request.standard-priority {
+        background-color: rgba(173, 216, 230, 0.5);
+        border-left: 5px solid lightblue;
+    }
+
+    .approval-request {
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
 </style>
 </head>
 <body>
@@ -196,6 +211,7 @@ $departments = $dept_result->fetch_all(MYSQLI_ASSOC);
     </select>
 </div>
 
+
 <div class="pagination">
     <?php if ($page > 1): ?>
         <a href="?type=<?php echo $approvalType; ?>&department=<?php echo $department; ?>&page=<?php echo $page - 1; ?>" class="prev-btn">Previous</a>
@@ -222,18 +238,27 @@ $departments = $dept_result->fetch_all(MYSQLI_ASSOC);
                     <button class="approve-btn" onclick="updateApprovalStatus(<?php echo $approval['approval_id']; ?>, 'Approved', 'equipment')">Approve</button>
                     <button class="deny-btn" onclick="updateApprovalStatus(<?php echo $approval['approval_id']; ?>, 'Denied', 'equipment')">Deny</button>
                 </div>
-            <?php else: ?>
-                <div class="approval-request referral">
-                <h3>Referral Request</h3>
-                <p><strong>Department:</strong> <?php echo htmlspecialchars($approval['department_name']); ?></p>
-                <p><strong>Referring Staff:</strong> <?php echo htmlspecialchars($approval['staff_fname'] . ' ' . $approval['staff_lname']); ?></p>
-                <p><strong>Request Type:</strong> <?php echo htmlspecialchars($approval['request_type']); ?></p>
-                <p><strong>Priority:</strong> <?php echo htmlspecialchars($approval['priority_catagory']); ?></p>
-                <p><strong>Summary:</strong> <?php echo htmlspecialchars($approval['summary_notes']); ?></p>
-                <button class="approve-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Approved', 'referral')">Approve</button>
-                <button class="deny-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Denied', 'referral')">Deny</button>
-            </div>
-            <?php endif; ?>
+                <?php else: ?>
+                    <?php
+    $priority = strtolower(trim($approval['priority_category'] ?? ''));
+    $priorityClass = '';
+    if ($priority === 'urgent') {
+        $priorityClass = 'urgent-priority';
+    } elseif ($priority === 'standard') {
+        $priorityClass = 'standard-priority';
+    }
+    ?>
+    <div class="approval-request referral <?php echo $priorityClass; ?>">
+        <h3>Referral Request</h3>
+        <p><strong>Department:</strong> <?php echo htmlspecialchars($approval['department_name']); ?></p>
+        <p><strong>Referring Staff:</strong> <?php echo htmlspecialchars($approval['staff_fname'] . ' ' . $approval['staff_lname']); ?></p>
+        <p><strong>Request Type:</strong> <?php echo htmlspecialchars($approval['request_type']); ?></p>
+        <p><strong>Priority:</strong> <?php echo htmlspecialchars(ucfirst($priority)); ?></p>
+        <p><strong>Summary:</strong> <?php echo htmlspecialchars($approval['summary_notes']); ?></p>
+        <button class="approve-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Approved', 'referral')">Approve</button>
+        <button class="deny-btn" onclick="updateApprovalStatus(<?php echo $approval['request_id']; ?>, 'Denied', 'referral')">Deny</button>
+    </div>
+<?php endif; ?>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>

@@ -206,7 +206,7 @@ include '../connection/connection.php'
                                 echo "<td>" . $staff['staff_phone_no'] . "</td>";
                                 echo "<td>" . $staff['role'] . "</td>";
                                 echo "<td>" . $staff['department_name'] . "</td>";
-                                echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
+                                echo "<td><a href='view_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>View More</a></td>";
                                 echo "</tr>";
                             }
                             ?>

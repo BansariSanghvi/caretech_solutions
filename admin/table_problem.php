@@ -9,10 +9,8 @@ if ($_SESSION['role'] != 'admin') {
 
 include '../connection/connection.php';
 
-// Initialize $problem_data to avoid warnings
 $problem_data = [];
 
-// Fetch all departments
 $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
 $dept_result = $conn->query($dept_query);
 if ($dept_result === false) {

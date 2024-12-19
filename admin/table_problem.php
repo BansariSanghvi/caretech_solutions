@@ -8,8 +8,17 @@ if ($_SESSION['role'] != 'admin') {
 }
 
 include '../connection/connection.php';
-?>
 
+// Initialize $problem_data to avoid warnings
+$problem_data = [];
+
+// Fetch all departments
+$dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+$dept_result = $conn->query($dept_query);
+if ($dept_result === false) {
+    die("Error fetching departments: " . $conn->error);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +29,6 @@ include '../connection/connection.php';
     <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Problems</title>
-
     <style>
         .staff_table {
             width: 93%;
@@ -112,55 +120,18 @@ include '../connection/connection.php';
                         <div class="search_filter">
                             <form method="GET" action="">
                                 <label for="department">Filter by Department:</label>
-                                <select name="department" id="department" onchange="this.form.submit()">
+                                <select name="department" id="department" onchange="refreshTable()">
                                     <option value="">All Departments</option>
                                     <?php
-                                    // Fetch all departments
-                                    $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
-                                    $dept_result = $conn->query($dept_query);
+                                    // Populate department options
                                     while ($row = $dept_result->fetch_assoc()) {
-                                        $selected = (isset($_GET['department']) && $row['hospital_department_id'] == $_GET['department']) ? 'selected' : '';
-                                        echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+                                        echo "<option value='" . $row['hospital_department_id'] . "'>" . $row['department_name'] . "</option>";
                                     }
                                     ?>
                                 </select>
                             </form>
                         </div>
                     </div>
-
-                    <?php
-                    // Build query for problems table
-                    $query = "SELECT 
-                                problems.problem_id, 
-                                problems.problem_catagory, 
-                                problems.problem_description, 
-                                problems.hospital_department_id AS problem_department_id, 
-                                hospital_branches.department_name, 
-                                problems.problem_status,
-                                problems.isUrgent
-                            FROM 
-                                problems 
-                            INNER JOIN 
-                                hospital_branches 
-                            ON 
-                                problems.hospital_department_id = hospital_branches.hospital_department_id";
-
-                    // Apply filter if a department is selected
-                    if (!empty($_GET['department'])) {
-                        $selected_department = intval($_GET['department']);
-                        $query .= " WHERE problems.hospital_department_id = $selected_department";
-                    }
-
-                    $result = $conn->query($query);
-
-                    // Check if query execution was successful
-                    if ($result === false) {
-                        die("Error in query execution: " . $conn->error);
-                    }
-
-                    // Fetch records if available
-                    $problem_data = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
-                    ?>
 
                     <div class="scrollable-table">
                         <table class="staff_table">
@@ -174,23 +145,11 @@ include '../connection/connection.php';
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php
-                                foreach ($problem_data as $prob) {
-                                    echo "<tr";
-                                    if ($prob['isUrgent'] === 'High') {
-                                        echo " style='background-color: #ba0a0a; color: white;'";
-                                    }
-                                    echo ">";
-                                    echo "<td>" . $prob['problem_id'] . "</td>";
-                                    echo "<td>" . $prob['problem_catagory'] . "</td>";
-                                    echo "<td>" . $prob['problem_description'] . "</td>";
-                                    echo "<td>" . $prob['department_name'] . "</td>";
-                                    echo "<td>" . $prob['problem_status'] . "</td>";
-                                    echo "<td><a href='update_status.php?id=" . $prob['problem_id'] . "' class='edit-button'>Update</a></td>";
-                                    echo "</tr>";
-                                }
-                                ?>
+                            <tbody id="problems-table-body">
+                                <!-- Table rows will be populated dynamically -->
+                                <tr>
+                                    <td colspan="6">Loading...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -199,6 +158,28 @@ include '../connection/connection.php';
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function refreshTable() {
+            const selectedDepartment = document.getElementById('department').value;
+            $.ajax({
+                url: "fetch_problems.php", // Fetch table data
+                type: "GET",
+                data: { department: selectedDepartment }, // Pass filter
+                success: function (data) {
+                    $('#problems-table-body').html(data); // Update table body
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
+        // Refresh table every 5 seconds
+        setInterval(refreshTable, 5000);
+
+        // Initial table load
+        refreshTable();
+    </script>
 </body>
 </html>

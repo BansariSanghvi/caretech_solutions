@@ -32,7 +32,7 @@ $problem = $result->fetch_assoc();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $new_status = $_POST['problem_status'];
 
-    $update_query = "UPDATE problems SET problem_status = ? WHERE problem_id = ?";
+    $update_query = "UPDATE problems SET problem_status = ?, isUrgent = 'Complete' WHERE problem_id = ?";
     $update_stmt = $conn->prepare($update_query);
     $update_stmt->bind_param("si", $new_status, $problem_id);
 

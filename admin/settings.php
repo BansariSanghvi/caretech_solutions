@@ -117,10 +117,7 @@
                             <div class="settings-section">
                                 <h4>Accessibility</h4>
                                 <ul>
-                                    <li>Enable Text-to-Speech</li>
                                     <li>Update Language</li>
-                                    <li>Update Theme</li>
-
                                 </ul>
                             </div>
 
@@ -129,7 +126,7 @@
                                 <h4 style = "background-color: #8b0303;">Report Problem</h4>
                                 <ul>
                                     <li onclick = "window.location.href='report_problem.php'">Report Problem</li>
-                                    <li><a href = "#"></a>Table of Problems</li>
+                                    <li onclick = "window.location.href='table_problem.php'">Table of Problems</li>
                                 </ul>
                             </div>
                         </div>

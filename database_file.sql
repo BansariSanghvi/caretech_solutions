@@ -76,7 +76,7 @@ CREATE TABLE external_associations (
 );
 
 /* Table for referral forms */
-CREATE TABLE referal_form (
+CREATE TABLE referral_form (
     request_id INT PRIMARY KEY AUTO_INCREMENT,
     request_type VARCHAR(255), -- Consultation, Follow-Up, etc.
     summary_notes VARCHAR(255),
@@ -172,12 +172,14 @@ CREATE TABLE equipment_orders (
 );
 
 /* Table for generating referral letters */
-CREATE TABLE referal_letters (
+CREATE TABLE referral_letters (
     letter_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
     date_generated INT(8),
     hospital_department_id INT(10),
     staff_id INT(10),
     patient_id INT(10),
+    letter_type VARCHAR(255),
+    letter_description VARCHAR(255),
 
     FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
     FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id),

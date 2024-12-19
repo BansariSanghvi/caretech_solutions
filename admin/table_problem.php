@@ -22,123 +22,88 @@ include '../connection/connection.php';
     <title>Problems</title>
 
     <style>
-.staff_table {
-    width: 93%;
-    border-collapse: collapse;
-    margin-left: 2rem;
-    margin-top:2rem;
-    margin-bottom: 2rem
-}
+        .staff_table {
+            width: 93%;
+            border-collapse: collapse;
+            margin-left: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
 
-.staff_table thead {
-    background-color: #001f3f; /* Dark navy blue */
-    color: white; /* White text */
-}
-        
-.staff_table th, .staff_table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-}
-        
-.staff_table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+        .staff_table thead {
+            background-color: #001f3f; /* Dark navy blue */
+            color: white; /* White text */
+        }
 
-.staff_table tr:hover {
-    background-color: #ddd;
-}
+        .staff_table th, .staff_table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
 
-.edit-button {
-    background-color: #4CAF50; /* Green */
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 2px 1px;
-    cursor: pointer;
-    border-radius: 4px;
-}
+        .staff_table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
-.scrollable-table {
-    display: block;
-    max-height: 535px; 
-    overflow-y: auto;
-}
+        .staff_table tr:hover {
+            background-color: #ddd;
+        }
 
-.problems_top_container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-     
-}
+        .edit-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 2px 1px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
 
-.buttons-container {
-    display: flex;
-    gap: 10px; /* Space between buttons */
-}
+        .scrollable-table {
+            display: block;
+            max-height: 535px; 
+            overflow-y: auto;
+        }
 
-.search_filter {
-    display: flex;
-    align-items: center;
-    margin-right: 100px;
-    gap: 5px; /* Space between the icon and input */
-}
+        .problems_top_container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
 
-.search_filter input {
-    padding: 5px 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
+        .search_filter {
+            display: flex;
+            align-items: center;
+            margin-right: 100px;
+            gap: 5px; /* Space between the icon and input */
+        }
 
-.search_filter i {
-    color: #888; 
-    font-size: 20px; 
-}
+        .search_filter select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
 
-.add_supplier_btn{
-    background-color: #4CAF50; 
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    font-size: 14px;
-    border-radius: 4px;
-    margin-left: 30px;
-}
-
-.remove_supplier_btn{
-    background-color: #4CAF50; 
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    font-size: 14px;
-    border-radius: 4px;
-}
-
-.upload_btn {
-    background-color: #ff5733; 
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    font-size: 14px;
-    border-radius: 4px;
-}
-</style>
+        .search_filter label {
+            margin-left: 30px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu------------ -->
+        <!-- Side Menu -->
         <?php include("../common/sidebar.php"); ?>
 
-        <!-------------------Header------------------->
+        <!-- Header -->
         <div class="main-content">
             <?php include("../common/navbar.php"); ?>
 
-            <!------------------Dashboard Section------------------>
+            <!-- Dashboard Section -->
             <div class="inside-content">
                 <section class="referal_section" id='referal_hub'>
                     <h2 class="page_title">Table of Problems:</h2>
@@ -146,10 +111,11 @@ include '../connection/connection.php';
                     <div class="problems_top_container">
                         <div class="search_filter">
                             <form method="GET" action="">
-                                <label for="department" style ="margin-left: 30px;">Filter by Department:</label>
+                                <label for="department">Filter by Department:</label>
                                 <select name="department" id="department" onchange="this.form.submit()">
                                     <option value="">All Departments</option>
                                     <?php
+                                    // Fetch all departments
                                     $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
                                     $dept_result = $conn->query($dept_query);
                                     while ($row = $dept_result->fetch_assoc()) {
@@ -163,33 +129,39 @@ include '../connection/connection.php';
                     </div>
 
                     <?php
-                        $query = "SELECT 
-                                    problems.problem_id, 
-                                    problems.problem_catagory, 
-                                    problems.problem_description, 
-                                    problems.hospital_department_id AS problem_department_id, 
-                                    hospital_branches.department_name, 
-                                    problems.problem_status,
-                                    problems.isUrgent
-                                FROM 
-                                    problems 
-                                INNER JOIN 
-                                    hospital_branches 
-                                ON 
-                                    problems.hospital_department_id = hospital_branches.hospital_department_id;";
-                        
-                        $result = $conn->query($query);
+                    // Build query for problems table
+                    $query = "SELECT 
+                                problems.problem_id, 
+                                problems.problem_catagory, 
+                                problems.problem_description, 
+                                problems.hospital_department_id AS problem_department_id, 
+                                hospital_branches.department_name, 
+                                problems.problem_status,
+                                problems.isUrgent
+                            FROM 
+                                problems 
+                            INNER JOIN 
+                                hospital_branches 
+                            ON 
+                                problems.hospital_department_id = hospital_branches.hospital_department_id";
 
-                        // Check if query execution was successful
-                        if ($result === false) {
-                            die("Error in query execution: " . $conn->error);
-                        }
+                    // Apply filter if a department is selected
+                    if (!empty($_GET['department'])) {
+                        $selected_department = intval($_GET['department']);
+                        $query .= " WHERE problems.hospital_department_id = $selected_department";
+                    }
 
-                        // Fetch records if available
-                        $problem_data = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
-                    ?>            
+                    $result = $conn->query($query);
 
-                    
+                    // Check if query execution was successful
+                    if ($result === false) {
+                        die("Error in query execution: " . $conn->error);
+                    }
+
+                    // Fetch records if available
+                    $problem_data = ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : [];
+                    ?>
+
                     <div class="scrollable-table">
                         <table class="staff_table">
                             <thead>

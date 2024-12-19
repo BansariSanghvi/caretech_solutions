@@ -256,6 +256,25 @@ CREATE TABLE approvals (
 
 );
 
+/* Table for Problems */
+
+CREATE TABLE problems (
+    problem_id INT PRIMARY KEY AUTO_INCREMENT,
+    problem_catagory VARCHAR(255),
+    problem_description VARCHAR(255),
+    staff_id INT(10),
+    staff_fname VARCHAR(255),
+    staff_lname VARCHAR(255),
+    hospital_department_id INT(10), 
+    staff_role VARCHAR(255),
+    problem_status VARCHAR(255) DEFAULT 'Pending',
+    urgency_value VARCHAR(255),
+
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id)
+
+);
+
 /* SECTION 2 - INSERTION */
 
 INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES
@@ -339,3 +358,10 @@ INSERT INTO referral_form (request_type, summary_notes, hospital_department_id, 
 ('Rehabilitation Assessment', 'Patient recovering from knee surgery.', 4, 3, 1, 1, 3),
 ('General Checkup', 'Routine physical examination for the patient.', 5, 4, 1, 1, 4),
 ('Orthopedic Surgery', 'Patient requires surgical intervention for a broken arm.', 3, 5, 1, 1, 5);
+
+INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, problem_status, isUrgent) VALUES
+('Software', 'Patient registration system crashes when entering insurance details.', 101, 'John', 'Doe', 1, 'IT Support', 'Pending', 'High'),
+('Software', 'Diagnostic system generates incorrect lab results.', 104, 'Alice', 'Brown', 2, 'Software Developer', 'Pending', 'High'),
+('Software', 'Appointment scheduling tool takes too long to load.' , 105, 'Emma', 'Green', 3, 'UI Specialist', 'In Progress', 'Medium'),
+('Software', 'Error in generating reports for inventory management.', 106, 'Chris', 'Taylor', 4, 'Database Admin', 'Resolved', 'Low'),
+('Software', 'User interface bug causing minor display issues in patient portal.', 107, 'Sarah', 'Wilson', 5, 'UI Specialist', 'Pending', 'Low');

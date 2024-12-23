@@ -194,6 +194,7 @@ include '../connection/connection.php'
                                 <th>Order Date</th>
                                 <th>Department</th>
                                 <th>Delivery Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -204,9 +205,10 @@ include '../connection/connection.php'
                                 echo "<td>" . $order['order_number'] . "</td>";
                                 echo "<td>" . $order['equipment_Name'] . "</td>";
                                 echo "<td>" . $order['order_qty'] . "</td>";
-                                echo "<td>" . $order['order_date'] . "</td>";
+                                echo "<td>" . htmlspecialchars(date('d-m-Y', strtotime($order['order_date']))) . "</td>";
                                 echo "<td>" . $order['department_name'] . "</td>";
                                 echo "<td>" . $order['delivery_status'] . "</td>";
+                                echo "<td><a href='update_delivery.php?id=" . $order['order_number'] . "' class='edit-button'>Update</a></td>";
                                 echo "</tr>";
                             }
                         ?>

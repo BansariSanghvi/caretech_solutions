@@ -35,6 +35,10 @@ body {
     height: 100vh; 
     display: flex;
     flex-direction: column; 
+    box-sizing: border-box;
+    position: sticky;
+    top: 0;
+    align-self: start;
 }
 
 #menu .logo {
@@ -88,6 +92,15 @@ body {
     font-weight: 500px bold;
     transition: 0.3s ease;
 }
+
+ #items .dropdown-btn {
+    width: 100%;
+    text-align: left;
+    background-color: none;
+    border: none;
+    cursor: pointer;
+ }
+
 
 /*===============MAIN CONTENT STYLING==============*/
 .main-content {

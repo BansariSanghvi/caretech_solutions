@@ -1,14 +1,13 @@
 <?php
 session_start();
 
-// Check if the user is an branch manager
+// Check if the user is an admin
 if ($_SESSION['role'] != 'admin') {
     header('Location: unauthorized.php');
     exit;
 }
 
-include '../connection/connection.php'
-
+include '../connection/connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -22,9 +21,8 @@ include '../connection/connection.php'
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Admin Inventory</title>
     <style>
-
         .data_table {
-            width: 90%;
+            width: 93%;
             border-collapse: collapse;
             margin-left: 2rem;
             margin-top: 2rem;
@@ -54,7 +52,6 @@ include '../connection/connection.php'
             cursor: pointer;
             border-radius: 4px;
         }
-   
 
         .scrollable-table {
             display: block;
@@ -130,7 +127,6 @@ include '../connection/connection.php'
             border-radius: 4px;
         }
 
-                
         .low-stock {
             background-color: #ba0a0a; /* Red for low stock */
             color: white;
@@ -142,122 +138,96 @@ include '../connection/connection.php'
 
         .normal-stock {
             background-color: white; 
-            
         }
         
     </style>
 </head>
 <body>
     <div class="container">
-      <!--------------------Side Menu------------ -->
-         <!--------------------Side Menu------------ -->
-      <?php  include("../common/sidebar.php"); ?>
+      <!-- Side Menu -->
+      <?php include("../common/sidebar.php"); ?>
 
-<!-------------------Header------------------->
-<div class="main-content">
-    
-<?php  include("../common/navbar.php"); ?>
-            <!------------------Stock Section------------------>
-            <div class="inside-content">
-               <section class="stock_section" id ='stock'>
-                  <h2 class="page_title">Admin View: Medical Equipment Inventory:</h2>
+      <!-- Header -->
+      <div class="main-content">
+        <?php include("../common/navbar.php"); ?>
 
-                  <div class="top_container">
-                        <div class="buttons-container">
-                            <div class="add_box">
-                                <button class = "add_btn" onclick="window.location.href='#'"><i class='bx bxs-plus-square'></i>   Add Item</button>
-                            </div>
-                            <div class="remove_box">
-                                <button class="remove_btn" onclick="window.location.href='#'"><i class='bx bxs-minus-square'></i> Remove Item</button>
-                            </div>
+        <!-- Stock Section -->
+        <div class="inside-content">
+            <section class="stock_section" id="stock">
+                <h2 class="page_title">Admin View: Medical Equipment Inventory:</h2>
 
-                            <div class="upload_box">
-                                <button class="upload_btn" onclick="window.location.href='#'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
-                            </div>
+                <div class="top_container">
+                    <div class="buttons-container">
+                        <div class="add_box">
+                            <button class="add_btn" onclick="window.location.href='#'"><i class='bx bxs-plus-square'></i> Add Item</button>
+                        </div>
+                        <div class="remove_box">
+                            <button class="remove_btn" onclick="window.location.href='#'"><i class='bx bxs-minus-square'></i> Remove Item</button>
+                        </div>
 
-                            <div class="submit_order_box">
-                                <button class="order_btn" onclick="window.location.href='place_order_form.php'"><i class="ri-file-upload-fill"></i> Place Order</button>
-                            </div>
+                        <div class="upload_box">
+                            <button class="upload_btn" onclick="window.location.href='#'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
+                        </div>
 
-                            </div>
-                                <div class="search_filter">
-                                <i class="ri-search-line"></i>  
-                                <input type="text" placeholder="search">
-                            </div>
-            </div>
+                        <div class="submit_order_box">
+                            <button class="order_btn" onclick="window.location.href='place_order_form.php'"><i class="ri-file-upload-fill"></i> Place Order</button>
+                        </div>
+                    </div>
+                    <div class="search_filter">
+                        <i class="ri-search-line"></i>  
+                        <input type="text" placeholder="search">
+                    </div>
+                </div>
 
-            <?php
-            $query = "SELECT 
-                medicalEquipment_list.equipment_ID,
-                medicalEquipment_list.equipment_Name,
-                medicalEquipment_list.equipment_description,
-                medicalEquipment_list.qty,
-                medicalEquipment_list.hospital_department_id,
-                hospital_branches.department_name
-                FROM 
-                medicalEquipment_list
-                INNER JOIN 
-                hospital_branches 
-                ON 
-                medicalEquipment_list.hospital_department_id = hospital_branches.hospital_department_id;
-                ";
-
-            $result = $conn->query($query);
-                   
-                   // Check if there are any records
-                   if ($result->num_rows > 0) {
-                       $inventory_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-                   } else {
-                       $inventory_data = []; // No records found
-                   }
-            ?>
-            <div class="scrollable-table">
-                <table class="data_table">
-                    <thead>
-                        <tr>
-                            <th>Item ID</th>
-                            <th>Item Name</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Hospital Branch</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                            // Loop through inventory data and display it in the table
-                            foreach ($inventory_data as $inventory) {
-                                // Determine row color based on quantity
-                                $row_class = "";
-                                if ($inventory['qty'] < 10) {
-                                    $row_class = "low-stock"; // Red color for low stock
-                                } elseif ($inventory['qty'] >= 10 && $inventory['qty'] <= 20) {
-                                    $row_class = "approaching-stock"; // Yellow color for approaching stock
-                                } else {
-                                    $row_class = "normal-stock"; // Default color for normal stock
-                                }
-                                
-                                echo "<tr class='$row_class'>";
-                                echo "<td>" . $inventory['equipment_ID'] . "</td>";
-                                echo "<td>" . $inventory['equipment_Name'] . "</td>";
-                                echo "<td>" . $inventory['equipment_description'] . "</td>";
-                                echo "<td>" . $inventory['qty'] . "</td>";
-                                echo "<td>" . $inventory['department_name'] . "</td>";
-                                echo "<td><a href='edit_inventory.php?id=" . $inventory['equipment_ID'] . "' class='edit-button'>Edit</a></td>";
-                                echo "</tr>";
-                            }
-                        ?>
-                    </tbody>
-
-                </table>
-            </div>
-                </section>
-            </div>
+                <div class="scrollable-table">
+                    <table class="data_table" id="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Item ID</th>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Hospital Branch</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated here by AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
+      </div>
     </div>
-</div>
 
-    <script src="assets/js/main.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        // Function to fetch and update the table content
+        function fetchInventoryData() {
+            $.ajax({
+                url: 'fetch_inventory_updates.php',  
+                method: 'GET',
+                success: function(data) {
+                    // Update the table's body with the new data
+                    $('#inventory-table tbody').html(data);
+                },
+                error: function() {
+                    alert("Error fetching data.");
+                }
+            });
+        }
+
+        
+        setInterval(fetchInventoryData, 5000); // Updates after 5 secs
+
+        
+        $(document).ready(function() {
+            fetchInventoryData();
+        });
+    </script>
+
 </body>
 </html>
-

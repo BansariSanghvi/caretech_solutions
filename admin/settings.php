@@ -100,7 +100,7 @@
                                 <ul>
                                     <li onclick="window.location.href='user_accounts.php'">User Accounts</li>
                                     <li onclick="window.location.href='user_permissons_table.php'">User Permissions</li>
-                                    <li>User Requests</li>
+                                    <li onclick = "window.location.href='user_requests_tb.php'">User Requests</li>
                                     
                                 </ul>
                             </div>

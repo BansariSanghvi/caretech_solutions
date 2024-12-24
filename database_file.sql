@@ -277,6 +277,20 @@ CREATE TABLE problems (
 
 );
 
+CREATE TABLE user_requests (
+    request_id INT PRIMARY KEY AUTO_INCREMENT,
+    staff_id INT(10),
+    staff_email VARCHAR(255),
+    request_type VARCHAR(255), 
+    hospital_department_id INT(10),
+    request_status VARCHAR(255) DEFAULT 'Pending',
+    date_submitted TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (hospital_department_id) REFERENCES hospital_branches(hospital_department_id),
+    FOREIGN KEY (staff_id) REFERENCES staff_records(staff_id)
+    
+);
+
 /* SECTION 2 - INSERTION */
 
 INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES

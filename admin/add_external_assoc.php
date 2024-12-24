@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Bind parameters 
-    $stmt->bind_param("ssss", $name, $email, $phone, $location);
+    $stmt->bind_param("ssss", $name, $email, $location, $phone );
 
     // Execute the query
     if ($stmt->execute()) {

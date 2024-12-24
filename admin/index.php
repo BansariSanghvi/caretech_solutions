@@ -6,7 +6,48 @@ if ($_SESSION['role'] != 'admin') {
     header('Location: unauthorized.php');
     exit;
 }
+
+include '../connection/connection.php';
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch Total Staff
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
+$staffResult = $conn->query($staffQuery);
+if ($staffResult->num_rows > 0) {
+    $row = $staffResult->fetch_assoc();
+    $totalStaff = $row['total'];
+}
+
+// Fetch Total Departments
+$departmentQuery = "SELECT COUNT(*) AS total FROM hospital_branches"; 
+$departmentResult = $conn->query($departmentQuery);
+if ($departmentResult->num_rows > 0) {
+    $row = $departmentResult->fetch_assoc();
+    $totalDepartments = $row['total'];
+}
+
+// Fetch Total Patients
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
+$patientsResult = $conn->query($patientsQuery);
+if ($patientsResult->num_rows > 0) {
+    $row = $patientsResult->fetch_assoc();
+    $totalPatients = $row['total'];
+}
+
+// Fetch Total Referrals
+$referralsQuery = "SELECT COUNT(*) AS total FROM referal_form"; 
+$referralsResult = $conn->query($referralsQuery);
+if ($referralsResult->num_rows > 0) {
+    $row = $referralsResult->fetch_assoc();
+    $totalReferrals = $row['total'];
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -144,6 +185,54 @@ if ($_SESSION['role'] != 'admin') {
             height: 260px !important;
             
         }
+
+        table.tasks {
+        width: 100%;
+        border-collapse: collapse; 
+        margin-top: 20px;
+        background-color: #f9f9f9;
+    }
+
+   
+        table.tasks th {
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 15px;
+            border-bottom: 2px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+    
+        table.tasks td {
+            padding: 12px;
+            font-size: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            
+        }
+
+        
+        table.tasks tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        
+        table.tasks tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table.tasks tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+
+        
+        table.tasks td[colspan="3"] {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
         
     </style>  
 
@@ -171,7 +260,7 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-currency-fill"></i>Total Staff</h5>
-                                    <h6>150</h6>
+                                    <h6> <?php echo $totalStaff ?></h6>
                                 </div>
                             </div>
 
@@ -179,7 +268,7 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-hospital-line"></i>Total Department</h5>
-                                    <h6>25</h6>
+                                    <h6> <?php echo $totalDepartments ?></h6>
                                 </div>
                             </div>
 
@@ -187,7 +276,7 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-user-fill"></i>Total Patients</h5>
-                                    <h6>1,200</h6>
+                                    <h6> <?php echo $totalPatients ?></h6>
                                 </div>
                             </div>
 
@@ -195,7 +284,7 @@ if ($_SESSION['role'] != 'admin') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-add-box-fill"></i>Total Referals</h5>
-                                    <h6>300</h6>
+                                    <h6><?php echo $totalReferrals ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +314,7 @@ if ($_SESSION['role'] != 'admin') {
                                                     <i class="ri-hospital-fill"></i> Orders
                                                 </button>
 
-                                                <button class="btn btn-default big-button" onclick="window.location.href='#'">
+                                                <button class="btn btn-default big-button" onclick="window.location.href='admin_referal_view.php'">
                                                     <i class="ri-line-chart-fill"></i> Referals
                                                 </button>
 
@@ -241,18 +330,50 @@ if ($_SESSION['role'] != 'admin') {
                     </div>
 
                     
-                    <!-- Graphs Split into Two Equal Parts -->
+                    
                     <div class="graph-container">
-                        <!-- Left Graph: Appointments per Month -->
+                        <!-- Left Part: Appointments per Month -->
                         <div class="graph">
                             <h5>Appointments per Month</h5>
                             <canvas id="appointmentsBarChart"></canvas>
                         </div>
 
-                        <!-- Right Graph: Revenue per Quarter -->
+                        <?php 
+                            $ordersRequired = "SELECT equipment_Name, qty, medicalequipment_list.hospital_department_id,
+                            department_name FROM `medicalequipment_list` INNER JOIN hospital_branches 
+                            ON hospital_branches.hospital_department_id = medicalequipment_list.hospital_department_id WHERE medicalequipment_list.qty < 10;";
+                            $ordersRequiredResult = $conn->query($ordersRequired);
+
+
+                        ?>
+
+                        <!-- Right Part: Emergency Tasks in Stock -->
                         <div class="graph">
-                            <h5>Revenue per Quarter</h5>
-                            <canvas id="revenueLineChart"></canvas>
+                            <h4>Emergency Orders Required in Inventory:</h4>
+                            <table class="tasks">
+                                <thead>
+                                    <th>Item Name</th>
+                                    <th>Department Name</th>
+                                    <th>Current Qty</th>
+                                </thead>
+                                <tbody>
+                                    <?php 
+                                        if ($ordersRequiredResult->num_rows > 0) {
+                                            // Loop through the result and display rows in the table
+                                            while ($row = $ordersRequiredResult->fetch_assoc()) {
+                                                echo "<tr>";
+                                                echo "<td>" . htmlspecialchars($row['equipment_Name']) . "</td>";
+                                                echo "<td>" . htmlspecialchars($row['department_name']) . "</td>";
+                                                echo "<td>" . htmlspecialchars($row['qty']) . "</td>";
+                                                echo "</tr>";
+                                            }
+                                        } else {
+                                            // Display a message if no data is found
+                                            echo "<tr><td colspan='3' style='text-align: center;'>No emergency orders found</td></tr>";
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     

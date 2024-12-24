@@ -153,7 +153,7 @@ include '../connection/connection.php'
                                 <button class = "add_supplier_btn" onclick="window.location.href='add_associations.php'"><i class="ri-user-add-line"></i>   Add Association</button>
                             </div>
                             <div class="remove_staff_box">
-                                <button class="remove_supplier_btn" onclick="window.location.href='remove_supplier.php'"><i class='bx bxs-minus-square'></i>  Remove Association</button>
+                                <button class="remove_supplier_btn" onclick="window.location.href='remove_association.php'"><i class='bx bxs-minus-square'></i>  Remove Association</button>
                             </div>
 
                             <div class="upload_box">

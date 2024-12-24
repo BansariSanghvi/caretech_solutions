@@ -70,7 +70,7 @@ include '../connection/connection.php'
     overflow-y: auto;
 }
 
-.supplier_top_container {
+.assoc_top_container {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
@@ -144,13 +144,13 @@ include '../connection/connection.php'
 
             <!------------------Dashboard Section------------------>
             <div class="inside-content">
-                <section class="providers_section" id='supplier_hub'>
+                <section class="providers_section" id='assoc_hub'>
                     <h2 class="page_title">Verifed External Medical Associations:</h2>
 
-                    <div class="supplier_top_container">
+                    <div class="assoc_top_container">
                         <div class="buttons-container">
                             <div class="add_staff_box">
-                                <button class = "add_supplier_btn" onclick="window.location.href='add_supplier.php'"><i class="ri-user-add-line"></i>   Add Association</button>
+                                <button class = "add_supplier_btn" onclick="window.location.href='add_associations.php'"><i class="ri-user-add-line"></i>   Add Association</button>
                             </div>
                             <div class="remove_staff_box">
                                 <button class="remove_supplier_btn" onclick="window.location.href='remove_supplier.php'"><i class='bx bxs-minus-square'></i>  Remove Association</button>

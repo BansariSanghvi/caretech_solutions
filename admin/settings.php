@@ -110,7 +110,7 @@
                                 <ul>
                                     <li onclick = "window.location.href='admin_stock_inventory.php'">Medical Equipment</li>
                                     <li onclick="window.location.href='medicalSupplierList.php'">Supplier Hub</li>
-                                    <li onclick="window.location.href='medical_associations_list.php'">Medical Associations</li>
+                                    <li onclick="window.location.href='medical_associationsList.php'">Medical Associations</li>
                                 </ul>
                             </div>
 

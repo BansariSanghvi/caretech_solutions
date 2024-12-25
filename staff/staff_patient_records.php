@@ -129,56 +129,53 @@ if ($_SESSION['role'] != 'staff') {
 
                    
             <?php 
-            $query = "SELECT 
-                        a.appointment_id, 
-                        CONCAT(p.first_name, ' ', p.last_name) AS patient_name, 
-                        a.appointment_time, 
-                        a.appointment_type, 
-                        a.notes
-                    FROM appointments a
-                    JOIN patient_records p ON a.patient_id = p.patient_id
-                    WHERE a.isActive = 1"; // Only active appointments
+                    $query = "SELECT patient_id, first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name 
+                              FROM patient_records";
+                    $result = $conn->query($query);
 
-            // Execute the query
-            $result = $conn->query($query);
+                    // Check if there are any records
+                    if ($result->num_rows > 0) {
+                        $patient_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                    } else {
+                        $patient_data = []; // No records found
+                    }
+                    ?>
 
-            // Check if there are any records
-            if ($result->num_rows > 0) {
-                $appointments = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-            } else {
-                $appointments = []; // No records found
-            }
-            ?>
-
-            <div class="scrollable-table">
-                <table class="appointment_table">
-                    <thead>
-                        <tr>
-                            <th>Appointment ID</th>
-                            <th>Patient Name</th>
-                            <th>Appointment Time</th>
-                            <th>Appointment Type</th>
-                            <th>Notes</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        // Loop through the appointment data and display it in the table
-                        foreach ($appointments as $appointment) {
-                            echo "<tr>";
-                            echo "<td>" . $appointment['appointment_id'] . "</td>";
-                            echo "<td>" . $appointment['patient_name'] . "</td>";
-                            echo "<td>" . $appointment['appointment_time'] . "</td>";
-                            echo "<td>" . $appointment['appointment_type'] . "</td>";
-                            echo "<td>" . $appointment['notes'] . "</td>";
-                            echo "<td><a href='edit_appointment.php?id=" . $appointment['appointment_id'] . "' class='edit-button'>Edit</a></td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                    <div class="scrollable-table">
+                        <table class="patient_table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>DOB</th>
+                                    <th>Contact No</th>
+                                    <th>Emergency Contact No</th>
+                                    <th>Emergency Contact Name</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                // Loop through patient data and display it in the table
+                                foreach ($patient_data as $patient) {
+                                    echo "<tr>";
+                                    echo "<td>" . $patient['patient_id'] . "</td>";
+                                    echo "<td>" . $patient['first_name'] . "</td>";
+                                    echo "<td>" . $patient['last_name'] . "</td>";
+                                    echo "<td>" . $patient['email'] . "</td>";
+                                    echo "<td>" . $patient['date_of_birth'] . "</td>";
+                                    echo "<td>" . $patient['phone_no'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact'] . "</td>";
+                                    echo "<td>" . $patient['emergency_contact_name'] . "</td>";
+                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
+                                    echo "</tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
             </div>
         </div>
     </div>

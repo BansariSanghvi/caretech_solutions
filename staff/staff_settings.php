@@ -108,8 +108,7 @@
                             <div class="settings-section">
                                 <h4 style = "background-color: #8b0303;">Report Problem</h4>
                                 <ul>
-                                    <li onclick = "window.location.href='report_problem.php'">Report Problem</li>
-                                    <li><a href = "#"></a>Table of Problems</li>
+                                    <li onclick = "window.location.href='staff_report_issue.php'">Report Problem</li>
                                 </ul>
                             </div>
                         </div>

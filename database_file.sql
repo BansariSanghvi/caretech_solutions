@@ -381,3 +381,10 @@ INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fna
 ('Software', 'Appointment scheduling tool takes too long to load.' , 105, 'Emma', 'Green', 3, 'UI Specialist', 'In Progress', 'Medium'),
 ('Software', 'Error in generating reports for inventory management.', 106, 'Chris', 'Taylor', 4, 'Database Admin', 'Resolved', 'Low'),
 ('Software', 'User interface bug causing minor display issues in patient portal.', 107, 'Sarah', 'Wilson', 5, 'UI Specialist', 'Pending', 'Low');
+
+INSERT INTO appointments (patient_id, hospital_department_id, staff_id, appointment_date, appointment_time) VALUES
+(1, 1, 1, '2024-12-28', '09:00:00'),
+(2, 2, 2, '2024-12-28', '10:00:00'),
+(3, 3, 3, '2024-12-29', '11:00:00'),
+(4, 4, 4, '2024-12-29', '14:00:00'),
+(5, 5, 5, '2024-12-30', '15:30:00');

@@ -39,7 +39,7 @@ if ($patientsResult->num_rows > 0) {
 }
 
 // Fetch Total Referrals
-$referralsQuery = "SELECT COUNT(*) AS total FROM referal_form"; 
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form"; 
 $referralsResult = $conn->query($referralsQuery);
 if ($referralsResult->num_rows > 0) {
     $row = $referralsResult->fetch_assoc();

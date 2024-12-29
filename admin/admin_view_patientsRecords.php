@@ -134,14 +134,14 @@ include '../connection/connection.php';
                         <div class="buttons-container">
                             
                             <div class="add_staff_box">
-                                <button class = "add_supplier_btn" onclick="window.location.href='add_supplier.php'"><i class="ri-user-add-line"></i>   Add Patient</button>
+                                <button class = "add_supplier_btn" onclick="window.location.href='add_patient.php'"><i class="ri-user-add-line"></i>   Add Patient</button>
                             </div>
                             <div class="remove_staff_box">
-                                <button class="remove_supplier_btn" onclick="window.location.href='remove_supplier.php'"><i class='bx bxs-minus-square'></i>  Remove Patient</button>
+                                <button class="remove_supplier_btn" onclick="window.location.href='remove_patient.php'"><i class='bx bxs-minus-square'></i>  Remove Patient</button>
                             </div>
 
                             <div class="upload_box">
-                                        <button class="upload_btn" onclick="window.location.href='upload_supplierList.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
+                                <button class="upload_btn" onclick="window.location.href='upload_patientList.php'"><i class="ri-file-upload-fill"></i> Upload CVS File</button>
                             </div>
                             
                         </div>
@@ -170,9 +170,7 @@ include '../connection/connection.php';
                                     <th>Email</th>
                                     <th>DOB</th>
                                     <th>Contact No</th>
-                                    <th>Emergency Contact No</th>
-                                    <th>Emergency Contact Name</th>
-                                    <th>Edit</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -186,8 +184,6 @@ include '../connection/connection.php';
                                     echo "<td>" . $patient['email'] . "</td>";
                                     echo "<td>" . $patient['date_of_birth'] . "</td>";
                                     echo "<td>" . $patient['phone_no'] . "</td>";
-                                    echo "<td>" . $patient['emergency_contact'] . "</td>";
-                                    echo "<td>" . $patient['emergency_contact_name'] . "</td>";
                                     echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
                                     echo "</tr>";
                                 }

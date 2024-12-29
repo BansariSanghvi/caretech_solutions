@@ -25,7 +25,7 @@ include '../connection/connection.php'
 
     <style>
 .staff_table {
-    width: 90%;
+    width: 93%;
     border-collapse: collapse;
     margin-left: 2rem;
     margin-top:2rem;
@@ -134,6 +134,7 @@ include '../connection/connection.php'
 
                             <div class="add_staff_box">
                                 <button class = "place_order_btn" onclick="window.location.href='place_order_form.php'"><i class="ri-user-add-line"></i>   Place Order</button>
+                                <button style = "background-color: purple;" class = "place_order_btn" onclick="window.location.href='past_orders.php'"><i class='bx bxs-file-find'></i>   Past Orders</button>
                             </div>
                         
                             </div>
@@ -170,7 +171,8 @@ include '../connection/connection.php'
                     FROM equipment_orders INNER JOIN medicalequipment_list 
                     ON medicalequipment_list.equipment_ID = equipment_orders.equipment_ID 
                     INNER JOIN hospital_branches ON hospital_branches.hospital_department_id = equipment_orders.hospital_department_id
-                   
+                    WHERE equipment_orders.delivery_status = 'Pending' OR equipment_orders.delivery_status = 'Order Placed' OR equipment_orders.delivery_status = 'Delivered'
+                    ORDER BY equipment_orders.order_date DESC 
                     "  . $where_clause;
     
                     $result = $conn->query($query);

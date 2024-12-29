@@ -23,7 +23,7 @@ include '../connection/connection.php';
 
     <style>
 .staff_table {
-    width: 93%;
+    width: 90%;
     border-collapse: collapse;
     margin-left: 2rem;
     margin-top:2rem;
@@ -179,25 +179,30 @@ include '../connection/connection.php';
                     }
 
                     $query = "SELECT 
-                                referal_form.request_id, 
-                                referal_form.patient_id, 
-                                referal_form.request_type, 
-                                referal_form.hospital_department_id, 
-                                hospital_branches.department_name, 
-                                referal_form.medical_association_id, 
-                                external_associations.medical_association_name, 
-                                referal_form.isViewed 
-                              FROM 
-                                referal_form 
-                              INNER JOIN 
-                                hospital_branches 
-                              ON 
-                                referal_form.hospital_department_id = hospital_branches.hospital_department_id 
-                              INNER JOIN 
-                                external_associations 
-                              ON 
-                                referal_form.medical_association_id = external_associations.medical_association_id" 
-                              . $where_clause;
+                            referral_form.request_id, 
+                            referral_form.patient_id,
+                            patient_records.first_name,
+                            patient_records.last_name, 
+                            referral_form.request_type,  
+                            hospital_branches.department_name,
+                            referral_form.hospital_department_id,
+                            referral_form.summary_notes,
+                            referral_form.is_external,
+                            referral_form.priority_category,
+                            referral_form.isViewed 
+                        FROM 
+                            referral_form 
+                        LEFT JOIN 
+                            hospital_branches 
+                        ON 
+                            referral_form.hospital_department_id = hospital_branches.hospital_department_id 
+                        LEFT JOIN
+                            patient_records 
+                        ON 
+                            referral_form.patient_id = patient_records.patient_id "
+
+                        . $where_clause;
+
 
                     $result = $conn->query($query);
 
@@ -210,27 +215,29 @@ include '../connection/connection.php';
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Patient ID</th>
+                                    <th>Patient Name</th>
                                     <th>Type</th>
-                                    <th>From</th>
-                                    <th>To</th>
+                                    <th>Description</th>
+                                    <th>Destination</th></th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 foreach ($ref_data as $ref) {
                                     echo "<tr";
-                                    if ($ref['department_name'] === 'Emergency') {
+                                    if ($ref['priority_category'] === 'urgent') {
                                         echo " style='background-color: #ba0a0a; color: white;'";
                                     }
                                     echo ">";
                                     echo "<td>" . $ref['request_id'] . "</td>";
-                                    echo "<td>" . $ref['patient_id'] . "</td>";
+                                    echo "<td>" . $ref['first_name'] . " " . $ref['last_name'] . "</td>";
                                     echo "<td>" . $ref['request_type'] . "</td>";
-                                    echo "<td>" . $ref['medical_association_name'] . "</td>";
+                                    echo "<td>" . $ref['summary_notes'] . "</td>";
                                     echo "<td>" . $ref['department_name'] . "</td>";
                                     echo "<td>" . $ref['isViewed'] . "</td>";
+                                    echo "<td><a href='update_referal_status.php?id=" . $ref['request_id'] . "' class='edit-button'>Update</a></td>";
                                     echo "</tr>";
                                 }
                                 ?>

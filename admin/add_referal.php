@@ -1,15 +1,24 @@
 <?php
 session_start();
+include("../connection/connection.php");
 
-// Check if the user is an admin
-if ($_SESSION['role'] != 'admin') {
-    header('Location: unauthorized.php');
-    exit;
-}
+// Fetch Patients
+$patient_query = "SELECT patient_id, first_name, last_name FROM patient_records";
+$patient_result = $conn->query($patient_query);
 
-include '../connection/connection.php';
+// Fetch Staff with their associated department
+$staff_query = "SELECT staff_id, fname, lname, hospital_department_id FROM staff_records";
+$staff_result = $conn->query($staff_query);
+
+// Fetch Departments
+$dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+$dept_result = $conn->query($dept_query);
+
+// Fetch External Associations
+$external_query = "SELECT medical_association_id, medical_association_name FROM external_associations";
+$external_result = $conn->query($external_query);
+
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,44 +29,45 @@ include '../connection/connection.php';
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/branch_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Referral Form</title>
+    <title>Admin Referral</title>
     <style>
         .form-container {
             padding: 20px;
             max-width: 600px;
             margin-left: 20px;
+            margin-right: 20px;
         }
 
         .form-group {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; 
+            align-items: center; 
             margin-bottom: 15px;
         }
 
         .form-group label {
-            flex: 1; /* Allows labels to take up equal space */
+            flex: 1; 
+            margin-right: 15px; 
             color: black;
             font-weight: bold;
-            margin-right: 20px;
+            text-align: left; 
         }
+
         .form-group input[type="text"],
         .form-group textarea,
         .form-group select {
-            flex: 2; /* Allows input fields to be wider */
+            flex: 2; 
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ddd; 
             border-radius: 4px;
         }
 
         .form-group textarea {
-            height: 80px;
+            height: 150px; 
         }
 
-
         .form-group input[type="submit"] {
-            background-color: green;
-            color: white;
+            background-color: green; 
+            color: white; 
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
@@ -65,150 +75,209 @@ include '../connection/connection.php';
         }
 
         .form-group input[type="submit"]:hover {
-            background-color: #042456;
+            background-color: #45a049; 
         }
 
-        #internal_fields,
-        #external_fields {
-            margin-top: 10px;
+         /* Button styling */
+         .form-container button {
+            color: white;
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: green;
+            
         }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <!--------------------Side Menu------------ -->
-        <?php include("../common/sidebar.php"); ?>
+      <!--------------------Side Menu------------ -->
+      <?php include("../common/sidebar.php"); ?>
 
-        <!-------------------Header------------------->
-        <div class="main-content">
-            <?php include("../common/navbar.php"); ?>
-            <!------------------Patient Section------------------>
-            <section id="referral_form">
-                <h2 class="page_title">Admin Referral Form:</h2>
-                <div class="form-container">
-                    <form action="admin_process_referral.php" method="post">
+      <!-------------------Header------------------->
+      <div class="main-content">
+          <?php include("../common/navbar.php"); ?>
+          <!------------------Patient Section------------------>
+          <section id="referral_form">
+              <h2 class="page_title">Referral Form:</h2>
+              <div class="form-container">
+                  <form action="admin_ref_process.php" method="post">
+                      <div class="form-group">
+                          <label for="patient_id">Patient:</label>
+                          <select id="patient_id" name="patient_id" required>
+                              <option value="">Select Patient</option>
+                              <?php while($patient = $patient_result->fetch_assoc()): ?>
+                                  <option value="<?php echo $patient['patient_id']; ?>">
+                                      <?php echo $patient['first_name'] . ' ' . $patient['last_name']; ?>
+                                  </option>
+                              <?php endwhile; ?>
+                          </select>
+                      </div>
+
+                      <!-- Staff selection -->
+                      <div class="form-group">
+                        <label for="staff_id">Staff:</label>
+                        <select id="staff_id" name="staff_id" required onchange="updateDepartment()">
+                            <option value="">Select Staff</option>
+                            <?php while($staff = $staff_result->fetch_assoc()): ?>
+                                <option value="<?php echo $staff['staff_id']; ?>" data-department-id="<?php echo $staff['hospital_department_id']; ?>">
+                                    <?php echo $staff['fname'] . ' ' . $staff['lname']; ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hospital_department_id">Sending Department:</label>
+                        <select id="hospital_department_id" name="hospital_department_id" required>
+                            <option value="">Select Department</option>
+                            <?php while($dept = $dept_result->fetch_assoc()): ?>
+                                <option value="<?php echo $dept['hospital_department_id']; ?>">
+                                    <?php echo $dept['department_name']; ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                      <!-- Existing fields -->
+                      <div class="form-group">
+                        <label for="referral_category">Referral Category:</label>
+                        <select id="referral_category" name="referral_category" required onchange="toggleReferralFields()">
+                            <option value="">Select Referral Category</option>
+                            <option value="internal">Internal Department</option>
+                            <option value="external">External Facility</option>
+                        </select>
+                    </div>
+
+                      <div id="internal_fields" style="display:none;">
                         <div class="form-group">
-                            <label for="patient_name">Patient Name:</label>
-                            <input type="text" id="patient_name" name="patient_name" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="patient_id">Patient ID:</label>
-                            <input type="text" id="patient_id" name="patient_id" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="department_id">Department:</label>
-                            <?php
-                                $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
-                                if ($result->num_rows > 0) {
-                                    echo '<select id="hospital_department_id" name="hospital_department_id" required>';
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo '<option value="' . $row['hospital_department_id'] . '">' . $row['department_name'] . '</option>';
-                                    }
-                                    echo '</select>';
-                                } else {
-                                    echo '<p>No departments available</p>';
-                                }
-                            ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="referral_type">Referral Destination:</label>
-                            <select id="referral_type" name="referral_type" required onchange="toggleReferralFields()">
-                                <option value="internal">Internal Department</option>
-                                <option value="external">External Facility</option>
-                            </select>
-                        </div>
-
-                        <div id="internal_fields" style="display:none;">
-                            <div class="form-group">
-                                <label for="internal_department">Target Department:</label>
+                            <label for="internal_department"> Destination:</label>
+                            <select id="internal_department" name="internal_department">
+                                <option value="">Select Internal Department</option>
                                 <?php
-                                    $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
-                                    if ($result->num_rows > 0) {
-                                        echo '<select id="hospital_department_id" name="hospital_department_id" required>';
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo '<option value="' . $row['hospital_department_id'] . '">' . $row['department_name'] . '</option>';
-                                        }
-                                        echo '</select>';
-                                    } else {
-                                        echo '<p>No departments available</p>';
-                                    }
-                                ?>
-                            </div>
-                        </div>
-
-                        <div id="external_fields" style="display:none;">
-                            <div class="form-group">
-                                <label for="external_facility">External Facility:</label>
-                                <?php
-                                    $result = $conn->query("SELECT medical_association_id, medical_association_name FROM `external_associations`;");
-                                    if ($result->num_rows > 0) {
-                                        echo '<select id="medical_association_id" name="medical_association_id" required>';
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo '<option value="' . $row['medical_association_id'] . '">' . $row['medical_association_name'] . '</option>';
-                                        }
-                                        echo '</select>';
-                                    } else {
-                                        echo '<p>No Associations available</p>';
-                                    }
-                                ?>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="request_type">Request Type:</label>
-                            <select id="request_type" name="request_type">
-                                <option value="consult">Consultation</option>
-                                <option value="e-surgery">Emergency Surgery</option>
-                                <option value="surgury">Surgery</option>
-                                <option value="follow-up">Follow Up</option>
-                                <option value="blood-work">Blood Work</option>
-                                <option value="x-ray">X-Rays</option>
+                                // Reset the department result set
+                                mysqli_data_seek($dept_result, 0);
+                                while($dept = $dept_result->fetch_assoc()): ?>
+                                    <option value="<?php echo $dept['hospital_department_id']; ?>">
+                                        <?php echo $dept['department_name']; ?>
+                                    </option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
+                    </div>
 
+                    <div id="external_fields" style="display:none;">
                         <div class="form-group">
-                            <label for="priority_id">Priority Level:</label>
-                            <select id="p_type" name="p_type">
-                                <option value="urgent">Urgent</option>
-                                <option value="standard">Standard</option>
-                                <option value="non-priority">Non-Priority</option>
+                            <label for="external_facility">External Facility:</label>
+                            <select id="external_facility" name="external_facility">
+                                <option value="">Select External Facility</option>
+                                <?php 
+                                // Reset the external associations result set
+                                mysqli_data_seek($external_result, 0);
+                                while($external = $external_result->fetch_assoc()): ?>
+                                    <option value="<?php echo $external['medical_association_id']; ?>">
+                                        <?php echo $external['medical_association_name']; ?>
+                                    </option>
+                                <?php endwhile; ?>
                             </select>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label for="notes">Extra Notes:</label>
-                            <textarea id="notes" name="notes" required></textarea>
-                        </div>
+                    <div class="form-group">
+                    <label for="request_type">Request Type:</label>
+                    <input type="text" id="request_type" name="request_type" placeholder="Enter Request Type (e.g., Consultation, Follow-up)" required>
+                    </div>
 
-                        <div class="form-group">
-                            <input type="submit" value="Submit Referral">
-                        </div>
-                    </form>
-                </div>
-            </section>
-        </div>
-    </div>
+                      <div class="form-group">
+                          <label for="urgency_level">Urgency Level:</label>
+                          <select id="urgency_level" name="urgency_level" required>
+                              <option value="">Select Urgency Level</option>
+                              <option value="urgent">Urgent</option>
+                              <option value="standard">Standard</option>
+                              <option value="non_priority">Non-Priority</option>
+                          </select>
+                      </div>
 
-    <script>
-        function toggleReferralFields() {
-            var referralType = document.getElementById('referral_type').value;
-            var internalFields = document.getElementById('internal_fields');
-            var externalFields = document.getElementById('external_fields');
 
-            if (referralType === 'internal') {
-                internalFields.style.display = 'block';
-                externalFields.style.display = 'none';
-            } else if (referralType === 'external') {
-                internalFields.style.display = 'none';
-                externalFields.style.display = 'block';
+
+                      <!-- Reason for referral -->
+                      <div class="form-group">
+                          <label for="reason_for_referral">Reason for Referral:</label>
+                          <textarea id="reason_for_referral" name="reason_for_referral" required></textarea>
+                      </div>
+
+                      <input type="hidden" id="is_external" name="is_external" value="0">
+                      
+                    <button type="submit" >Add Referral</button>
+                    <button style="background-color: grey;" class="cancel" onclick="window.location.href='admin_referal_view.php'">Cancel</button>
+
+                  </form>
+              </div> <!-- End of form-container -->
+          </section>
+
+          <!-- JavaScript to toggle fields -->
+          <script>
+            function toggleReferralFields() {
+                var referralType = document.getElementById('referral_category').value;
+                var internalFields = document.getElementById('internal_fields');
+                var externalFields = document.getElementById('external_fields');
+                var isExternalInput = document.getElementById('is_external');
+                var internalDepartment = document.getElementById('internal_department');
+                var externalFacility = document.getElementById('external_facility');
+
+                if (referralType === 'internal') {
+                    internalFields.style.display = 'block';
+                    externalFields.style.display = 'none';
+                    isExternalInput.value = '0';
+                    internalDepartment.required = true;
+                    externalFacility.required = false;
+                } else if (referralType === 'external') {
+                    internalFields.style.display = 'none';
+                    externalFields.style.display = 'block';
+                    isExternalInput.value = '1';
+                    internalDepartment.required = false;
+                    externalFacility.required = true;
+                } else {
+                    internalFields.style.display = 'none';
+                    externalFields.style.display = 'none';
+                    isExternalInput.value = '0';
+                    internalDepartment.required = false;
+                    externalFacility.required = false;
+                }
+            }
+        </script>
+
+
+        <script>
+            function updateDepartment() {
+            var staffSelect = document.getElementById('staff_id');
+            var departmentSelect = document.getElementById('hospital_department_id');
+
+            // Get selected option
+            var selectedOption = staffSelect.options[staffSelect.selectedIndex];
+            
+            // Get the department ID from data attribute
+            var departmentId = selectedOption.getAttribute('data-department-id');
+
+            // Set the department select value
+            if (departmentId) {
+                // Set the selected value in the department dropdown
+                departmentSelect.value = departmentId;
             } else {
-                internalFields.style.display = 'none';
-                externalFields.style.display = 'none';
+                // Reset if no department is associated
+                departmentSelect.value = "";
             }
         }
-    </script>
-</body>
+        </script>
+
+      </body>
 </html>
+

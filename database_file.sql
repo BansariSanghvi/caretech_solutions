@@ -239,7 +239,7 @@ CREATE TABLE user_level (
     description VARCHAR(255)
 );
 
-/* Approvals Table */
+/* Approvals Table */ 
 CREATE TABLE approvals (
     approval_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT(10),
@@ -247,7 +247,7 @@ CREATE TABLE approvals (
     equipment_ID INT(10),
     approval_qty INT(10),
     approval_description VARCHAR(255),
-    approval_sent_date DATE DEFAULT CURRENT_DATE,
+    approval_sent_date DATE DEFAULT (CURRENT_DATE),
     approval_date INT(8) NULL,
     approval_status VARCHAR(255) DEFAULT 'Waiting Approval',
 
@@ -297,6 +297,15 @@ INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_ema
 ('City Hospital', '123 Main St, Sheffield, UK', '01142345678', 'contact@cityhospital.com');
 
 
+INSERT INTO hospital_branches (department_name, department_email, department_type, department_phone, hospital_id) VALUES
+('Cardiology', 'cardiology@cityhospital.com', 'Medical', '01142345679', 1),
+('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
+('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
+('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1),
+('Adminstration','admin@caretech.com','Admin','1234689300','1');
+
+
 INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, hospital_department_id, hospital_id, isActive, reasonToLeave)
 VALUES
 ('John', 'Doe', '123 Main St', '1234567890', 'john.doe@cityhospital.com', 'Doctor', 1, 1, TRUE, NULL),
@@ -307,20 +316,11 @@ VALUES
 
 
 INSERT INTO patient_records (first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, staff_id, hospital_id, medical_association_id, last_seen_date) VALUES
-('Alice', 'Williams', 'alice.williams@email.com', '07123456789', '1985-06-15', '07812345678', 'John Williams', 'No history of major illnesses', TRUE, 1, 1, 1, '2024-11-15'),
-('Bob', 'Brown', 'bob.brown@email.com', '07987654321', '1990-12-25', '07898765432', 'Emily Brown', 'Asthma', TRUE, 2, 2, 2, '2024-11-10'),
-('Charlie', 'Davis', 'charlie.davis@email.com', '07865432123', '1982-09-12', '07765432123', 'Sarah Davis', 'Diabetes', TRUE, 3, 3, 3, '2024-11-18'),
-('Deborah', 'Miller', 'deborah.miller@email.com', '07712341234', '1975-03-09', '07987654321', 'Michael Miller', 'High blood pressure', TRUE, 4, 4, 4, '2024-11-20'),
-('Eve', 'Wilson', 'eve.wilson@email.com', '07698765432', '1995-08-30', '07654321876', 'David Wilson', 'No history', TRUE, 5, 5, 5, '2024-11-12');
-
-INSERT INTO hospital_branches (department_name, department_email, department_type, department_phone, hospital_id) VALUES
-('Cardiology', 'cardiology@cityhospital.com', 'Medical', '01142345679', 1),
-('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
-('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
-('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
-('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1),
-('Adminstration','admin@caretech.com','Admin','1234689300','1');
-
+('Alice', 'Williams', 'alice.williams@email.com', '07123456789', '19850615', '078123456', 'John Williams', 'No history of major illnesses', TRUE, 1, 1, 1, '20241115'),
+('Bob', 'Brown', 'bob.brown@email.com', '07987654321', '19901225', '078987654', 'Emily Brown', 'Asthma', TRUE, 2, 2, 2, '20241110'),
+('Charlie', 'Davis', 'charlie.davis@email.com', '07865432123', '19820912', '077654321', 'Sarah Davis', 'Diabetes', TRUE, 3, 3, 3, '20241118'),
+('Deborah', 'Miller', 'deborah.miller@email.com', '07712341234', '19750309', '079876543', 'Michael Miller', 'High blood pressure', TRUE, 4, 4, 4, '20241120'),
+('Eve', 'Wilson', 'eve.wilson@email.com', '07698765432', '19950830', '076543218', 'David Wilson', 'No history', TRUE, 5, 5, 5, '20241112');
 
 INSERT INTO external_associations (medical_association_name, associations_location, associations_phone, associations_email, hospital_id) VALUES
 ('Greenwood GP Surgery', '12 Green St, Sheffield, UK', '01142345555', 'contact@greenwoodgp.com', 1),
@@ -356,7 +356,7 @@ INSERT INTO drugs_list (drugName, supplier_id, description, qty, price) VALUES
 ('Paracetamol', 4, 'Painkiller used for mild to moderate pain relief', 250, 5),
 ('Lisinopril', 5, 'ACE inhibitor used for high blood pressure treatment', 120, 30);
 
-INSERT INTO `medicalequipment_list` (`equipment_ID`, `equipment_Name`, `equipment_description`, `qty`, `price`, `isUrgent`, `hospital_department_id`) VALUES
+INSERT INTO medicalEquipment_list (`equipment_ID`, `equipment_Name`, `equipment_description`, `qty`, `price`, `isUrgent`, `hospital_department_id`) VALUES
 (1, 'ECG Machine', 'Used for measuring the electrical activity of the heart.', 5, 12000, 1, 1),
 (2, 'Defibrillator', 'Essential for emergency cardiac situations.', 25, 15000, 1, 2),
 (3, 'Orthopedic Drill', 'Used in surgical orthopedic procedures.', 2, 8000, 0, 3),
@@ -375,7 +375,7 @@ INSERT INTO referral_form (request_type, summary_notes, hospital_department_id, 
 ('General Checkup', 'Routine physical examination for the patient.', 5, 4, 1, 1, 4),
 ('Orthopedic Surgery', 'Patient requires surgical intervention for a broken arm.', 3, 5, 1, 1, 5);
 
-INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, problem_status, isUrgent) VALUES
+INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, problem_status, urgency_value) VALUES
 ('Software', 'Patient registration system crashes when entering insurance details.', 101, 'John', 'Doe', 1, 'IT Support', 'Pending', 'High'),
 ('Software', 'Diagnostic system generates incorrect lab results.', 104, 'Alice', 'Brown', 2, 'Software Developer', 'Pending', 'High'),
 ('Software', 'Appointment scheduling tool takes too long to load.' , 105, 'Emma', 'Green', 3, 'UI Specialist', 'In Progress', 'Medium'),

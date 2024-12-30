@@ -134,7 +134,7 @@ include '../connection/connection.php';
                         <div class="buttons-container">
                             
                             <div class="add_staff_box">
-                                <button class = "add_supplier_btn" onclick="window.location.href='add_patient.php'"><i class="ri-user-add-line"></i>   Add Patient</button>
+                                <button class = "add_supplier_btn" onclick="window.location.href='add_patients_admin.php'"><i class="ri-user-add-line"></i>   Add Patient</button>
                             </div>
                             <div class="remove_staff_box">
                                 <button class="remove_supplier_btn" onclick="window.location.href='remove_patient.php'"><i class='bx bxs-minus-square'></i>  Remove Patient</button>

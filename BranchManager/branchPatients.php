@@ -161,9 +161,11 @@ if ($_SESSION['role'] != 'branchManager') {
 
                    
             <?php 
-                    $query = "SELECT patient_id, first_name, last_name, email, phone_no, date_of_birth, emergency_contact, emergency_contact_name 
-                              FROM patient_records";
+                    $query = "SELECT patient_id, first_name, last_name, email, phone_no, date_of_birth, 
+                    emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, last_seen_date 
+                    FROM patient_records";
                     $result = $conn->query($query);
+
 
                     // Check if there are any records
                     if ($result->num_rows > 0) {
@@ -171,43 +173,49 @@ if ($_SESSION['role'] != 'branchManager') {
                     } else {
                         $patient_data = []; // No records found
                     }
-                    ?>
+                ?>
 
-                    <div class="scrollable-table">
-                        <table class="patient_table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
-                                    <th>DOB</th>
-                                    <th>Contact No</th>
-                                    <th>Emergency Contact No</th>
-                                    <th>Emergency Contact Name</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
-                                // Loop through patient data and display it in the table
-                                foreach ($patient_data as $patient) {
-                                    echo "<tr>";
-                                    echo "<td>" . $patient['patient_id'] . "</td>";
-                                    echo "<td>" . $patient['first_name'] . "</td>";
-                                    echo "<td>" . $patient['last_name'] . "</td>";
-                                    echo "<td>" . $patient['email'] . "</td>";
-                                    echo "<td>" . $patient['date_of_birth'] . "</td>";
-                                    echo "<td>" . $patient['phone_no'] . "</td>";
-                                    echo "<td>" . $patient['emergency_contact'] . "</td>";
-                                    echo "<td>" . $patient['emergency_contact_name'] . "</td>";
-                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
-                                    echo "</tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="scrollable-table">
+                <table class="patient_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Birth Year</th>
+                            <th>Emergency Contact</th>
+                            <th>Emergency Contact Name</th>
+                            <th>Patient History</th>
+                            <th>Last Seen Year</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        // Loop through patient data and display it in the table
+                        foreach ($patient_data as $patient) {
+                            echo "<tr>";
+                            echo "<td>" . $patient['patient_id'] . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['first_name']) . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['last_name']) . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['email']) . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['phone_no']) . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['date_of_birth']) . "</td>"; // Just display the year
+                            echo "<td>" . htmlspecialchars($patient['emergency_contact']) . "</td>";
+                            echo "<td>" . htmlspecialchars($patient['emergency_contact_name']) . "</td>";
+                            echo "<td>" . htmlspecialchars(substr($patient['patient_history'], 0, 50)) . "...</td>"; 
+                            echo "<td>" . htmlspecialchars($patient['last_seen_date']) . "</td>"; // Just display the year
+                            echo "<td><a href='edit_branchPatient.php?patient_id=" . $patient['patient_id'] . "' class='edit-button'>View/Edit</a></td>";
+                            echo "</tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+
+
             </div>
         </div>
     </div>

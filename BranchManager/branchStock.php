@@ -248,16 +248,22 @@ if ($_SESSION['role'] != 'branchManager') {
                                             $row_class = "normal-stock"; // Default color for normal stock
                                         }
                                         
-                                        echo "<tr class='$row_class'>";
+                                        echo "<tr class='$row_class' data-id='" . $inventory['equipment_ID'] . "'>";
                                         echo "<td>" . $inventory['equipment_ID'] . "</td>";
                                         echo "<td>" . $inventory['equipment_Name'] . "</td>";
                                         echo "<td>" . $inventory['equipment_description'] . "</td>";
                                         echo "<td>" . $inventory['qty'] . "</td>";
                                         echo "<td>" . $inventory['department_name'] . "</td>";
-                                        echo "<td><a href='edit_inventory.php?id=" . $inventory['equipment_ID'] . "' class='edit-button'>Edit</a></td>";
+                                        echo "<td><button onclick='editQuantity(" . $inventory['equipment_ID'] . ", " . $inventory['qty'] . ")' class='edit-button'>Edit Qty</button></td>";
                                         echo "</tr>";
                                     }
                                 ?>
+                                <div id="editModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:1px solid #ccc;">
+                                <h3>Edit Quantity</h3>
+                                <input type="number" id="newQuantity" min="0">
+                                <button onclick="updateQuantity()">Update</button>
+                                <button onclick="closeModal()">Cancel</button>
+                            </div>
                             </tbody>
                         </table>
                     </div>
@@ -267,7 +273,63 @@ if ($_SESSION['role'] != 'branchManager') {
     </div>
 </div>
 
-    <script src="assets/js/main.js"></script>
+<script>
+let currentItemId = null;
+
+function editQuantity(id, currentQty) {
+    currentItemId = id;
+    document.getElementById('newQuantity').value = currentQty;
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+function updateQuantity() {
+    const newQty = document.getElementById('newQuantity').value;
+    
+    fetch('branchStockUpdateQuantity.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${currentItemId}&qty=${newQty}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the quantity in the table
+            const row = document.querySelector(`tr[data-id="${currentItemId}"]`);
+            const qtyCell = row.querySelector('td:nth-child(4)');
+            qtyCell.textContent = newQty;
+            
+            // Update the edit button's onclick attribute
+            const editButton = row.querySelector('.edit-button');
+            editButton.setAttribute('onclick', `editQuantity(${currentItemId}, ${newQty})`);
+            
+            // Update row color based on new quantity
+            updateRowColor(row, newQty);
+            
+            closeModal();
+        } else {
+            alert('Failed to update quantity');
+        }
+    });
+}
+
+
+function updateRowColor(row, qty) {
+    row.className = ''; // Reset class
+    if (qty < 10) {
+        row.classList.add('low-stock');
+    } else if (qty >= 10 && qty <= 20) {
+        row.classList.add('approaching-stock');
+    } else {
+        row.classList.add('normal-stock');
+    }
+}
+</script>
 </body>
 </html>
 

@@ -229,7 +229,6 @@ if ($_SESSION['role'] != 'branchManager') {
                                 <th>Phone</th>
                                 <th>Role</th>
                                 <th>Department</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -244,7 +243,6 @@ if ($_SESSION['role'] != 'branchManager') {
                                 echo "<td>" . $staff['staff_phone_no'] . "</td>";
                                 echo "<td>" . $staff['role'] . "</td>";
                                 echo "<td>" . $staff['department_name'] . "</td>";
-                                echo "<td><a href='edit_staff.php?id=" . $staff['staff_id'] . "' class='edit-button'>Edit</a></td>";
                                 echo "</tr>";
                             }
                             $conn->close();

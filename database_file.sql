@@ -375,7 +375,7 @@ INSERT INTO referral_form (request_type, summary_notes, hospital_department_id, 
 ('General Checkup', 'Routine physical examination for the patient.', 5, 4, 1, 1, 4),
 ('Orthopedic Surgery', 'Patient requires surgical intervention for a broken arm.', 3, 5, 1, 1, 5);
 
-INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, problem_status, isUrgent) VALUES
+INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, problem_status, urgency_value) VALUES
 ('Software', 'Patient registration system crashes when entering insurance details.', 101, 'John', 'Doe', 1, 'IT Support', 'Pending', 'High'),
 ('Software', 'Diagnostic system generates incorrect lab results.', 104, 'Alice', 'Brown', 2, 'Software Developer', 'Pending', 'High'),
 ('Software', 'Appointment scheduling tool takes too long to load.' , 105, 'Emma', 'Green', 3, 'UI Specialist', 'In Progress', 'Medium'),

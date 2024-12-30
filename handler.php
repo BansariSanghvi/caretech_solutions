@@ -179,12 +179,27 @@ switch (@parse_url($_SERVER['REQUEST_URI'])['path']) {
         break;
     case '/BranchManager/branchReferral.php':
         require 'branchReferral.php';
-        break;    
+        break;  
+    case '/BranchManager/branchReferralHistory':
+        require 'branchReferralHistory.php';
+        break;  
+    case '/BranchManager/branchRequestPasswordChange.php':
+        require 'branchRequestPasswordChange.php';
+        break;
+    case 'BranchManager/branchSettings.php':
+        require 'branchSettings.php';
+        break;            
     case '/BranchManager/branchStaff.php':
         require 'branchStaff.php';
         break;
     case '/BranchManager/branchStock.php':
         require 'branchStock.php';
+    case '/BranchManager/branchStockUpdateQuantity.php':
+        require 'branchStockUpdateQuantity.php';
+        break;
+    case '/BranchManager/edit_branchPatients.php':
+        require 'edit_branchPatients.php';
+        break;        
     case '/BranchManager/generate_letter.php':
         require 'generate_letter.php';
         break;

@@ -29,11 +29,11 @@
                 <li><a href="branchReferral.php">Referral Form</a></li>
             </ul>
         </li>
+        <li class="<?php echo ($current_page == 'referral_history') ? 'active' : ''; ?>">
+            <i class='bx bx-history'></i><a href="branchReferralHistory.php">Referral History</a>
+        </li>
         <li class="<?php echo ($current_page == 'settings') ? 'active' : ''; ?>">
             <i class='bx bxs-cog'></i><a href="branchSettings.php">Settings</a>
-        </li>
-        <li class="<?php echo ($current_page == 'report') ? 'active' : ''; ?>">
-            <i class="ri-alert-fill"></i><a href="branch_report_problem.php">Report Problem</a>
         </li>
     </div>
 </section>

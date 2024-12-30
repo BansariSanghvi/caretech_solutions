@@ -1,0 +1,28 @@
+runtime: php83
+
+runtime_config:
+  document_root: .
+
+handlers:
+# Serve a directory as a static resource.
+- url: /stylesheets
+  static_dir: stylesheets
+
+
+# Serve images as static resources.
+- url: /(.+\.(gif|png|jpg))$
+  static_files: \1
+  upload: .+\.(gif|png|jpg)$
+
+# Serve your app through a front controller at index.php or public/index.php.
+- url: .*
+  script: auto
+
+entrypoint:
+  serve handler.php
+
+env_variables: 
+CLOUDSQL_USER: root
+CLOUDSQL_DB: caretech_solutions
+CLOUDSQL_PASSWORD: '@KNjOzNqd)NdGART'
+CLOUDSQL_DSN: caretechsolutions:us-central1:caretech-solutions-db  

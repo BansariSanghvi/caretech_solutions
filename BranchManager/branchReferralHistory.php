@@ -173,14 +173,15 @@ if ($result->num_rows > 0) {
                     <h2 class="page_title">Referral History:</h2>
 
                     <div class="filter-container">
-                        <select id="departmentFilter" name="department" onchange="applyFilters()">
-                            <option value="">All Departments</option>
+                        <select id="staffFilter" name="staff" onchange="applyFilters()">
+                            <option value="">All Staff</option>
                             <?php
-                            $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
-                            $dept_result = $conn->query($dept_query);
-                            while ($row = $dept_result->fetch_assoc()) {
-                                $selected = (isset($_GET['department']) && $row['hospital_department_id'] == $_GET['department']) ? 'selected' : '';
-                                echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
+                            // Fetch staff members for filtering
+                            $staff_query = "SELECT staff_id, fname, lname FROM staff_records";
+                            $staff_result = $conn->query($staff_query);
+                            while ($row = $staff_result->fetch_assoc()) {
+                                $selected = (isset($_GET['staff']) && $row['staff_id'] == $_GET['staff']) ? 'selected' : '';
+                                echo "<option value='" . $row['staff_id'] . "' $selected>" . htmlspecialchars($row['fname'] . " " . $row['lname']) . "</option>";
                             }
                             ?>
                         </select>
@@ -195,7 +196,6 @@ if ($result->num_rows > 0) {
                         <table class="referral_table">
                             <thead>
                                 <tr>
-                                    
                                     <th>Patient Name</th>
                                     <th>Request Type</th>
                                     <th>Summary Notes</th>
@@ -208,12 +208,12 @@ if ($result->num_rows > 0) {
                                 <?php 
                                 foreach ($referral_data as $referral) {
                                     echo "<tr>";
-                                    echo "<td>" . $referral['patient_fname'] . " " . $referral['patient_lname'] . "</td>";
-                                    echo "<td>" . $referral['request_type'] . "</td>";
-                                    echo "<td>" . $referral['summary_notes'] . "</td>";
-                                    echo "<td>" . $referral['sending_department'] . "</td>";
-                                    echo "<td>" . ($referral['is_external'] ? $referral['medical_association_name'] : $referral['receiving_department']) . "</td>";
-                                    echo "<td>" . $referral['staff_fname'] . " " . $referral['staff_lname'] . "</td>";
+                                    echo "<td>" . htmlspecialchars($referral['patient_fname'] . " " . $referral['patient_lname']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($referral['request_type']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($referral['summary_notes']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($referral['sending_department']) . "</td>";
+                                    echo "<td>" . ($referral['is_external'] ? htmlspecialchars($referral['medical_association_name']) : htmlspecialchars($referral['receiving_department'])) . "</td>";
+                                    echo "<td>" . htmlspecialchars($referral['staff_fname'] . " " . $referral['staff_lname']) . "</td>";
                                     echo "</tr>";
                                 }
                                 ?>
@@ -227,10 +227,10 @@ if ($result->num_rows > 0) {
 
     <script>
         function applyFilters() {
-            var department = document.getElementById('departmentFilter').value;
+            var staff = document.getElementById('staffFilter').value;
             var referralType = document.getElementById('referralTypeFilter').value;
-            window.location.href = '?department=' + department + '&referral_type=' + referralType;
-     }
-</script>
+            window.location.href = '?staff=' + staff + '&referral_type=' + referralType;
+        }
+    </script>
 </body>
 </html>

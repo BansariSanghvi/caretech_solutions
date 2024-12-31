@@ -8,7 +8,48 @@ if ($_SESSION['role'] != 'branchManager') {
     header('Location: unauthorized.php');
     exit;
 }
+
+include '../connection/connection.php';
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch Total Staff
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
+$staffResult = $conn->query($staffQuery);
+if ($staffResult->num_rows > 0) {
+    $row = $staffResult->fetch_assoc();
+    $totalStaff = $row['total'];
+}
+
+// Fetch Total appointments
+$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments"; 
+$appointmentsResult = $conn->query($appointmentsQuery);
+if ($appointmentsResult->num_rows > 0) {
+    $row = $appointmentsResult->fetch_assoc();
+    $totalAppointments = $row['total'];
+}
+
+// Fetch Total Patients
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
+$patientsResult = $conn->query($patientsQuery);
+if ($patientsResult->num_rows > 0) {
+    $row = $patientsResult->fetch_assoc();
+    $totalPatients = $row['total'];
+}
+
+// Fetch Total Referrals
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'"; 
+$referralsResult = $conn->query($referralsQuery);
+if ($referralsResult->num_rows > 0) {
+    $row = $referralsResult->fetch_assoc();
+    $totalReferrals = $row['total'];
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -232,14 +273,14 @@ if ($_SESSION['role'] != 'branchManager') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class='bx bx-street-view'></i>Total Staff</h5>
-                                    <h6>15</h6>
+                                    <h6><?php echo $totalStaff ?></h6>
                                 </div>
                             </div>
                             <!-- Box 2 -->
                             <div class="col-md-3">
                                 <div class="count-box">
-                                    <h5><i class='bx bx-clipboard'></i>Pending Orders</h5>
-                                    <h6>5</h6>
+                                    <h5><i class='bx bx-clipboard'></i>Total Referrals</h5>
+                                    <h6><?php echo $totalReferrals ?></h6>
                                 </div>
                             </div>
 
@@ -247,7 +288,7 @@ if ($_SESSION['role'] != 'branchManager') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-user-fill"></i>Total Patients</h5>
-                                    <h6>150</h6>
+                                    <h6><?php echo $totalPatients ?></h6>
                                 </div>
                             </div>
 
@@ -255,7 +296,7 @@ if ($_SESSION['role'] != 'branchManager') {
                             <div class="col-md-3">
                                 <div class="count-box">
                                     <h5><i class="ri-add-box-fill"></i>Total Appointments</h5>
-                                    <h6>160</h6>
+                                    <h6><?php echo $totalAppointments ?></h6>
                                 </div>
                             </div>
                         </div>

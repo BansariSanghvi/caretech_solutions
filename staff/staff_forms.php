@@ -125,7 +125,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <!-- Metric Boxes -->
-                                <button class="count-box" onclick="window.location.href='staff_approvals.php'">
+                                <button class="count-box" onclick="window.location.href='staff_request_form.php'">
                                     <h5><i class="ri-hospital-fill"></i>Equipment Request Form</h5>
                                 </button>
                                 <button class="count-box" onclick="window.location.href='staff_referral_form.php'">

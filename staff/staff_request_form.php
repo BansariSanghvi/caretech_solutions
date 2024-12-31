@@ -103,7 +103,17 @@ include '../connection/connection.php'
             <!-- Form Section -->
             <div class="form-container">
                 <h2>Submit Approval Request</h2>
-                <form action="../staff/process_request.php" method="POST">
+                <form action="process_equipment_request.php" method="POST">
+                    <!-- User -->
+                    <div class="form-group">
+                        <label for="userID">Select User Level:</label>
+                        <select id="userID" name="userID" required>
+                            <option value="" disabled selected>-- Select User Level --</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Branch Manager</option>
+                            <option value="3">Staff</option>
+                        </select>
+                    </div>
                     <!-- Equipment List -->
                     <div class="form-group">
                         <label for="equipment">Select Equipment:</label>

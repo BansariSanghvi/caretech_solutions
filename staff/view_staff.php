@@ -116,11 +116,11 @@ $staff = $result->fetch_assoc();
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("../common/sidebar.php"); ?>
+        <?php include("../common/staff_sidebar.php"); ?>
 
         <!-- Header -->
         <div class="main-content">
-            <?php include("../common/navbar.php"); ?>
+            <?php include("../common/staff_navbar.php"); ?>
 
             <!-- Staff Details Section -->
             <div class="staff-details">

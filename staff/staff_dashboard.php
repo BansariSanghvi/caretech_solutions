@@ -240,7 +240,7 @@ include '../connection/connection.php';
                             <!-- Metric Boxes -->
                             <div class="count-box">
                                 <h5><i class="ri-currency-fill"></i>Appointments Done</h5>
-                                <h6><?php echo $appointmanetDone ?></h6>
+                                <h6>10</h6>
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-user-fill"></i>Appointments Pending</h5>

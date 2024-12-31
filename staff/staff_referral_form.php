@@ -79,7 +79,7 @@ if ($_SESSION['role'] != 'staff') {
             <section id="referral_form">
             <h2 class="page_title">Referral Form</h2>
             <div class="form-container">
-        <form action="process_referral.php" method="post">
+        <form action="submit_referral.php" method="post">
             <div class="form-group">
                 <label for="patient_name">Patient Name:</label>
                 <input type="text" id="patient_name" name="patient_name" required>

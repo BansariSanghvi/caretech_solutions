@@ -30,8 +30,8 @@ $query = "SELECT patient_records.patient_id,
                  patient_records.isRegistered_NHS, 
                  staff_records.fname AS staff_fname, 
                  staff_records.lname AS staff_lname, 
-                 hospital_info.hospital_name, 
-                 external_associations.association_name, 
+                 hospital_info.hname, 
+                 external_associations.medical_association_name, 
                  patient_records.last_seen_date
           FROM patient_records
           INNER JOIN staff_records ON patient_records.staff_id = staff_records.staff_id
@@ -123,11 +123,11 @@ $patient = $result->fetch_assoc();
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("../common/sidebar.php"); ?>
+        <?php include("../common/staff_sidebar.php"); ?>
 
         <!-- Header -->
         <div class="main-content">
-            <?php include("../common/navbar.php"); ?>
+            <?php include("../common/staff_navbar.php"); ?>
 
             <!-- Patient Details Section -->
             <div class="patient-details">
@@ -179,11 +179,11 @@ $patient = $result->fetch_assoc();
                 </div>
                 <div class="detail-row">
                     <div class="label">Hospital:</div>
-                    <div class="value"><?php echo $patient['hospital_name']; ?></div>
+                    <div class="value"><?php echo $patient['hname']; ?></div>
                 </div>
                 <div class="detail-row">
                     <div class="label">Medical Association:</div>
-                    <div class="value"><?php echo $patient['association_name']; ?></div>
+                    <div class="value"><?php echo $patient['medical_association_name']; ?></div>
                 </div>
                 <div class="detail-row">
                     <div class="label">Last Seen Date:</div>

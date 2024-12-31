@@ -5,7 +5,7 @@ include("../connection/connection.php");
 // Check if the form was submitted via POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retrieve form data
-    $user_id = $_SESSION['user_id']; // Assuming user_id is stored in the session
+    $user_id = $_POST['userID']; // Assuming user_id is stored in the session
     $equipment_ID = $_POST['equipment'];
     $approval_qty = $_POST['quantity'];
     $hospital_department_id = $_POST['department'];

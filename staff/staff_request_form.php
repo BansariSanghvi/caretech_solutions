@@ -1,11 +1,13 @@
 <?php
 session_start();
 
-// Check if the user is correct
+// Check if the user is authorized
 if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
 }
+
+include '../connection/connection.php'
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +18,7 @@ if ($_SESSION['role'] != 'staff') {
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
-    <title>Request Equipment Form</title>
+    <title>Submit Approval Request</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +30,7 @@ if ($_SESSION['role'] != 'staff') {
         .form-container {
             display: flex;
             flex-direction: column;
-            gap: 20px; 
+            gap: 20px;
         }
 
         .form-container h2 {
@@ -50,29 +52,29 @@ if ($_SESSION['role'] != 'staff') {
 
         .form-group select,
         .form-group input,
+        .form-group textarea,
         .form-group button {
             width: 100%;
             padding: 10px;
             font-size: 14px;
-            border: 2px solid #ccc; /* Increased border thickness */
-            border-radius: 6px; /* More rounded corners */
-            transition: border-color 0.3s; /* Smooth transition for border color */
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            transition: border-color 0.3s;
         }
 
-        /* Hover effect for inputs and textareas */
         .form-group select:hover,
-        .form-group input:hover {
-            border-color: #007bff; /* Blue border on hover */
+        .form-group input:hover,
+        .form-group textarea:hover {
+            border-color: #007bff;
         }
 
-        /* Focus effect for inputs and textareas */
         .form-group select:focus,
-        .form-group input:focus {
-            border-color: #0056b3; /* Darker blue border on focus */
-            outline: none; /* Remove default outline */
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #0056b3;
+            outline: none;
         }
 
-        /* Button styles */
         .form-group button {
             background-color: #007bff;
             color: white;
@@ -100,19 +102,25 @@ if ($_SESSION['role'] != 'staff') {
 
             <!-- Form Section -->
             <div class="form-container">
-                <h2>Request Equipment</h2>
-                <form action="process_request.php" method="POST">
+                <h2>Submit Approval Request</h2>
+                <form action="../staff/process_request.php" method="POST">
                     <!-- Equipment List -->
                     <div class="form-group">
                         <label for="equipment">Select Equipment:</label>
                         <select id="equipment" name="equipment" required>
                             <option value="" disabled selected>-- Select Equipment --</option>
-                            <option value="Ventilator">Ventilator</option>
-                            <option value="Defibrillator">Defibrillator</option>
-                            <option value="Syringe Pump">Syringe Pump</option>
-                            <option value="ECG Machine">ECG Machine</option>
-                            <option value="Ultrasound Machine">Ultrasound Machine</option>
+                            <option value="1">Ventilator</option>
+                            <option value="2">Defibrillator</option>
+                            <option value="3">Syringe Pump</option>
+                            <option value="4">ECG Machine</option>
+                            <option value="5">Ultrasound Machine</option>
                         </select>
+                    </div>
+
+                    <!-- Approval Quantity -->
+                    <div class="form-group">
+                        <label for="quantity">Approval Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" required>
                     </div>
 
                     <!-- Department -->
@@ -120,29 +128,23 @@ if ($_SESSION['role'] != 'staff') {
                         <label for="department">Select Department:</label>
                         <select id="department" name="department" required>
                             <option value="" disabled selected>-- Select Department --</option>
-                            <option value="Emergency">Emergency</option>
-                            <option value="ICU">ICU</option>
-                            <option value="Radiology">Radiology</option>
-                            <option value="Pediatrics">Pediatrics</option>
-                            <option value="Oncology">Oncology</option>
+                            <option value="1">Emergency</option>
+                            <option value="2">ICU</option>
+                            <option value="3">Radiology</option>
+                            <option value="4">Pediatrics</option>
+                            <option value="5">Oncology</option>
                         </select>
                     </div>
 
-                    <!-- Hospital -->
+                    <!-- Description -->
                     <div class="form-group">
-                        <label for="hospital">Select Hospital:</label>
-                        <select id="hospital" name="hospital" required>
-                            <option value="" disabled selected>-- Select Hospital --</option>
-                            <option value="City Hospital">City Hospital</option>
-                            <option value="Central General">Central General</option>
-                            <option value="Northside Clinic">Northside Clinic</option>
-                            <option value="Westend Medical">Westend Medical</option>
-                        </select>
+                        <label for="description">Approval Description:</label>
+                        <textarea id="description" name="description" rows="4" required placeholder="Provide details about the request..."></textarea>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="form-group">
-                        <button type="submit">Submit Request</button>
+                        <button type="submit">Submit Approval Request</button>
                     </div>
                 </form>
             </div>

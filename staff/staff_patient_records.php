@@ -21,7 +21,7 @@ if ($_SESSION['role'] != 'staff') {
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/main_theme.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>BranchManager Patient Records</title>
+    <title>Patient Records</title>
     <style>
         .patient_table {
             width: 90%;
@@ -153,7 +153,7 @@ if ($_SESSION['role'] != 'staff') {
                                     <th>Contact No</th>
                                     <th>Emergency Contact No</th>
                                     <th>Emergency Contact Name</th>
-                                    <th>Edit</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,7 +169,7 @@ if ($_SESSION['role'] != 'staff') {
                                     echo "<td>" . $patient['phone_no'] . "</td>";
                                     echo "<td>" . $patient['emergency_contact'] . "</td>";
                                     echo "<td>" . $patient['emergency_contact_name'] . "</td>";
-                                    echo "<td><a href='edit_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
+                                    echo "<td><a href='view_patient.php?id=" . $patient['patient_id'] . "' class='edit-button'>View</a></td>";
                                     echo "</tr>";
                                 }
                                 ?>

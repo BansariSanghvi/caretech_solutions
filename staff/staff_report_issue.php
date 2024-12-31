@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Check if the user is an admin
+if ($_SESSION['role'] != 'staff') {
+    header('Location: unauthorized.php');
+    exit;
+}
+
+include '../connection/connection.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,12 +124,12 @@
 
             <!-- Dashboard Section -->
             <div class="inside-content">
-                <section class="report_problem_section" id='report_problem'>
+                <section class="report_problem_section" id='report_problem_staff'>
                     <h3 class="page_title">Report Problem:</h3>
 
                     <!-- Form to add new staff -->
                     <div class="form-container">
-                        <form action="report.php" method="POST">
+                        <form action="report_problem_button.php" method="POST">
                             
                             <div class="row">
                                 <label for="first_name">First Name:</label>
@@ -130,7 +142,7 @@
                             </div>
 
                             <div class="row">
-                                <label for="last_name">Staff ID Number:</label>
+                                <label for="last_name">Staff ID :</label>
                                 <input type="text" id="staff_id" name="staff_id" required>
                             </div>
 
@@ -146,12 +158,27 @@
 
                             <div class="row">
                                 <label for="department">Department:</label>
-                                <select id="department" name="department" required>
-                                    <option value="HR">HR</option>
-                                    <option value="Engineering">Engineering</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Sales">Sales</option>
-                                    <option value="Finance">Finance</option>
+                                <?php
+                                $result = $conn->query("SELECT hospital_department_id, department_name FROM `hospital_branches`;");
+                                if ($result->num_rows > 0) { 
+                                    echo '<select id="hospital_department_id" name="hospital_department_id" required>'; 
+                                    while ($row = $result->fetch_assoc()) { 
+                                        echo '<option value="' . $row['hospital_department_id'] . '">' . $row['department_name'] . '</option>'; 
+                                    }
+                                    echo '</select>'; 
+                                } else { 
+                                    echo '<p>No Items available</p>'; 
+                                }
+                                ?>
+                            </div>
+
+                            <div class="row">
+                                <label for="issue_type">Catagory:</label>
+                                <select id="issue_type" name="issue_type" required>
+                                    <option value="Software">Software</option>
+                                    <option value="Technical">Technical</option>
+                                    <option value="Network">Network</option>
+                                    <option value="Hardware">Hardware</option>
                                 </select>
                             </div>
 
@@ -159,6 +186,17 @@
                                 <label for="last_name">Issue: </label>
                                 <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Please describe the issue in detail..."></textarea>
                             </div>
+                            
+                            <div class="row">
+                                <label for="urgency_type">Urgency:</label>
+                                <select id="urgency_type" name="urgency_type" required>
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                    
+                                </select>
+                            </div>
+                            
 
                             <button type="submit">Submit</button>
                             

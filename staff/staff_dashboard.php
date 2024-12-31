@@ -6,6 +6,9 @@ if ($_SESSION['role'] != 'staff') {
     header('Location: unauthorized.php');
     exit;
 }
+
+include '../connection/connection.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -237,7 +240,7 @@ if ($_SESSION['role'] != 'staff') {
                             <!-- Metric Boxes -->
                             <div class="count-box">
                                 <h5><i class="ri-currency-fill"></i>Appointments Done</h5>
-                                <h6>10</h6>
+                                <h6><?php echo $appointmanetDone ?></h6>
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-user-fill"></i>Appointments Pending</h5>
@@ -280,6 +283,20 @@ if ($_SESSION['role'] != 'staff') {
                         </div>
                     </div>
 
+                    <?php 
+                    $query = "SELECT appointment_id, appointment_date, appointment_time
+                              FROM appointments";
+                    
+                    $result = $conn->query($query);
+
+                    // Check if there are any records
+                    if ($result->num_rows > 0) {
+                        $appointment_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
+                    } else {
+                        $appointment_data = []; // No records found
+                    }
+                    ?>
+                    
                     <!-- Appointment Table -->
                     <div class="graph-container">
                         <!-- Left Graph: Appointments per Month -->
@@ -287,31 +304,22 @@ if ($_SESSION['role'] != 'staff') {
                         <table class="appointment_table">
                             <thead>
                                 <tr>
-                                    <th>Patient Name</th>
+                                    <th>Patient ID</th>
+                                    <th>Date</th>
                                     <th>Time</th>
-                                    <th>Appointment Type</th>
-                                    <th>Notes</th>
                                     <th>Edit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Data -->
                                 <?php
-                                $appointments = [
-                                    ["John Doe", "10:00", "Online", "Headache, Dizziness"],
-                                    ["Jane Smith", "10:30", "In-Person", "Nausea, Diarrhea"],
-                                    ["Deborah Miller", "11:00", "Online", "Stomach upset, Dizziness"],
-                                    ["Eve Wilson", "11:30", "In-Person", "Dry mouth, Drowsiness"],
-                                    ["Alice Williams", "12:00", "In-Person", "Gastric discomfort, Nausea"],
-                                ];
-                                foreach ($appointments as $appointment) {
-                                    echo "<tr>
-                                        <td>{$appointment[0]}</td>
-                                        <td>{$appointment[1]}</td>
-                                        <td>{$appointment[2]}</td>
-                                        <td>{$appointment[3]}</td>
-                                        <td><button class='edit-button'>Edit</button></td>
-                                    </tr>";
+                                // Loop through patient data and display it in the table
+                                foreach ($appointment_data as $appointment) {
+                                    echo "<tr>";
+                                    echo "<td>" . $appointment['appointment_id'] . "</td>";
+                                    echo "<td>" . $appointment['appointment_date'] . "</td>";
+                                    echo "<td>" . $appointment['appointment_time'] . "</td>";
+                                    echo "<td><a href='edit_patient.php?id=" . $appointment['appointment_id'] . "' class='edit-button'>View</a></td>";
+                                    echo "</tr>";
                                 }
                                 ?>
                             </tbody>

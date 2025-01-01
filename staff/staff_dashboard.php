@@ -46,6 +46,16 @@ if ($referralsResult->num_rows > 0) {
     $totalReferrals = $row['total'];
 }
 
+// Fetch Announcements
+$announcementQuery = "SELECT announcement_description FROM announcements;"; 
+$announcementResult = $conn->query($announcementQuery);
+$announcements = []; // Array to store the announcement descriptions
+
+if ($announcementResult->num_rows > 0) {
+    while ($row = $announcementResult->fetch_assoc()) {
+        $announcements[] = $row['announcement_description']; // Collect each announcement description
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -363,11 +373,19 @@ if ($referralsResult->num_rows > 0) {
                         </table>
                         </div>
 
-                        <!-- Right Graph: Revenue per Quarter -->
+                        <!-- Right: Announcements-->
                         <div class="announcement_box">
                             <h5>Announcements</h5>
-                            <h5>Make sure to log all patient's records from today.</h5>
-
+                            <?php
+                            // Display Announcements
+                            if (!empty($announcements)) {
+                                foreach ($announcements as $announcement) {
+                                    echo "<p>$announcement</p>"; // Display each announcement in a paragraph
+                                }
+                            } else {
+                                echo "<p>No announcements available.</p>";
+                            }
+                            ?>
                         </div>
                     </div>
                 </section>

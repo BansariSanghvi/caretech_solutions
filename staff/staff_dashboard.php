@@ -9,6 +9,43 @@ if ($_SESSION['role'] != 'staff') {
 
 include '../connection/connection.php';
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch Total Staff
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
+$staffResult = $conn->query($staffQuery);
+if ($staffResult->num_rows > 0) {
+    $row = $staffResult->fetch_assoc();
+    $totalStaff = $row['total'];
+}
+
+// Fetch Total appointments
+$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments"; 
+$appointmentsResult = $conn->query($appointmentsQuery);
+if ($appointmentsResult->num_rows > 0) {
+    $row = $appointmentsResult->fetch_assoc();
+    $totalAppointments = $row['total'];
+}
+
+// Fetch Total Patients
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
+$patientsResult = $conn->query($patientsQuery);
+if ($patientsResult->num_rows > 0) {
+    $row = $patientsResult->fetch_assoc();
+    $totalPatients = $row['total'];
+}
+
+// Fetch Total Referrals
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'"; 
+$referralsResult = $conn->query($referralsQuery);
+if ($referralsResult->num_rows > 0) {
+    $row = $referralsResult->fetch_assoc();
+    $totalReferrals = $row['total'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -139,7 +176,7 @@ include '../connection/connection.php';
         }
 
         .appointment_table {
-            width: 93%;
+            width: 100%;
             border-collapse: collapse;
             margin: 2rem;
         }
@@ -150,7 +187,7 @@ include '../connection/connection.php';
         }
 
         .appointment_table th, .appointment_table td {
-            padding: 12px;
+            padding: 30px;
             border: 1px solid #ddd;
         }
 
@@ -212,7 +249,7 @@ include '../connection/connection.php';
             border-radius: 8px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             height: 250px;
-            width: 400px;
+            width: 550px;
             margin-right: 25px;
         }
     </style>
@@ -239,20 +276,20 @@ include '../connection/connection.php';
                         <div class="row">
                             <!-- Metric Boxes -->
                             <div class="count-box">
-                                <h5><i class="ri-currency-fill"></i>Appointments Done</h5>
-                                <h6>10</h6>
+                                <h5><i class='bx bx-street-view'></i>Total Staff</h5>
+                                <h6><?php echo $totalStaff ?></h6>
                             </div>
                             <div class="count-box">
-                                <h5><i class="ri-user-fill"></i>Appointments Pending</h5>
-                                <h6>8</h6>
+                                <h5><i class='bx bx-clipboard'></i>Pending Referrals</h5>
+                                <h6><?php echo $totalReferrals ?></h6>
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-hospital-line"></i>Appointments</h5>
-                                <h6>18</h6>
+                                <h6><?php echo $totalAppointments ?></h6>
                             </div>
                             <div class="count-box">
                                 <h5><i class="ri-user-fill"></i>Total Patients</h5>
-                                <h6>1,200</h6>
+                                <h6><?php echo $totalPatients ?></h6>
                             </div>
                         </div>
                     </div>
@@ -272,7 +309,7 @@ include '../connection/connection.php';
                                     <button class="big-button" onclick="window.location.href='staff_patient_records.php'">
                                         <i class="ri-user-fill"></i> Patient Records
                                     </button>
-                                    <button class="big-button" onclick="window.location.href='staff_approvals.php'">
+                                    <button class="big-button" onclick="window.location.href='staff_request_form.php'">
                                         <i class="ri-hospital-fill"></i> Equipment Requests
                                     </button>
                                     <button class="big-button" onclick="window.location.href='staff_settings.php'">

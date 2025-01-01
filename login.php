@@ -9,9 +9,17 @@ $users = [
     ['username' => 'staff@caretech.com', 'password' => 'staff123', 'role' => 'staff'],
 ];
 
+function generateOTP($length = 6) {
+    $otp = "";
+    for ($i = 1; $i <= $length; $i++) {
+        $otp .= rand(0, 9);
+    }
+    return $otp;
+}
+
 $errorMessage = '';
 
-if (isset($_POST['login'])) {  // Check if the form is submitted
+if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -19,26 +27,65 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
     $authenticated = false;
     foreach ($users as $user) {
         if ($user['username'] == $username && $user['password'] == $password) {
-            // Credentials match, store the user role in session
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = $user['role'];
-            $authenticated = true;
+            // Credentials match, generate OTP
+            $otp = generateOTP();
+            $_SESSION['temp_user'] = $user;
+            $_SESSION['otp'] = $otp;
+            $_SESSION['otp_expiry'] = time() + 300; // OTP valid for 5 minutes
 
-            // Redirect based on role
-            if ($user['role'] == 'admin') {
-                header('Location: admin/index.php');
-            } elseif ($user['role'] == 'branchManager') {
-                header('Location: BranchManager/branchDashboard.php');
-            } elseif ($user['role'] == 'staff') {
-                header('Location: staff/staff_dashboard.php');
-            }
-            exit;
+            // Break the loop after finding the matching user
+            $authenticated = true;
+            break;
         }
     }
 
     if (!$authenticated) {
         $errorMessage = "Invalid credentials!";
     }
+} elseif (isset($_POST['verify_otp'])) {
+    $userOTP = $_POST['otp'];
+    if (isset($_SESSION['otp']) && isset($_SESSION['otp_expiry'])) {
+        if (time() <= $_SESSION['otp_expiry']) {
+            if ($userOTP == $_SESSION['otp']) {
+                // OTP verified, complete login
+                $user = $_SESSION['temp_user'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                
+                // Clear OTP-related session variables
+                unset($_SESSION['otp']);
+                unset($_SESSION['otp_expiry']);
+                unset($_SESSION['temp_user']);
+                
+                // Redirect based on role
+                if ($user['role'] == 'admin') {
+                    header('Location: admin/index.php');
+                } elseif ($user['role'] == 'branchManager') {
+                    header('Location: BranchManager/branchDashboard.php');
+                } elseif ($user['role'] == 'staff') {
+                    header('Location: staff/staff_dashboard.php');
+                }
+                exit;
+            } else {
+                $errorMessage = "Invalid OTP.";
+            }
+        } else {
+            $errorMessage = "OTP has expired.";
+        }
+    } else {
+        $errorMessage = "OTP verification failed.";
+    }
+    // Clear OTP-related session variables even if verification fails
+    unset($_SESSION['otp']);
+    unset($_SESSION['otp_expiry']);
+    unset($_SESSION['temp_user']);
+}
+
+// Generate a new OTP if the user is on the OTP verification page
+if (isset($_SESSION['temp_user']) && !isset($_SESSION['otp'])) {
+    $otp = generateOTP();
+    $_SESSION['otp'] = $otp;
+    $_SESSION['otp_expiry'] = time() + 300; // OTP valid for 5 minutes
 }
 ?>
 
@@ -47,20 +94,11 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== FAVICON ===============-->
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
-
-    <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
-
-    <!--=============== CSS ===============-->
     <link rel="stylesheet" href="css/styles.css">
-
-    <!--===============BOXICONS================-->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    <title>Login Form</title>
+    <title>Login Verification</title>
 </head>
 <body>
     <div class="login__container container grid">
@@ -68,42 +106,55 @@ if (isset($_POST['login'])) {  // Check if the form is submitted
             <img src="img/logo.png" style="height: 300px; width: 700px" alt="">
         </div>
         <div class="wrapper">
-            <form id="loginForm" class="login-form" method="POST" action="login.php">
-                <h1 class="title">Login</h1>
-                
-                <!-- Username Field -->
-                <div class="input__box">
-                    <input type="text" id="username" name="username" placeholder="Username" required>
-                    <i class='bx bxs-user'></i>
-                </div>
-                
-                <!-- Password Field -->
-                <div class="input__box">
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
-                
-                <div class="remember-forgot">
-                    <label><input type="checkbox">Remember Me</label>
-                    <a href="#">Forgot Password?</a>
-                </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" name="login" class="btn">Login</button>
-                
-                <div class="register-link">
-                    <p>Don't have an account? <a href="#">Register</a></p>
-                </div>
-                
-                <!-- Error Message Display -->
-                <?php if ($errorMessage): ?>
-                    <p id="errorMessage" style="color: red;"><?= $errorMessage ?></p>
-                <?php endif; ?>
-            </form>
+            <?php if (!isset($_SESSION['temp_user'])): ?>
+                <!-- Initial Login Form -->
+                <form id="loginForm" class="login-form" method="POST" action="login.php">
+                    <h1 class="title">Login</h1>
+                    
+                    <!-- Username Field -->
+                    <div class="input__box">
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                        <i class='bx bxs-user'></i>
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="input__box">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" name="login" class="btn">Login</button>
+                    
+                    <!-- Error Message Display -->
+                    <?php if ($errorMessage): ?>
+                        <p id="errorMessage" style="color: red;"><?= $errorMessage ?></p>
+                    <?php endif; ?>
+                </form>
+            <?php else: ?>
+                <!-- OTP Verification Form -->
+                <form id="otpForm" class="login-form" method="POST" action="login.php">
+                    <h1 class="title">OTP Verification</h1>
+                    
+                    <div class="input__box">
+                        <input type="text" id="otp" name="otp" placeholder="Enter OTP" required>
+                        <i class='bx bxs-lock-alt'></i>
+                    </div>
+                    
+                    <button type="submit" name="verify_otp" class="btn">Verify OTP</button>
+                    
+                    <!-- Error Message Display -->
+                    <?php if ($errorMessage): ?>
+                        <p id="errorMessage" style="color: red;"><?= $errorMessage ?></p>
+                    <?php endif; ?>
+                    
+                    <!-- OTP Hint (remove in production) -->
+                    <p style="color: green;">OTP: <?= $_SESSION['otp'] ?></p>
+                </form>
+            <?php endif; ?>
         </div>
     </div>
 
-    <!-- Link to the external JavaScript file -->
     <script src="/js/main.js"></script>
 </body>
 </html>

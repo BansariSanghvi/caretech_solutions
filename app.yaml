@@ -1,11 +1,11 @@
 runtime: php83
 
 runtime_config:
-  document_root: .
+  document_root: caretech_solutions
 
 handlers:
   # Serve a directory as a static resource.
-  - url: ../css
+  - url: /css
     static_dir: css
 
   # Serve images as static resources.

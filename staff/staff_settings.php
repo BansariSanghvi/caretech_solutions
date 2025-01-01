@@ -97,9 +97,7 @@
                             <div class="settings-section">
                                 <h4>Accessibility</h4>
                                 <ul>
-                                    <li>Enable Text-to-Speech</li>
-                                    <li>Update Language</li>
-                                    <li>Update Theme</li>
+                                    <li onclick = "window.location.href='staff_request_change.php'">Request Change</li>
 
                                 </ul>
                             </div>

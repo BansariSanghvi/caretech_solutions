@@ -17,7 +17,7 @@ include '../connection/connection.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/branch_theme.css">
+    <link rel="stylesheet" href="../css/main_theme.css">
     <title>Submit Approval Request</title>
     <style>
         .form-container {

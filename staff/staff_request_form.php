@@ -7,7 +7,7 @@ if ($_SESSION['role'] != 'staff') {
     exit;
 }
 
-include '../connection/connection.php'
+include '../connection/connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -17,26 +17,16 @@ include '../connection/connection.php'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="assets/img/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.0.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/main_theme.css">
+    <link rel="stylesheet" href="../css/branch_theme.css">
     <title>Submit Approval Request</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-
         .form-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-container h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
         }
 
         .form-group {
@@ -45,48 +35,31 @@ include '../connection/connection.php'
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #555;
+            margin-bottom: 5px;
+            color: #063478;
         }
 
-        .form-group select,
-        .form-group input,
+        .form-group input[type="text"],
+        .form-group input[type="number"],
         .form-group textarea,
-        .form-group button {
+        .form-group select {
             width: 100%;
             padding: 10px;
-            font-size: 14px;
-            border: 2px solid #ccc;
-            border-radius: 6px;
-            transition: border-color 0.3s;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        .form-group select:hover,
-        .form-group input:hover,
-        .form-group textarea:hover {
-            border-color: #007bff;
-        }
-
-        .form-group select:focus,
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #0056b3;
-            outline: none;
-        }
-
-        .form-group button {
-            background-color: #007bff;
+        .form-group input[type="submit"] {
+            background-color: #063478;
             color: white;
-            font-size: 16px;
-            font-weight: bold;
             border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
-        .form-group button:hover {
-            background-color: #0056b3;
+        .form-group input[type="submit"]:hover {
+            background-color: #042456;
         }
     </style>
 </head>
@@ -101,63 +74,66 @@ include '../connection/connection.php'
             <?php include("../common/staff_navbar.php"); ?>
 
             <!-- Form Section -->
-            <div class="form-container">
-                <h2>Submit Approval Request</h2>
-                <form action="process_equipment_request.php" method="POST">
-                    <!-- User -->
-                    <div class="form-group">
-                        <label for="userID">Select User Level:</label>
-                        <select id="userID" name="userID" required>
-                            <option value="" disabled selected>-- Select User Level --</option>
-                            <option value="1">Admin</option>
-                            <option value="2">Branch Manager</option>
-                            <option value="3">Staff</option>
-                        </select>
-                    </div>
-                    <!-- Equipment List -->
-                    <div class="form-group">
-                        <label for="equipment">Select Equipment:</label>
-                        <select id="equipment" name="equipment" required>
-                            <option value="" disabled selected>-- Select Equipment --</option>
-                            <option value="1">Ventilator</option>
-                            <option value="2">Defibrillator</option>
-                            <option value="3">Syringe Pump</option>
-                            <option value="4">ECG Machine</option>
-                            <option value="5">Ultrasound Machine</option>
-                        </select>
-                    </div>
+            <section id="approval_request_form">
+                <h2 class="page_title">Submit Approval Request</h2>
+                <div class="form-container">
+                    <form action="process_equipment_request.php" method="POST">
+                        <!-- User -->
+                        <div class="form-group">
+                            <label for="userID">Select User Level:</label>
+                            <select id="userID" name="userID" required>
+                                <option value="" disabled selected>-- Select User Level --</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Branch Manager</option>
+                                <option value="3">Staff</option>
+                            </select>
+                        </div>
 
-                    <!-- Approval Quantity -->
-                    <div class="form-group">
-                        <label for="quantity">Approval Quantity:</label>
-                        <input type="number" id="quantity" name="quantity" min="1" required>
-                    </div>
+                        <!-- Equipment List -->
+                        <div class="form-group">
+                            <label for="equipment">Select Equipment:</label>
+                            <select id="equipment" name="equipment" required>
+                                <option value="" disabled selected>-- Select Equipment --</option>
+                                <option value="1">Ventilator</option>
+                                <option value="2">Defibrillator</option>
+                                <option value="3">Syringe Pump</option>
+                                <option value="4">ECG Machine</option>
+                                <option value="5">Ultrasound Machine</option>
+                            </select>
+                        </div>
 
-                    <!-- Department -->
-                    <div class="form-group">
-                        <label for="department">Select Department:</label>
-                        <select id="department" name="department" required>
-                            <option value="" disabled selected>-- Select Department --</option>
-                            <option value="1">Emergency</option>
-                            <option value="2">ICU</option>
-                            <option value="3">Radiology</option>
-                            <option value="4">Pediatrics</option>
-                            <option value="5">Oncology</option>
-                        </select>
-                    </div>
+                        <!-- Approval Quantity -->
+                        <div class="form-group">
+                            <label for="quantity">Approval Quantity:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" required>
+                        </div>
 
-                    <!-- Description -->
-                    <div class="form-group">
-                        <label for="description">Approval Description:</label>
-                        <textarea id="description" name="description" rows="4" required placeholder="Provide details about the request..."></textarea>
-                    </div>
+                        <!-- Department -->
+                        <div class="form-group">
+                            <label for="department">Select Department:</label>
+                            <select id="department" name="department" required>
+                                <option value="" disabled selected>-- Select Department --</option>
+                                <option value="1">Emergency</option>
+                                <option value="2">ICU</option>
+                                <option value="3">Radiology</option>
+                                <option value="4">Pediatrics</option>
+                                <option value="5">Oncology</option>
+                            </select>
+                        </div>
 
-                    <!-- Submit Button -->
-                    <div class="form-group">
-                        <button type="submit">Submit Approval Request</button>
-                    </div>
-                </form>
-            </div>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Approval Description:</label>
+                            <textarea id="description" name="description" rows="4" required placeholder="Provide details about the request..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group">
+                            <input type="submit" value="Submit Approval Request">
+                        </div>
+                    </form>
+                </div>
+            </section>
         </div>
     </div>
 </body>

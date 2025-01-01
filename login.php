@@ -123,8 +123,19 @@ if (isset($_SESSION['temp_user']) && !isset($_SESSION['otp'])) {
                         <i class='bx bxs-lock-alt'></i>
                     </div>
                     
+                    <!-- Remember Me and Forgot Password -->
+                    <div class="remember-forgot">
+                        <label><input type="checkbox" name="remember_me"> Remember Me</label>
+                        <a href="forgot_password.php">Forgot Password?</a>
+                    </div>
+                    
                     <!-- Submit Button -->
                     <button type="submit" name="login" class="btn">Login</button>
+                    
+                    <!-- Create Account Link -->
+                    <div class="register-link">
+                        <p>Don't have an account? <a href="register.php">Create Account</a></p>
+                    </div>
                     
                     <!-- Error Message Display -->
                     <?php if ($errorMessage): ?>

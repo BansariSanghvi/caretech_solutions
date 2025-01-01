@@ -296,6 +296,13 @@ CREATE TABLE user_requests (
 INSERT INTO hospital_info (hname, hospital_address, hospital_phone, hospital_email) VALUES
 ('City Hospital', '123 Main St, Sheffield, UK', '01142345678', 'contact@cityhospital.com');
 
+INSERT INTO hospital_branches (department_name, department_email, department_type, department_phone, hospital_id) VALUES
+('Cardiology', 'cardiology@cityhospital.com', 'Medical', '01142345679', 1),
+('Emergency', 'emergency@cityhospital.com', 'Medical', '01618234568', 2),
+('Orthopedics', 'orthopedics@cityhospital.com', 'Surgical', '01512345679', 1),
+('Rehabilitation', 'rehabilitation@cityhospital.com', 'Rehabilitation', '01173216548', 1),
+('General Medicine', 'general.medicine@cityhospital.com', 'Medical', '01865782347', 1),
+('Adminstration','admin@caretech.com','Admin','1234689300','1');
 
 INSERT INTO staff_records (fname, lname, address, staff_phone_no, email, role, hospital_department_id, hospital_id, isActive, reasonToLeave)
 VALUES

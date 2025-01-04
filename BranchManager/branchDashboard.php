@@ -3,53 +3,37 @@ session_start();
 
 $current_page = 'dashboard';
 
-// Check if the user is an branch manager
+// Check if the user is a branch manager
 if ($_SESSION['role'] != 'branchManager') {
     header('Location: unauthorized.php');
     exit;
 }
 
-include '../connection/connection.php';
+include dirname(__DIR__) . "../connection/connection.php";
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 // Fetch Total Staff
-$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
-$staffResult = $conn->query($staffQuery);
-if ($staffResult->num_rows > 0) {
-    $row = $staffResult->fetch_assoc();
-    $totalStaff = $row['total'];
-}
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records";
+$staffStmt = $conn->query($staffQuery);
+$totalStaff = $staffStmt->fetchColumn();
 
 // Fetch Total appointments
-$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments"; 
-$appointmentsResult = $conn->query($appointmentsQuery);
-if ($appointmentsResult->num_rows > 0) {
-    $row = $appointmentsResult->fetch_assoc();
-    $totalAppointments = $row['total'];
-}
+$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments";
+$appointmentsStmt = $conn->query($appointmentsQuery);
+$totalAppointments = $appointmentsStmt->fetchColumn();
 
 // Fetch Total Patients
-$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
-$patientsResult = $conn->query($patientsQuery);
-if ($patientsResult->num_rows > 0) {
-    $row = $patientsResult->fetch_assoc();
-    $totalPatients = $row['total'];
-}
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records";
+$patientsStmt = $conn->query($patientsQuery);
+$totalPatients = $patientsStmt->fetchColumn();
 
 // Fetch Total Referrals
-$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'"; 
-$referralsResult = $conn->query($referralsQuery);
-if ($referralsResult->num_rows > 0) {
-    $row = $referralsResult->fetch_assoc();
-    $totalReferrals = $row['total'];
-}
-
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'";
+$referralsStmt = $conn->query($referralsQuery);
+$totalReferrals = $referralsStmt->fetchColumn();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -163,88 +147,67 @@ if ($referralsResult->num_rows > 0) {
         
         .graph-container {
             display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin-top: 20px;
-            margin-left: 33px;
-            margin-right: 33px;
-            height: 400px; 
-        }
+            justify-content: space-between; 
+			gap :20px; 
+			margin-top :20px; 
+			margin-left :33px; 
+			margin-right :33px; 
+			height :400px; 
+		}
 
-        .graph-container .graph {
-            flex: 1; 
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            height: 100%; 
-        }
-        canvas {
-            width: 100% !important;
-            height: 100% !important; 
-        }
+		.graph-container .graph { 
+			flex :1; 
+			background-color :#fff; 
+			padding :20px; 
+			border-radius :8px; 
+			box-shadow :0px 4px 8px rgba(0, 0, 0, 0.1); 
+			height :100%; 
+		} 
 
-        .announcements-container {
-            margin-top: 20px;
-            padding: 0 33px;
-        }
+		canvas { 
+			width :100% !important; 
+			height :100% !important; 
+		}
 
-        .announcements-box {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+		.announcements-container { 
+			margin-top :20px; 
+			padding :0 33px; 
+		}
 
-        .announcements-box h3 {
-            margin-bottom: 15px;
-            color: #063478;
-        }
+		.announcements-box { 
+			background-color :#fff; 
+			border-radius :8px; 
+			box-shadow :0px 4px 8px rgba(0, 0, 0, 0.1); 
+			padding :20px; 
+		}
 
-        #announcements-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
+		.announcements-box h3 { 
+			margin-bottom :15px; 
+			color :#063478; 
+		}
 
-        .announcement {
-            background-color: #f8f9fa;
-            border-left: 4px solid #4a90e2;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+		#announcements-list { 
+			max-height :200px; 
+			overflow-y :auto; 
+			margin-bottom :15px; 
+		}
 
-        .announcement p {
-            margin: 0;
-        }
+		.announcement { 
+			background-color :#f8f9fa; 
+			border-left :4px solid #4a90e2; 
+			padding :10px; 
+			margin-bottom :10px; 
+		}
 
-        .announcement .timestamp {
-            font-size: 0.8em;
-            color: #6c757d;
-        }
+		.announcement p { margin :0; }
+		
+		.announcement .timestamp { font-size :.8em;color:#6c757d;}
 
-        #announcement-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            resize: vertical;
-        }
+        #announcement-form textarea { width :100%;padding :10px;margin-bottom :10px;border :1px solid #ced4da;border-radius :4px;resize :vertical;}
 
-        #announcement-form button {
-            background-color: #063478;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+        #announcement-form button { background-color:#063478;color:white;border:none;padding :10px 20 px;border-radius :4 px;cursor:pointer;transition:bg-color:.3s;}
 
-        #announcement-form button:hover {
-            background-color: #0056b3;
-        }
+        #announcement-form button:hover { background-color:#0056b3;}
         
     </style>  
     <!-- Include Chart.js -->
@@ -253,179 +216,170 @@ if ($referralsResult->num_rows > 0) {
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include("../common/branch_navbar.php"); ?>
-            <!------------------Dashboard Section------------------>
+<?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+<!------------------Dashboard Section------------------>
 
-            <div class="inside-content">
-                <section class="dashboard_section" id="dashboard">
-                    <h2 class="page_title">Dashboard:</h2>
-                    
-                    <!-- Top Metrics -->
-                    <div class="container-fluid">
-                        <div class="row">
+<div class="inside-content">
+    <section class="dashboard_section" id="dashboard">
+        <h2 class="page_title">Dashboard:</h2>
+        
+        <!-- Top Metrics -->
+        <div class="container-fluid">
+           <div class="row">
 
-                            <!-- Box 1 -->
-                            <div class="col-md-3">
-                                <div class="count-box">
-                                    <h5><i class='bx bx-street-view'></i>Total Staff</h5>
-                                    <h6><?php echo $totalStaff ?></h6>
-                                </div>
-                            </div>
-                            <!-- Box 2 -->
-                            <div class="col-md-3">
-                                <div class="count-box">
-                                    <h5><i class='bx bx-clipboard'></i>Total Referrals</h5>
-                                    <h6><?php echo $totalReferrals ?></h6>
-                                </div>
-                            </div>
-
-                            <!-- Box 2 -->
-                            <div class="col-md-3">
-                                <div class="count-box">
-                                    <h5><i class="ri-user-fill"></i>Total Patients</h5>
-                                    <h6><?php echo $totalPatients ?></h6>
-                                </div>
-                            </div>
-
-                            <!-- Box 3 -->
-                            <div class="col-md-3">
-                                <div class="count-box">
-                                    <h5><i class="ri-add-box-fill"></i>Total Appointments</h5>
-                                    <h6><?php echo $totalAppointments ?></h6>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Box for Total Staff -->
+                <div class="col-md-3">
+                    <div class="count-box">
+                        <h5><i class='bx bx-street-view'></i>Total Staff</h5>
+                        <h6><?php echo htmlspecialchars($totalStaff); ?></h6>
                     </div>
-                                    <!-- Announcements Box -->
-    <div class="announcements-container">
-    <div class="announcements-box">
-        <h3>Announcements</h3>
-        </div>
-        <form id="announcement-form">
-            <textarea id="announcement-text" placeholder="Type your announcement here..." required></textarea>
-            <button type="submit">Post Announcement</button>
-        </form>
-    </div>
+                </div>
+
+                <!-- Box for Total Referrals -->
+                <div class="col-md-3">
+                    <div class="count-box">
+                        <h5><i class='bx bx-clipboard'></i>Total Referrals</h5>
+                        <h6><?php echo htmlspecialchars($totalReferrals); ?></h6>
+                    </div>
+                </div>
+
+                <!-- Box for Total Patients -->
+                <div class="col-md-3">
+                    <div class="count-box">
+                        <h5><i class="ri-user-fill"></i>Total Patients</h5>
+                        <h6><?php echo htmlspecialchars($totalPatients); ?></h6>
+                    </div>
+                </div>
+
+                <!-- Box for Total Appointments -->
+                <div class="col-md-3">
+                    <div class="count-box">
+                        <h5><i class="ri-add-box-fill"></i>Total Appointments</h5>
+                        <h6><?php echo htmlspecialchars($totalAppointments); ?></h6>
+                    </div>
+                </div>
+           </div>
+       </div>
+
+       <!-- Announcements Box -->
+       <div class="announcements-container">
+           <div class="announcements-box">
+               <h3>Announcements</h3>
+           </div>
+           <form id="announcement-form">
+               <textarea id="announcement-text" placeholder="Type your announcement here..." required></textarea>
+               <button type="submit">Post Announcement</button>
+           </form>
+       </div>
+
+       <!-- Graphs Split into Two Equal Parts -->
+       <div class="graph-container">
+           <!-- Left Graph -->
+           <div class="graph">
+               <h5>Appointments per Month</h5>
+               <canvas id="appointmentsBarChart"></canvas>
+           </div>
+
+           <!-- Right Graph -->
+           <div class="graph">
+               <h5>Revenue per Quarter (Branch)</h5>
+               <canvas id="revenueLineChart"></canvas>
+           </div>
+       </div>
+
+   </section>
 </div>
 
-            
-                    <!-- Graphs Split into Two Equal Parts -->
-                    <div class="graph-container">
-                        <!-- Left Graph: Appointments per Month -->
-                        <div class="graph">
-                            <h5>Appointments per Month</h5>
-                            <canvas id="appointmentsBarChart"></canvas>
-                        </div>
+</body>
 
-                        <!-- Right Graph: Revenue per Quarter -->
-                        <div class="graph">
-                            <h5>Revenue per Quarter(Branch)</h5>
-                            <canvas id="revenueLineChart"></canvas>
-                        </div>
-                    </div>
-               </section>
-            </div>
-            
-        </div>
-    </div>
-
- <!-- Scripts -->
- <script>
-    // Bar Chart: Appointments per Month
-    const ctxBar = document.getElementById('appointmentsBarChart').getContext('2d');
-    const appointmentsBarChart = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [{
-                label: 'Appointments',
-                data: [120, 150, 180, 130, 160, 200, 170, 190, 210, 180, 160, 150],
-                backgroundColor: '#4e73df',
-                borderColor: '#4e73df',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // Line Chart: Revenue per Quarter
-    const ctxLine = document.getElementById('revenueLineChart').getContext('2d');
-    const revenueLineChart = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-            datasets: [{
-                label: 'Revenue',
-                data: [10000, 5000, 20000, 25000],
-                fill: false,
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 2,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
-
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Scripts for Charts and AJAX -->
 <script>
-$(document).ready(function() {
-    console.log("Document ready");
-    $('#announcement-form').submit(function(e) {
-        console.log("Form submitted");
-        e.preventDefault();
-        var announcementText = $('#announcement-text').val();
-        console.log("Announcement text:", announcementText);
-        
-        $.ajax({
-            url: 'post_announcement.php',
-            type: 'POST',
-            data: {
-                announcement_text: announcementText
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log("AJAX success:", response);
-                if (response.status === 'success') {
-                    $('#announcement-text').val('');
-                    $('#message').html('<p style="color: green;">' + response.message + '</p>');
-                } else {
-                    $('#message').html('<p style="color: red;">' + response.message + '</p>');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error:", status, error);
-                console.log("Response Text:", xhr.responseText);
-                $('#message').html('<p style="color: red;">An error occurred. Please try again.</p>');
-            }
-        });
-    });
+// Bar Chart for Appointments per Month
+const ctxBar = document.getElementById('appointmentsBarChart').getContext('2d');
+const appointmentsBarChart = new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+        labels:['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets:[{
+          label:'Appointments',
+          data:[120,150,180,130,160,200,170,190,210,180,160,150],
+          backgroundColor:'#4e73df',
+          borderColor:'#4e73df',
+          borderWidth:1
+      }]
+    },
+    options:{
+      responsive:true,
+      scales:{
+          y:{
+              beginAtZero:true
+          }
+      }
+    }
+});
+
+// Line Chart for Revenue per Quarter
+const ctxLine = document.getElementById('revenueLineChart').getContext('2d');
+const revenueLineChart = new Chart(ctxLine,{
+    type:'line',
+    data:{
+      labels:['Q1','Q2','Q3','Q4'],
+      datasets:[{
+          label:'Revenue',
+          data:[10000,5000,20000,25000],
+          fill:false,
+          borderColor:'rgba(255,99,132,1)',
+          borderWidth:2,
+          tension:.4
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      scales:{
+          y:{
+              beginAtZero:true
+          }
+      }
+    }
 });
 </script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-</body>
+<script>
+// AJAX for posting announcements
+$(document).ready(function() {
+    $('#announcement-form').submit(function(e) {
+        e.preventDefault();
+        
+        var announcementText = $('#announcement-text').val();
+        
+        $.ajax({
+             url:'post_announcement.php',
+             type:'POST',
+             data:{ announcement_text : announcementText },
+             dataType:'json',
+             success:function(response){
+                 if(response.status === 'success'){
+                     $('#announcement-text').val('');
+                     alert(response.message);
+                 }else{
+                     alert(response.message);
+                 }
+             },
+             error:function(){
+                 alert('An error occurred while posting the announcement.');
+             }
+         });
+     });
+});
+</script>
+
 </html>
+

@@ -1,0 +1,20 @@
+This is the Link to the Final Video Demonstration: https://cityuni-my.sharepoint.com/:v:/g/personal/bansari_sanghvi_city_ac_uk/EbdYz3aJDt5Iix46S7hqZ5sB38ZO8VLK1kxRw2uozATLrA?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=foZBsw
+
+To access our project, please visit: https://caretechsolutions.uc.r.appspot.com/
+
+Login Credintials: 
+
+Admin: 
+Username: admin@caretechsolutions.com
+Password: admin123
+
+BranchManager: 
+Username: manager@caretechsolutions.com
+Password: manager123
+
+BranchStaff: 
+Username: staff@caretechsolutions.com
+Password: staff123
+
+Note: Some Pages Configurations is still pending.
+

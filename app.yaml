@@ -8,6 +8,10 @@ handlers:
   - url: /css
     static_dir: css
 
+  #Added the js directory.
+  - url: /js
+    static_dir: js
+
   # Serve images as static resources.
   - url: /(.+\.(gif|png|jpg))$
     static_files: \1
@@ -20,8 +24,11 @@ handlers:
 entrypoint:
   serve handler.php
 
+# Updated the Enviroment Variables for PDO.
 env_variables:
-  CLOUDSQL_USER: root
-  CLOUDSQL_DB: caretech_solutions
-  CLOUDSQL_PASSWORD: '@KNjOzNqd)NdGART'
-  CLOUDSQL_DSN: caretechsolutions:us-central1:caretech-solutions-db
+  GOOGLE_STORAGE_BUCKET: caretechsolutions.appspot.com 
+  CLOUDSQL_DSN: mysql:unix_socket=/cloudsql/caretechsolutions:us-central1:caretech-solutions-db
+  CLOUDSQL_USER: root  
+  CLOUDSQL_PASSWORD: '@KNjOzNqd)NdGART'  
+  CLOUDSQL_DATABASE_NAME: caretech_solutions  
+ 

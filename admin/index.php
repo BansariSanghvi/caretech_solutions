@@ -1,53 +1,37 @@
 <?php
 session_start();
 
-// Check if the user is an admin
-if ($_SESSION['role'] != 'admin') {
-    header('Location: unauthorized.php');
-    exit;
-}
+// Updated the connection part to the absolute path.
+include dirname(__DIR__).'/connection/connection.php';
 
-include '../connection/connection.php';
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 // Fetch Total Staff
-$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
-$staffResult = $conn->query($staffQuery);
-if ($staffResult->num_rows > 0) {
-    $row = $staffResult->fetch_assoc();
-    $totalStaff = $row['total'];
-}
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records";
+$stmt = $conn->query($staffQuery);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalStaff = $row['total'] ?? 0;
 
 // Fetch Total Departments
-$departmentQuery = "SELECT COUNT(*) AS total FROM hospital_branches"; 
-$departmentResult = $conn->query($departmentQuery);
-if ($departmentResult->num_rows > 0) {
-    $row = $departmentResult->fetch_assoc();
-    $totalDepartments = $row['total'];
-}
+$departmentQuery = "SELECT COUNT(*) AS total FROM hospital_branches";
+$stmt = $conn->query($departmentQuery);
+$row2 = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalDepartments = $row2['total'] ?? 0;
 
 // Fetch Total Patients
-$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
-$patientsResult = $conn->query($patientsQuery);
-if ($patientsResult->num_rows > 0) {
-    $row = $patientsResult->fetch_assoc();
-    $totalPatients = $row['total'];
-}
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records";
+$stmt = $conn->query($patientsQuery);
+$row3 = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalPatients = $row3['total'] ?? 0;
 
 // Fetch Total Referrals
-$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form"; 
-$referralsResult = $conn->query($referralsQuery);
-if ($referralsResult->num_rows > 0) {
-    $row = $referralsResult->fetch_assoc();
-    $totalReferrals = $row['total'];
-}
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form";
+$stmt = $conn->query($referralsQuery);
+$row4 = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalReferrals = $row4['total'] ?? 0;
+
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -242,11 +226,11 @@ if ($referralsResult->num_rows > 0) {
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("../common/sidebar.php"); ?>
+        <?php include dirname(__DIR__). ("/common/sidebar.php"); ?>
 
         <!-- Main Content -->
         <div class="main-content">
-            <?php include("../common/navbar.php"); ?>
+            <?php include dirname(__DIR__). ("/common/navbar.php"); ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">
@@ -339,10 +323,20 @@ if ($referralsResult->num_rows > 0) {
                         </div>
 
                         <?php 
-                            $ordersRequired = "SELECT equipment_Name, qty, medicalequipment_list.hospital_department_id,
-                            department_name FROM `medicalequipment_list` INNER JOIN hospital_branches 
-                            ON hospital_branches.hospital_department_id = medicalequipment_list.hospital_department_id WHERE medicalequipment_list.qty < 10;";
-                            $ordersRequiredResult = $conn->query($ordersRequired);
+                            $ordersRequired = "
+                            SELECT 
+                                equipment_Name, 
+                                qty, 
+                                medicalequipment_list.hospital_department_id,
+                                department_name 
+                            FROM medicalequipment_list 
+                            INNER JOIN hospital_branches 
+                            ON hospital_branches.hospital_department_id = medicalequipment_list.hospital_department_id 
+                            WHERE medicalequipment_list.qty < 10;
+                        ";
+                        $stmt = $conn->query($ordersRequired);
+                        $ordersRequiredResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        
 
 
                         ?>
@@ -357,21 +351,19 @@ if ($referralsResult->num_rows > 0) {
                                     <th>Current Qty</th>
                                 </thead>
                                 <tbody>
-                                    <?php 
-                                        if ($ordersRequiredResult->num_rows > 0) {
-                                            // Loop through the result and display rows in the table
-                                            while ($row = $ordersRequiredResult->fetch_assoc()) {
-                                                echo "<tr>";
-                                                echo "<td>" . htmlspecialchars($row['equipment_Name']) . "</td>";
-                                                echo "<td>" . htmlspecialchars($row['department_name']) . "</td>";
-                                                echo "<td>" . htmlspecialchars($row['qty']) . "</td>";
-                                                echo "</tr>";
-                                            }
-                                        } else {
-                                            // Display a message if no data is found
-                                            echo "<tr><td colspan='3' style='text-align: center;'>No emergency orders found</td></tr>";
+                                <?php 
+                                    if (!empty($ordersRequiredResult)) {
+                                        foreach ($ordersRequiredResult as $row) {
+                                            echo "<tr>";
+                                            echo "<td>" . htmlspecialchars($row['equipment_Name']) . "</td>";
+                                            echo "<td>" . htmlspecialchars($row['department_name']) . "</td>";
+                                            echo "<td>" . htmlspecialchars($row['qty']) . "</td>";
+                                            echo "</tr>";
                                         }
-                                    ?>
+                                    } else {
+                                        echo "<tr><td colspan='3' style='text-align: center;'>No emergency orders found</td></tr>";
+                                    }
+                                ?>
                                 </tbody>
                             </table>
                         </div>

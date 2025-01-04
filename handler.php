@@ -128,126 +128,124 @@ switch (@parse_url($_SERVER['REQUEST_URI'])['path']) {
         require __DIR__ . '/BranchManager/branchDashboard.php';
         break;   
     case '/BranchManager/add_branchPatients.php':
-        require __DIR__. 'add_branchPatients.php';
+        require __DIR__. '/BranchManager/add_branchPatients.php';
         break; 
     case '/BranchManager/add_branchStaff.php;':
-        require __DIR__. 'add_branchStaff.php';
+        require __DIR__. '/BranchManager/add_branchStaff.php';
         break;
     case '/BranchManager/add_branchStock.php':
-        require __DIR__.'add_branchStock.php';
+        require __DIR__.'/BranchManager/add_branchStock.php';
         break;
     case '/BranchManager/branch_report_problem.php':
-        require __DIR__.'branch_report_problem.php';
+        require __DIR__.'/BranchManager/branch_report_problem.php';
         break;
     case '/BranchManager/branchAnalytics.php':
-        require __DIR__.'branchAnalytics.php';
+        require __DIR__.'/BranchManager/branchAnalytics.php';
         break;
     case '/BranchManager/branchApprovals.php':
-        require __DIR__.'branchApprovals.php';
+        require __DIR__.'/BranchManager/branchApprovals.php';
         break; 
     case '/BranchManager/branchForm1.php':
-        require __DIR__.'branchForm1.php';
+        require __DIR__.'/BranchManager/branchForm1.php';
         break;
     case '/BranchManager/branchForm2.php':
-        require __DIR__.'branchForm2.php';
+        require __DIR__.'/BranchManager/branchForm2.php';
         break;
     case '/BranchManager/branchLetters.php':
-        require __DIR__.'branchLetters.php';
+        require __DIR__.'/BranchManager/branchLetters.php';
         break;
     case '/BranchManager/branchPatients.php':
-        require __DIR__.'branchPatients.php';
+        require __DIR__.'/BranchManager/branchPatients.php';
         break;
     case '/BranchManager/branchReferral.php':
-        require __DIR__.'branchReferral.php';
+        require __DIR__.'/BranchManager/branchReferral.php';
         break;  
     case '/BranchManager/branchReferralHistory':
-        require __DIR__.'branchReferralHistory.php';
+        require __DIR__.'/BranchManager/branchReferralHistory.php';
         break;  
     case '/BranchManager/branchRequestPasswordChange.php':
-        require __DIR__.'branchRequestPasswordChange.php';
+        require __DIR__.'/BranchManager/branchRequestPasswordChange.php';
         break;
     case 'BranchManager/branchSettings.php':
-        require __DIR__.'branchSettings.php';
+        require __DIR__.'/BranchManager/branchSettings.php';
         break;            
     case '/BranchManager/branchStaff.php':
-        require __DIR__.'branchStaff.php';
+        require __DIR__.'/BranchManager/branchStaff.php';
         break;
     case '/BranchManager/branchStock.php':
-        require __DIR__.'branchStock.php';
+        require __DIR__.'/BranchManager/branchStock.php';
         break;
     case '/BranchManager/branchStockUpdateQuantity.php':
-        require __DIR__.'branchStockUpdateQuantity.php';
+        require __DIR__.'/BranchManager/branchStockUpdateQuantity.php';
         break;
     case '/BranchManager/edit_branchPatients.php':
-        require __DIR__.'edit_branchPatients.php';
+        require __DIR__.'/BranchManager/edit_branchPatients.php';
         break;        
     case '/BranchManager/generate_letter.php':
-        require __DIR__.'generate_letter.php';
+        require __DIR__.'/BranchManager/generate_letter.php';
         break;
     case '/BranchManager/post_announcments.php':
-        require __DIR__.'post_announcments.php';
+        require __DIR__.'/BranchManager/post_announcments.php';
         break;
     case '/BranchManager/process_referral.php':
-        require __DIR__.'process_referral.php';
+        require __DIR__.'/BranchManager/process_referral.php';
         break;
     case '/BranchManager/remove_BranchPatients.php':
-        require __DIR__.'remove_BranchPatients.php';
+        require __DIR__.'/BranchManager/remove_BranchPatients.php';
         break;
     case '/BranchManager/remove_BranchStaff.php':
-        require __DIR__.'remove_BranchStaff.php';
+        require __DIR__.'/BranchManager/remove_BranchStaff.php';
         break;
     case '/BranchManager/remove_BranchStock.php':
-        require __DIR__.'remove_BranchStock.php';
+        require __DIR__.'/BranchManager/remove_BranchStock.php';
         break;
     case '/BranchManger/update_approval_status.php':
-        require __DIR__.'update_approval_status.php';
+        require __DIR__.'/BranchManger/update_approval_status.php';
         break;
     case '/BranchManager/upload_branchPatients.php':
-        require __DIR__.'upload_branchPatients.php';
+        require __DIR__.'/BranchManager/upload_branchPatients.php';
         break;
     case '/BranchManager/upload_branchStaff.php':
-        require __DIR__.'upload_branchStaff.php';
+        require __DIR__.'/BranchManager/upload_branchStaff.php';
         break;
     case '/BranchManager/upload_branchStock.php':
-        require __DIR__.'upload_branchStock.php';
+        require __DIR__.'/BranchManager/upload_branchStock.php';
         break;
     
     /* Branch Staff Routing */ 
     case '/staff':
-        require __DIR__.'staff_dashboard.php';
-        break;
     case '/staff/staff_dashboard.php':
-        require __DIR__.'staff_dashboard.php';
+        require __DIR__.'/staff/staff_dashboard.php';
         break;
     case '/staff/staff_analytics.php':
-        require __DIR__.'staff_analytics.php';
+        require __DIR__.'/staff/staff_analytics.php';
         break;
     case '/staff/staff_approvals.php':
-        require __DIR__.'staff_approvals.php';
+        require __DIR__.'/staff/staff_approvals.php';
         break;
     case '/staff/staff_forms.php':
-        require __DIR__.'staff_forms.php';
+        require __DIR__.'/staff/staff_forms.php';
         break;
     case '/staff/staff_patients_records.php':
-        require __DIR__.'staff_patients_records.php';
+        require __DIR__.'/staff/staff_patients_records.php';
         break;
     case '/staff/staff_referral_form.php':
-        require __DIR__.'staff_referral_form.php';
+        require __DIR__.'/staff/staff_referral_form.php';
         break;
     case '/staff/staff_report_form.php':
-        require __DIR__.'staff_report_form.php';
+        require __DIR__.'/staff/staff_report_form.php';
         break;
     case '/staff/staff_report_issue.php':
-        require __DIR__.'staff_report_issue.php';
+        require __DIR__.'/staff/staff_report_issue.php';
         break;
     case '/staff/staff_request_form.php':
-        require __DIR__.'staff_request_form.php';
+        require __DIR__.'/staff/staff_request_form.php';
         break;                               
     case '/staff/staff_settings.php':
-        require __DIR__.'staff_settings.php';
+        require __DIR__.'/staff/staff_settings.php';
         break;
     case '/staff/staff_staffhub.php':
-        require __DIR__.'staff_staffhub.php';
+        require __DIR__.'/staff/staff_staffhub.php';
         break;
     default:
         http_response_code(404);

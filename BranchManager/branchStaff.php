@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-include '../connection/connection.php';
+include dirname(__DIR__).("../connection/connection.php");
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
+
 
 $current_page = 'staff';
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -167,12 +167,12 @@ if ($_SESSION['role'] != 'branchManager') {
     <div class="container">
       <!--------------------Side Menu------------ -->
          <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+      <?php  include dirname(__DIR__).("../common/branch_sidebar.php"); ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include("../common/branch_navbar.php"); ?>
+<?php  include dirname(__DIR__).("../common/branch_navbar.php"); ?>
             <!------------------Staff Section------------------>
             <div class="inside-content">
                 <section class="staff_hub_section" id='staff_hub'>

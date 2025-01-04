@@ -1,15 +1,13 @@
 <?php
 session_start();
 
-include '../connection/connection.php';
+include dirname(__DIR__).("../connection/connection.php");
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 $current_page = 'stock';
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
@@ -161,119 +159,128 @@ if ($_SESSION['role'] != 'branchManager') {
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-         <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+      <?php include(__DIR__).("../common/branch_sidebar.php"); ?>
 
-<!-------------------Header------------------->
-<div class="main-content">
-    
-<?php  include("../common/branch_navbar.php"); ?>
-            <!------------------Stock Section------------------>
-            <div class="inside-content">
+      <!-------------------Header------------------->
+      <div class="main-content">
+          <?php include(__DIR__).("../common/branch_navbar.php"); ?>
+          
+          <!------------------Stock Section------------------>
+          <div class="inside-content">
                <section class="stock_section" id ='stock'>
                   <h2 class="page_title">Stock / Inventory:</h2>
 
                   <div class="top_container">
-                <div class="department_filter">
-    <form method="GET" action="">
-        <label for="department">Filter by Department:</label>
-        <select name="department" id="department" onchange="this.form.submit()">
-            <option value="">All Departments</option>
-            <?php
-            $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
-            $dept_result = $conn->query($dept_query);
-            while ($row = $dept_result->fetch_assoc()) {
-                $selected = (isset($_GET['department']) && $_GET['department'] == $row['hospital_department_id']) ? 'selected' : '';
-                echo "<option value='" . $row['hospital_department_id'] . "' $selected>" . $row['department_name'] . "</option>";
-            }
-                   ?>
-                        </select>
-                    </form>
-                    </div>
-                    </div>
-                    </div>
-                    <?php
-                    $query = "SELECT 
-                        medicalEquipment_list.equipment_ID,
-                        medicalEquipment_list.equipment_Name,
-                        medicalEquipment_list.equipment_description,
-                        medicalEquipment_list.qty,
-                        medicalEquipment_list.hospital_department_id,
-                        hospital_branches.department_name
-                        FROM 
-                        medicalEquipment_list
-                        INNER JOIN 
-                        hospital_branches 
-                        ON 
-                        medicalEquipment_list.hospital_department_id = hospital_branches.hospital_department_id";
-
-                   
-                    if (isset($_GET['department']) && $_GET['department'] != '') {
-                        $department_id = $conn->real_escape_string($_GET['department']);
-                        $query .= " WHERE medicalEquipment_list.hospital_department_id = '$department_id'";
-                    }
-
-                    $result = $conn->query($query);
-
-                   
-                    if ($result->num_rows > 0) {
-                        $inventory_data = $result->fetch_all(MYSQLI_ASSOC); 
-                    } else {
-                        $inventory_data = []; 
-                    }
-                    ?>
-                    <div class="scrollable-table">
-                        <table class="data_table">
-                            <thead>
-                                <tr>
-                                    <th>Item ID</th>
-                                    <th>Item Name</th>
-                                    <th>Description</th>
-                                    <th>Quantity</th>
-                                    <th>Hospital Branch</th>
-                                    <th>Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
-                                    // Loop through inventory data and display it in the table
-                                    foreach ($inventory_data as $inventory) {
-                                        // Determine row color based on quantity
-                                        $row_class = "";
-                                        if ($inventory['qty'] < 10) {
-                                            $row_class = "low-stock"; // Red color for low stock
-                                        } elseif ($inventory['qty'] >= 10 && $inventory['qty'] <= 20) {
-                                            $row_class = "approaching-stock"; // Yellow color for approaching stock
-                                        } else {
-                                            $row_class = "normal-stock"; // Default color for normal stock
-                                        }
-                                        
-                                        echo "<tr class='$row_class' data-id='" . $inventory['equipment_ID'] . "'>";
-                                        echo "<td>" . $inventory['equipment_ID'] . "</td>";
-                                        echo "<td>" . $inventory['equipment_Name'] . "</td>";
-                                        echo "<td>" . $inventory['equipment_description'] . "</td>";
-                                        echo "<td>" . $inventory['qty'] . "</td>";
-                                        echo "<td>" . $inventory['department_name'] . "</td>";
-                                        echo "<td><button onclick='editQuantity(" . $inventory['equipment_ID'] . ", " . $inventory['qty'] . ")' class='edit-button'>Edit Qty</button></td>";
-                                        echo "</tr>";
-                                    }
+                    <div class="department_filter">
+                        <form method="GET" action="">
+                            <label for="department">Filter by Department:</label>
+                            <select name="department" id="department" onchange="this.form.submit()">
+                                <option value="">All Departments</option>
+                                <?php
+                                $dept_query = "SELECT hospital_department_id, department_name FROM hospital_branches";
+                                $dept_stmt = $conn->query($dept_query);
+                                while ($row = $dept_stmt->fetch(PDO::FETCH_ASSOC)) {
+                                    $selected = (isset($_GET['department']) && $_GET['department'] == $row['hospital_department_id']) ? 'selected' : '';
+                                    echo "<option value='" . htmlspecialchars($row['hospital_department_id']) . "' $selected>" . htmlspecialchars($row['department_name']) . "</option>";
+                                }
                                 ?>
-                                <div id="editModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:1px solid #ccc;">
-                                <h3>Edit Quantity</h3>
-                                <input type="number" id="newQuantity" min="0">
-                                <button onclick="updateQuantity()">Update</button>
-                                <button onclick="closeModal()">Cancel</button>
-                            </div>
-                            </tbody>
-                        </table>
+                            </select>
+                        </form>
                     </div>
-                </section>
-            </div>
-        </div>
+                  </div>
+
+                  <?php
+                  // Prepare the inventory query
+                  $query = "SELECT 
+                      medicalEquipment_list.equipment_ID,
+                      medicalEquipment_list.equipment_Name,
+                      medicalEquipment_list.equipment_description,
+                      medicalEquipment_list.qty,
+                      medicalEquipment_list.hospital_department_id,
+                      hospital_branches.department_name
+                      FROM 
+                      medicalEquipment_list
+                      INNER JOIN 
+                      hospital_branches 
+                      ON 
+                      medicalEquipment_list.hospital_department_id = hospital_branches.hospital_department_id";
+
+                  if (isset($_GET['department']) && $_GET['department'] != '') {
+                      $department_id = intval($_GET['department']); // Ensure it's an integer
+                      $query .= " WHERE medicalEquipment_list.hospital_department_id = :department_id";
+                  }
+
+                  // Prepare and execute the query
+                  $stmt = $conn->prepare($query);
+                  
+                  if (isset($_GET['department']) && $_GET['department'] != '') {
+                      $stmt->bindParam(':department_id', $department_id, PDO::PARAM_INT);
+                  }
+
+                  $stmt->execute();
+                  
+                  // Fetch inventory data
+                  if ($stmt->rowCount() > 0) {
+                      $inventory_data = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+                  } else {
+                      $inventory_data = []; 
+                  }
+                  ?>
+                  
+                  <div class="scrollable-table">
+                      <table class="data_table">
+                          <thead>
+                              <tr>
+                                  <th>Item ID</th>
+                                  <th>Item Name</th>
+                                  <th>Description</th>
+                                  <th>Quantity</th>
+                                  <th>Hospital Branch</th>
+                                  <th>Edit</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <?php 
+                              // Loop through inventory data and display it in the table
+                              foreach ($inventory_data as $inventory) {
+                                  // Determine row color based on quantity
+                                  $row_class = "";
+                                  if ($inventory['qty'] < 10) {
+                                      $row_class = "low-stock"; // Red color for low stock
+                                  } elseif ($inventory['qty'] >= 10 && $inventory['qty'] <= 20) {
+                                      $row_class = "approaching-stock"; // Yellow color for approaching stock
+                                  } else {
+                                      $row_class = "normal-stock"; // Default color for normal stock
+                                  }
+                                  
+                                  echo "<tr class='$row_class' data-id='" . htmlspecialchars($inventory['equipment_ID']) . "'>";
+                                  echo "<td>" . htmlspecialchars($inventory['equipment_ID']) . "</td>";
+                                  echo "<td>" . htmlspecialchars($inventory['equipment_Name']) . "</td>";
+                                  echo "<td>" . htmlspecialchars($inventory['equipment_description']) . "</td>";
+                                  echo "<td>" . htmlspecialchars($inventory['qty']) . "</td>";
+                                  echo "<td>" . htmlspecialchars($inventory['department_name']) . "</td>";
+                                  echo "<td><button onclick='editQuantity(" . htmlspecialchars($inventory['equipment_ID']) . ", " . htmlspecialchars($inventory['qty']) . ")' class='edit-button'>Edit Qty</button></td>";
+                                  echo "</tr>";
+                              }
+                              ?>
+                              <!-- Modal for editing quantity -->
+                              <div id="editModal" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border-radius:8px;">
+                                  <h3>Edit Quantity</h3>
+                                  <input type="number" id="newQuantity" min="0">
+                                  <button onclick="updateQuantity()">Update</button>
+                                  <button onclick="closeModal()">Cancel</button>
+                              </div>
+                          </tbody>
+                      </table>
+                  </div>
+
+              </section>
+          </div>
+      </div>
     </div>
-</div>
 
 <script>
+// JavaScript functions remain unchanged...
 let currentItemId = null;
 
 function editQuantity(id, currentQty) {
@@ -288,36 +295,35 @@ function closeModal() {
 
 function updateQuantity() {
     const newQty = document.getElementById('newQuantity').value;
-    
-    fetch('branchStockUpdateQuantity.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `id=${currentItemId}&qty=${newQty}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update the quantity in the table
-            const row = document.querySelector(`tr[data-id="${currentItemId}"]`);
-            const qtyCell = row.querySelector('td:nth-child(4)');
-            qtyCell.textContent = newQty;
-            
-            // Update the edit button's onclick attribute
-            const editButton = row.querySelector('.edit-button');
-            editButton.setAttribute('onclick', `editQuantity(${currentItemId}, ${newQty})`);
-            
-            // Update row color based on new quantity
-            updateRowColor(row, newQty);
-            
-            closeModal();
-        } else {
-            alert('Failed to update quantity');
-        }
-    });
-}
 
+    fetch('branchStockUpdateQuantity.php', {
+        method:'POST',
+        headers:{
+             'Content-Type':'application/x-www-form-urlencoded',
+         },
+         body:`id=${currentItemId}&qty=${newQty}`
+     })
+     .then(response => response.json())
+     .then(data => {
+         if (data.success) {
+             // Update the quantity in the table
+             const row = document.querySelector(`tr[data-id="${currentItemId}"]`);
+             const qtyCell = row.querySelector('td:nth-child(4)');
+             qtyCell.textContent = newQty;
+
+             // Update the edit button's onclick attribute
+             const editButton = row.querySelector('.edit-button');
+             editButton.setAttribute('onclick', `editQuantity(${currentItemId}, ${newQty})`);
+
+             // Update row color based on new quantity
+             updateRowColor(row, newQty);
+
+             closeModal();
+         } else {
+             alert('Failed to update quantity');
+         }
+     });
+}
 
 function updateRowColor(row, qty) {
     row.className = ''; // Reset class
@@ -330,6 +336,6 @@ function updateRowColor(row, qty) {
     }
 }
 </script>
+
 </body>
 </html>
-

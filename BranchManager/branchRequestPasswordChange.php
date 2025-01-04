@@ -1,18 +1,16 @@
 <?php
 session_start();
-include("../connection/connection.php");
+include dirname(__DIR__) . "../connection/connection.php";
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect(); // Assuming this returns a PDO instance
 
 $current_page = 'settings';
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
-
 // Fetch staff list for dropdown
 $staff_query = "SELECT staff_id, fname, lname, role FROM staff_records";
-$staff_result = $conn->query($staff_query);
+$staff_stmt = $conn->query($staff_query);
+$staff_list = $staff_stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,23 +19,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $problem_description = "Password change request";
 
     // Get staff details
-    $staff_query = "SELECT fname, lname, role, hospital_department_id FROM staff_records WHERE staff_id = ?";
+    $staff_query = "SELECT fname, lname, role, hospital_department_id FROM staff_records WHERE staff_id = :staff_id";
     $stmt = $conn->prepare($staff_query);
-    $stmt->bind_param("i", $staff_id);
+    $stmt->bindParam(':staff_id', $staff_id, PDO::PARAM_INT);
     $stmt->execute();
-    $staff_result = $stmt->get_result();
-    $staff_data = $staff_result->fetch_assoc();
+    $staff_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Insert request into problems table
-    $insert_query = "INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, urgency_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $insert_query = "INSERT INTO problems (problem_catagory, problem_description, staff_id, staff_fname, staff_lname, hospital_department_id, staff_role, urgency_value) 
+                     VALUES (:problem_category, :problem_description, :staff_id, :staff_fname, :staff_lname, :hospital_department_id, :staff_role, :urgency_value)";
+    
     $stmt = $conn->prepare($insert_query);
+    
     $problem_category = "Password Change";
-    $stmt->bind_param("ssisssss", $problem_category, $problem_description, $staff_id, $staff_data['fname'], $staff_data['lname'], $staff_data['hospital_department_id'], $staff_data['role'], $urgency_value);
+    
+    // Bind parameters
+    $stmt->bindParam(':problem_category', $problem_category);
+    $stmt->bindParam(':problem_description', $problem_description);
+    $stmt->bindParam(':staff_id', $staff_id);
+    $stmt->bindParam(':staff_fname', $staff_data['fname']);
+    $stmt->bindParam(':staff_lname', $staff_data['lname']);
+    $stmt->bindParam(':hospital_department_id', $staff_data['hospital_department_id']);
+    $stmt->bindParam(':staff_role', $staff_data['role']);
+    $stmt->bindParam(':urgency_value', $urgency_value);
 
     if ($stmt->execute()) {
         $message = "Password change request submitted successfully.";
     } else {
-        $error = "Error submitting request: " . $conn->error;
+        // Use errorInfo() to get more details about the error
+        $errorInfo = $stmt->errorInfo();
+        $error = "Error submitting request: " . implode(", ", $errorInfo);
     }
 }
 ?>
@@ -95,11 +106,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include("../common/branch_sidebar.php"); ?>
+      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
 
       <!-------------------Header------------------->
       <div class="main-content">
-        <?php include("../common/branch_navbar.php"); ?>
+        <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+        
         <!------------------Inner Section------------------>
         <div class="inside-content">
             <section class="settings_section" id="settings_hub">
@@ -119,11 +131,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="staff_id">Select Staff:</label>
                             <select name="staff_id" id="staff_id" required>
                                 <option value="">Select a staff member</option>
-                                <?php
-                                while ($staff = $staff_result->fetch_assoc()) {
-                                    echo "<option value='" . $staff['staff_id'] . "'>" . $staff['fname'] . " " . $staff['lname'] . " (" . $staff['role'] . ")</option>";
-                                }
-                                ?>
+                                <?php foreach ($staff_list as $staff): ?>
+                                    <option value="<?php echo htmlspecialchars($staff['staff_id']); ?>">
+                                        <?php echo htmlspecialchars($staff['fname'] . " " . $staff['lname'] . " (" . htmlspecialchars($staff['role']) . ")"); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -144,6 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
+

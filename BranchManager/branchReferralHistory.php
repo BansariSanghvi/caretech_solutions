@@ -1,15 +1,14 @@
 <?php
 session_start();
 
-include '../connection/connection.php';
-
 $current_page = 'referral_history';
 
-// Check if the user is a branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
+
+include dirname(__DIR__) . "../connection/connection.php";
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect(); 
+
 // Get filter values
 $selected_department = isset($_GET['department']) ? $_GET['department'] : '';
 $referral_type = isset($_GET['referral_type']) ? $_GET['referral_type'] : 'all';
@@ -27,28 +26,32 @@ $query = "SELECT r.request_id, r.request_type, r.summary_notes, r.is_external,
           LEFT JOIN hospital_branches hd ON r.hospital_department_id = hd.hospital_department_id
           LEFT JOIN external_associations ea ON r.medical_association_id = ea.medical_association_id
           LEFT JOIN staff_records s ON r.staff_id = s.staff_id
-          WHERE r.isViewed = 'Approved'";
+          WHERE r.isViewed = 'Approved' OR r.isViewed = 'Completed'";
 
+$params = [];
+
+// Add department filter if selected
 if ($selected_department) {
-    $query .= " AND r.sending_department_id = " . intval($selected_department);
+    $query .= " AND r.sending_department_id = :department";
+    $params[':department'] = intval($selected_department);
 }
 
+// Add referral type filter if not 'all'
 if ($referral_type !== 'all') {
     $is_external = ($referral_type === 'external') ? 1 : 0;
-    $query .= " AND r.is_external = $is_external";
+    $query .= " AND r.is_external = :is_external";
+    $params[':is_external'] = $is_external;
 }
 
 $query .= " ORDER BY r.created_at DESC";
 
-$result = $conn->query($query);
+// Prepare and execute the query using PDO
+$stmt = $conn->prepare($query);
+$stmt->execute($params);
 
-if ($result->num_rows > 0) {
-    $referral_data = $result->fetch_all(MYSQLI_ASSOC);
-} else {
-    $referral_data = [];
-}
+// Fetch referral data
+$referral_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,81 +96,43 @@ if ($result->num_rows > 0) {
             overflow-y: auto;
         }
 
-        .referral_history_top_container {
-            margin-top: 20px;
+        .filter-container {
             display: flex;
+            margin-bottom: 20px;
             justify-content: center;
             align-items: center;
-            padding: 10px;
             width: 100%;
         }
 
-        .referral_history_top_container form {
-            display: flex;
-            align-items: center;
-        }
-
-        .referral_history_top_container select {
-            appearance: none;
-            width: 200px;
+        .filter-container select {
             padding: 10px;
+            font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
             background-color: #f9f9f9;
+            margin-right: 10px;
+        }
+
+        .filter-container button {
+            padding: 10px 15px;
             font-size: 16px;
-            color: #333;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        .referral_history_top_container select:hover {
-            background-color: #e6e6e6;
+        .filter-container button:hover {
+            background-color: #45a049;
         }
-
-        .referral_history_top_container label {
-            margin-right: 10px;
-            font-weight: bold;
-            color: #063478;
-        }
-
-    .filter-container {
-        display: flex;
-        margin-bottom: 20px;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-    }
-
-    .filter-container select {
-        padding: 10px;
-        font-size: 16px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #f9f9f9;
-        margin-right: 10px;
-    }
-
-    .filter-container button {
-        padding: 10px 15px;
-        font-size: 16px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .filter-container button:hover {
-        background-color: #45a049;
-    }
-</style>
-
-
+    </style>
 </head>
 <body>
     <div class="container">
-        <?php include("../common/branch_sidebar.php"); ?>
+        <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
         <div class="main-content">
-            <?php include("../common/branch_navbar.php"); ?>
+            <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
             <div class="inside-content">
                 <section class="referral_history_section" id='referral_history'>
                     <h2 class="page_title">Referral History:</h2>
@@ -178,17 +143,17 @@ if ($result->num_rows > 0) {
                             <?php
                             // Fetch staff members for filtering
                             $staff_query = "SELECT staff_id, fname, lname FROM staff_records";
-                            $staff_result = $conn->query($staff_query);
-                            while ($row = $staff_result->fetch_assoc()) {
+                            $staff_stmt = $conn->query($staff_query);
+                            while ($row = $staff_stmt->fetch(PDO::FETCH_ASSOC)) {
                                 $selected = (isset($_GET['staff']) && $row['staff_id'] == $_GET['staff']) ? 'selected' : '';
-                                echo "<option value='" . $row['staff_id'] . "' $selected>" . htmlspecialchars($row['fname'] . " " . $row['lname']) . "</option>";
+                                echo "<option value='" . htmlspecialchars($row['staff_id']) . "' $selected>" . htmlspecialchars($row['fname'] . " " . $row['lname']) . "</option>";
                             }
                             ?>
                         </select>
                         <select id="referralTypeFilter" name="referral_type" onchange="applyFilters()">
-                            <option value="all" <?php echo $referral_type == 'all' ? 'selected' : ''; ?>>All Referrals</option>
-                            <option value="internal" <?php echo $referral_type == 'internal' ? 'selected' : ''; ?>>Internal</option>
-                            <option value="external" <?php echo $referral_type == 'external' ? 'selected' : ''; ?>>External</option>
+                            <option value="all" <?php echo ($referral_type == 'all') ? 'selected' : ''; ?>>All Referrals</option>
+                            <option value="internal" <?php echo ($referral_type == 'internal') ? 'selected' : ''; ?>>Internal</option>
+                            <option value="external" <?php echo ($referral_type == 'external') ? 'selected' : ''; ?>>External</option>
                         </select>
                     </div>
 
@@ -227,10 +192,12 @@ if ($result->num_rows > 0) {
 
     <script>
         function applyFilters() {
-            var staff = document.getElementById('staffFilter').value;
-            var referralType = document.getElementById('referralTypeFilter').value;
-            window.location.href = '?staff=' + staff + '&referral_type=' + referralType;
-        }
-    </script>
+            var staff = document.getElementById('staffFilter').value; 
+			var referralType = document.getElementById('referralTypeFilter').value; 
+			window.location.href = '?staff=' + staff + '&referral_type=' + referralType; 
+		}
+	</script>
+
 </body>
 </html>
+

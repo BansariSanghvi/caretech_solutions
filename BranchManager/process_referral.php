@@ -1,5 +1,5 @@
 <?php
-include("../connection/connection.php");
+include dirname(__DIR__) . "../connection/connection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -30,34 +30,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO referral_form 
             (request_type, summary_notes, priority_category, sending_department_id, 
              hospital_department_id, medical_association_id, staff_id, hospital_id, patient_id, is_external) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            VALUES (:request_type, :summary_notes, :priority_category, :sending_department_id, 
+                    :hospital_department_id, :medical_association_id, :staff_id, :hospital_id, 
+                    :patient_id, :is_external)";
 
-    $stmt = $conn->prepare($sql);
+    try {
+        $stmt = $conn->prepare($sql);
 
-    // Bind parameters
-    $stmt->bind_param("sssiiiiiis", 
-        $request_type, // This now contains the text input value
-        $reason_for_referral,
-        $urgency_level,
-        $sending_department_id,
-        $hospital_department_id,
-        $medical_association_id,
-        $staff_id,
-        $hospital_id,
-        $patient_id,
-        $is_external
-    );
+        // Bind parameters
+        $stmt->bindParam(':request_type', $request_type);
+        $stmt->bindParam(':summary_notes', $reason_for_referral);
+        $stmt->bindParam(':priority_category', $urgency_level);
+        $stmt->bindParam(':sending_department_id', $sending_department_id, PDO::PARAM_INT);
+        $stmt->bindParam(':hospital_department_id', $hospital_department_id, PDO::PARAM_INT);
+        $stmt->bindParam(':medical_association_id', $medical_association_id, PDO::PARAM_INT);
+        $stmt->bindParam(':staff_id', $staff_id, PDO::PARAM_INT);
+        $stmt->bindParam(':hospital_id', $hospital_id, PDO::PARAM_INT);
+        $stmt->bindParam(':patient_id', $patient_id, PDO::PARAM_INT);
+        $stmt->bindParam(':is_external', $is_external);
 
-    if ($stmt->execute()) {
-        echo "<script>
-                alert('Referral submitted successfully!');
-                window.location.href = 'branchReferral.php';
-              </script>";
-    } else {
-        echo "Error: " . $stmt->error;
+        if ($stmt->execute()) {
+            echo "<script>
+                    alert('Referral submitted successfully!');
+                    window.location.href = 'branchReferral.php';
+                  </script>";
+        } else {
+            echo "Error: Could not execute the query.";
+        }
+
+    } catch (PDOException $e) {
+        echo "Error: " . htmlspecialchars($e->getMessage());
     }
-
-    $stmt->close();
 }
-$conn->close();
 ?>

@@ -1,15 +1,14 @@
 <?php
 session_start();
 
-include '../connection/connection.php';
+include dirname(__DIR__).("../connection/connection.php");
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
+
 
 $current_page = 'patients';
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
@@ -138,12 +137,12 @@ if ($_SESSION['role'] != 'branchManager') {
     <div class="container">
       <!--------------------Side Menu------------ -->
          <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+      <?php  include dirname(__DIR__).("../common/branch_sidebar.php"); ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include("../common/branch_navbar.php"); ?>
+<?php  include dirname(__DIR__).("../common/branch_navbar.php"); ?>
             <!------------------Patient Section------------------>
             <div class="inside-content">
                 <section class="patient_records_section" id='patient_records'>
@@ -161,19 +160,17 @@ if ($_SESSION['role'] != 'branchManager') {
 
                    
             <?php 
+                try {
                     $query = "SELECT patient_id, first_name, last_name, email, phone_no, date_of_birth, 
-                    emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, last_seen_date 
-                    FROM patient_records";
-                    $result = $conn->query($query);
-
-
-                    // Check if there are any records
-                    if ($result->num_rows > 0) {
-                        $patient_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-                    } else {
-                        $patient_data = []; // No records found
-                    }
-                ?>
+                            emergency_contact, emergency_contact_name, patient_history, isRegistered_NHS, last_seen_date 
+                            FROM patient_records";
+                    $stmt = $conn->query($query);
+                    $patient_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                } catch(PDOException $e) {
+                    echo "Error: " . $e->getMessage();
+                    $patient_data = []; // No records found or error occurred
+                }
+            ?>
 
             <div class="scrollable-table">
                 <table class="patient_table">
@@ -221,6 +218,6 @@ if ($_SESSION['role'] != 'branchManager') {
     </div>
 </div>
 
-    <script src="assets/js/main.js"></script>
+    <script></script>
 </body>
 </html>

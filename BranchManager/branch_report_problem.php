@@ -3,11 +3,7 @@ session_start();
 
 $current_page = 'settings';
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
+
 ?>
 
 
@@ -117,12 +113,12 @@ if ($_SESSION['role'] != 'branchManager') {
 <body>
     <div class="container">
         <!-- Side Menu -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+      <?php  include dirname(__DIR__).("../common/branch_sidebar.php"); ?>
 
             <!-------------------Header------------------->
             <div class="main-content">
                 
-            <?php  include("../common/branch_navbar.php"); ?>
+            <?php  include dirname(__DIR__).("../common/branch_navbar.php"); ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">

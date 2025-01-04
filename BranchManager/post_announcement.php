@@ -3,7 +3,7 @@
 ob_start();
 
 // Include your database connection
-include("../connection/connection.php");
+include dirname(__DIR__).("../connection/connection.php");
 
 // Set error reporting for debugging
 error_reporting(E_ALL);

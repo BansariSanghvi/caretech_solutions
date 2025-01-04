@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../connection/connection.php");
+include dirname(__DIR__).("../connection/connection.php");
 
 // Check if the user is a branch manager
 if ($_SESSION['role'] != 'branchManager') {

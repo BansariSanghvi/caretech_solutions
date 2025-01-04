@@ -123,8 +123,10 @@ switch (@parse_url($_SERVER['REQUEST_URI'])['path']) {
     /* Branch Manager Routes */
     
     case '/BranchManager':
-        require __DIR__. '/BranchManager/branchDashboard.php';
-        break;
+    
+    case '/BranchManager/branchDashboard.php':
+        require __DIR__ . '/BranchManager/branchDashboard.php';
+        break;   
     case '/BranchManager/add_branchPatients.php':
         require __DIR__. 'add_branchPatients.php';
         break; 

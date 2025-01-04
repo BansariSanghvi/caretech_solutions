@@ -1,15 +1,7 @@
 <?php
 session_start();
 
-$current_page = 'dashboard';
-
-// Check if the user is a branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
-
-include dirname(__DIR__) . "../connection/connection.php";
+include dirname(__DIR__) . "/connection/connection.php";
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect();
@@ -216,12 +208,12 @@ $totalReferrals = $referralsStmt->fetchColumn();
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
+      <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+<?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
 <!------------------Dashboard Section------------------>
 
 <div class="inside-content">

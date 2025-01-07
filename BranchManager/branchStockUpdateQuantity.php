@@ -1,6 +1,6 @@
 <?php
 session_start();
-include dirname(__DIR__).("../connection/connection.php");
+include dirname(__DIR__).("/connection/connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['qty'])) {
     $id = $conn->real_escape_string($_POST['id']);

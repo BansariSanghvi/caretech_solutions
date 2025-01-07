@@ -1,12 +1,12 @@
 <?php
 session_start();
 
-include dirname(__DIR__).("../connection/connection.php");
+include dirname(__DIR__).("/connection/connection.php");
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect();
 
-$current_page = 'stock';
+
 
 ?>
 
@@ -159,11 +159,11 @@ $current_page = 'stock';
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include(__DIR__).("../common/branch_sidebar.php"); ?>
+      <?php include(__DIR__).("/common/branch_sidebar.php"); ?>
 
       <!-------------------Header------------------->
       <div class="main-content">
-          <?php include(__DIR__).("../common/branch_navbar.php"); ?>
+          <?php include(__DIR__).("/common/branch_navbar.php"); ?>
           
           <!------------------Stock Section------------------>
           <div class="inside-content">

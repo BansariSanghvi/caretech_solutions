@@ -1,5 +1,5 @@
 <?php
-include dirname(__DIR__) . "../connection/connection.php";
+include dirname(__DIR__) . "/connection/connection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data

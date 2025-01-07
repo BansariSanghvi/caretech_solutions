@@ -1,13 +1,9 @@
 <?php
 session_start();
-include dirname(__DIR__).("../connection/connection.php");
+include dirname(__DIR__).("/connection/connection.php");
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect();
-
-
-$current_page = 'patients';
-
 
 
 // Check if patient ID is provided
@@ -132,9 +128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="container">
-      <?php include (__DIR__).("../common/branch_sidebar.php"); ?>
+      <?php include (__DIR__).("/common/branch_sidebar.php"); ?>
       <div class="main-content">
-        <?php include (__DIR__).("../common/branch_navbar.php"); ?>
+        <?php include (__DIR__).("/common/branch_navbar.php"); ?>
         <div class="inside-content">
             <section class="patient_records_section" id='patient_records'>
                 <h3 class="page_title">Edit Patient:</h3>

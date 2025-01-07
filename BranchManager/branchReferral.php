@@ -1,12 +1,9 @@
 <?php
 session_start();
-include dirname(__DIR__) . "../connection/connection.php";
+include dirname(__DIR__) . "/connection/connection.php";
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect(); // Assuming this returns a PDO instance
-
-$current_page = 'forms';
-
 
 // Fetch Patients
 $patient_query = "SELECT patient_id, first_name, last_name FROM patient_records";
@@ -89,11 +86,11 @@ $external_result = $external_stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
+      <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
       <!-------------------Header------------------->
       <div class="main-content">
-          <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+          <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
           
           <!------------------Patient Section------------------>
           <section id="referral_form">

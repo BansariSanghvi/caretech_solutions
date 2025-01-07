@@ -5,8 +5,6 @@ include dirname(__DIR__) . "../connection/connection.php";
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect(); // Assuming this returns a PDO instance
 
-$current_page = 'forms';
-
 // Fetch Patients
 $patient_query = "SELECT patient_id, first_name, last_name FROM patient_records";
 $patient_stmt = $conn->query($patient_query);
@@ -85,11 +83,11 @@ $dept_result = $dept_stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
+      <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
       <!-------------------Header------------------->
       <div class="main-content">
-          <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+          <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
           
           <!------------------Patient Section------------------>
           <section id="letter_generation">
@@ -158,7 +156,7 @@ $dept_result = $dept_stmt->fetchAll(PDO::FETCH_ASSOC);
           </section>
 
           <!-- JavaScript to update department based on selected staff -->
-          <script src="assets/js/main.js"></script>
+          
 
           <script>
               function updateDepartment() {

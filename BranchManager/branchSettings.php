@@ -1,7 +1,10 @@
 <?php
 session_start();
 
-$current_page = 'settings';
+include dirname(__DIR__) . "/connection/connection.php";
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 ?>
 
@@ -87,12 +90,12 @@ $current_page = 'settings';
     <div class="container">
       <!--------------------Side Menu------------ -->
          <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+         <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include("../common/branch_navbar.php"); ?>
+<?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
             <!------------------Inner Section------------------>
                   <section class="filter" id="filter_option">
                   <div class="inside-content">
@@ -123,6 +126,6 @@ $current_page = 'settings';
 
 
 
-    <script src="assets/js/main.js"></script>
+
 </body>
 </html>

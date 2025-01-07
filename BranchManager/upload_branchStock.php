@@ -1,13 +1,11 @@
 <?php
 session_start();
 
-$current_page = 'stock';
+include dirname(__DIR__).("/connection/connection.php");
 
-// Check if the user is an branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
+
 ?>
 
 <!DOCTYPE html>

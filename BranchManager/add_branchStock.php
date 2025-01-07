@@ -1,13 +1,12 @@
 <?php
 session_start();
 
-$current_page = 'stock';
+include dirname(__DIR__) . '/connection/connection.php';
 
-// Check if the user is a branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    header('Location: unauthorized.php');
-    exit;
-}
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -114,11 +113,11 @@ if ($_SESSION['role'] != 'branchManager') {
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("../common/branch_sidebar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
         <!-- Header -->
         <div class="main-content">
-        <?php include("../common/branch_navbar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
 
             <!-- Inventory Section -->
             <div class="inside-content">
@@ -165,6 +164,6 @@ if ($_SESSION['role'] != 'branchManager') {
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
+    
 </body>
 </html>

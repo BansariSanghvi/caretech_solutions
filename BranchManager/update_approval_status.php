@@ -1,12 +1,7 @@
 <?php
 session_start();
-include dirname(__DIR__).("../connection/connection.php");
+include dirname(__DIR__).("/connection/connection.php");
 
-// Check if the user is a branch manager
-if ($_SESSION['role'] != 'branchManager') {
-    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
-    exit;
-}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];

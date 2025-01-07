@@ -1,7 +1,10 @@
 <?php
 session_start();
 
-$current_page = 'analytics';
+include dirname(__DIR__) . '/connection/connection.php';
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 ?>
 
@@ -75,12 +78,12 @@ $current_page = 'analytics';
     <div class="container">
       <!--------------------Side Menu------------ -->
          <!--------------------Side Menu------------ -->
-      <?php  include("../common/branch_sidebar.php"); ?>
+         <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include("../common/branch_navbar.php"); ?>
+<?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
             <!------------------Analytics Section------------------>
             <div class="inside-content">
                <section class="analytics_section" id ='analytics'>

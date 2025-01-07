@@ -1,7 +1,10 @@
 <?php
 session_start();
 
-$current_page = 'settings';
+include dirname(__DIR__) . '/connection/connection.php';
+
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 
 ?>

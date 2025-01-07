@@ -103,11 +103,11 @@
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php  include("../common/branch_sidebar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
         <!-- Header -->
         <div class="main-content">
-        <?php  include("../common/branch_navbar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">
@@ -148,6 +148,5 @@
         </div>
     </div>
 
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

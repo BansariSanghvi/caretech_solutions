@@ -1,61 +1,40 @@
 <?php
 session_start();
 
-// Check if the user is an admin
-if ($_SESSION['role'] != 'staff') {
-    header('Location: unauthorized.php');
-    exit;
-}
+include dirname(__DIR__) . '/connection/connection.php';
 
-include '../connection/connection.php';
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+$dbConnect = new DBConnect();
+$conn = $dbConnect->connect();
 
 // Fetch Total Staff
-$staffQuery = "SELECT COUNT(*) AS total FROM staff_records;"; 
-$staffResult = $conn->query($staffQuery);
-if ($staffResult->num_rows > 0) {
-    $row = $staffResult->fetch_assoc();
-    $totalStaff = $row['total'];
-}
+$staffQuery = "SELECT COUNT(*) AS total FROM staff_records";
+$stmt = $conn->query($staffQuery);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalStaff = $row['total'] ?? 0;
 
 // Fetch Total appointments
-$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments"; 
-$appointmentsResult = $conn->query($appointmentsQuery);
-if ($appointmentsResult->num_rows > 0) {
-    $row = $appointmentsResult->fetch_assoc();
-    $totalAppointments = $row['total'];
-}
+$appointmentsQuery = "SELECT COUNT(*) AS total FROM appointments";
+$stmt = $conn->query($appointmentsQuery); 
+$row = $stmt->fetch(PDO::FETCH_ASSOC);  
+$totalAppointments = $row['total'] ?? 0;
 
 // Fetch Total Patients
-$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records"; 
-$patientsResult = $conn->query($patientsQuery);
-if ($patientsResult->num_rows > 0) {
-    $row = $patientsResult->fetch_assoc();
-    $totalPatients = $row['total'];
-}
+$patientsQuery = "SELECT COUNT(*) AS total FROM patient_records";
+$stmt = $conn->query($patientsQuery);
+$row3 = $stmt->fetch(PDO::FETCH_ASSOC);
+$totalPatients = $row3['total'] ?? 0;
 
 // Fetch Total Referrals
-$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'"; 
-$referralsResult = $conn->query($referralsQuery);
-if ($referralsResult->num_rows > 0) {
-    $row = $referralsResult->fetch_assoc();
-    $totalReferrals = $row['total'];
-}
+$referralsQuery = "SELECT COUNT(*) AS total FROM referral_form WHERE isViewed = 'Pending'";
+$stmt = $conn->query($referralsQuery); 
+$row = $stmt->fetch(PDO::FETCH_ASSOC); 
+$totalReferrals = $row['total'] ?? 0; 
 
 // Fetch Announcements
-$announcementQuery = "SELECT announcement_description FROM announcements;"; 
-$announcementResult = $conn->query($announcementQuery);
-$announcements = []; // Array to store the announcement descriptions
+$announcementQuery = "SELECT announcement_description FROM announcements;";
+$stmt = $conn->query($announcementQuery); // Execute the query
+$announcements = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-if ($announcementResult->num_rows > 0) {
-    while ($row = $announcementResult->fetch_assoc()) {
-        $announcements[] = $row['announcement_description']; // Collect each announcement description
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -270,11 +249,11 @@ if ($announcementResult->num_rows > 0) {
 <body>
     <div class="container">
         <!-- Side Menu -->
-        <?php include("../common/staff_sidebar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/staff_sidebar.php"; ?>
 
         <!-- Main Content -->
         <div class="main-content">
-            <?php include("../common/staff_navbar.php"); ?>
+        <?php include dirname(__DIR__) . "/common/staff_navbar.php"; ?>
 
             <!-- Dashboard Section -->
             <div class="inside-content">
@@ -331,17 +310,11 @@ if ($announcementResult->num_rows > 0) {
                     </div>
 
                     <?php 
-                    $query = "SELECT appointment_id, appointment_date, appointment_time
-                              FROM appointments";
+                    $query = "SELECT appointment_id, appointment_date, appointment_time FROM appointments";
+                    $stmt = $conn->query($query);
                     
-                    $result = $conn->query($query);
-
-                    // Check if there are any records
-                    if ($result->num_rows > 0) {
-                        $appointment_data = $result->fetch_all(MYSQLI_ASSOC); // Fetch all rows as associative array
-                    } else {
-                        $appointment_data = []; // No records found
-                    }
+                    // Fetch records
+                    $appointment_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                     
                     <!-- Appointment Table -->

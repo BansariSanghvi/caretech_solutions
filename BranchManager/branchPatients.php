@@ -1,13 +1,10 @@
 <?php
 session_start();
 
-include dirname(__DIR__).("../connection/connection.php");
+include dirname(__DIR__).("/connection/connection.php");
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect();
-
-
-$current_page = 'patients';
 
 ?>
 
@@ -137,12 +134,12 @@ $current_page = 'patients';
     <div class="container">
       <!--------------------Side Menu------------ -->
          <!--------------------Side Menu------------ -->
-      <?php  include dirname(__DIR__).("../common/branch_sidebar.php"); ?>
+      <?php  include dirname(__DIR__).("/common/branch_sidebar.php"); ?>
 
 <!-------------------Header------------------->
 <div class="main-content">
     
-<?php  include dirname(__DIR__).("../common/branch_navbar.php"); ?>
+<?php  include dirname(__DIR__).("/common/branch_navbar.php"); ?>
             <!------------------Patient Section------------------>
             <div class="inside-content">
                 <section class="patient_records_section" id='patient_records'>

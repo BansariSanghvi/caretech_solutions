@@ -4,7 +4,7 @@ session_start();
 $current_page = 'referral_history';
 
 
-include dirname(__DIR__) . "../connection/connection.php";
+include dirname(__DIR__) . "/connection/connection.php";
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect(); 
@@ -130,9 +130,9 @@ $referral_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
     <div class="container">
-        <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
+        <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
         <div class="main-content">
-            <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+            <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
             <div class="inside-content">
                 <section class="referral_history_section" id='referral_history'>
                     <h2 class="page_title">Referral History:</h2>

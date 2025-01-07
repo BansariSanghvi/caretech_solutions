@@ -1,11 +1,9 @@
 <?php
 session_start();
-include dirname(__DIR__) . "../connection/connection.php";
+include dirname(__DIR__) . "/connection/connection.php";
 
 $dbConnect = new DBConnect();
 $conn = $dbConnect->connect(); // Assuming this returns a PDO instance
-
-$current_page = 'settings';
 
 // Fetch staff list for dropdown
 $staff_query = "SELECT staff_id, fname, lname, role FROM staff_records";
@@ -106,11 +104,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
       <!--------------------Side Menu------------ -->
-      <?php include dirname(__DIR__) . "../common/branch_sidebar.php"; ?>
+      <?php include dirname(__DIR__) . "/common/branch_sidebar.php"; ?>
 
       <!-------------------Header------------------->
       <div class="main-content">
-        <?php include dirname(__DIR__) . "../common/branch_navbar.php"; ?>
+        <?php include dirname(__DIR__) . "/common/branch_navbar.php"; ?>
         
         <!------------------Inner Section------------------>
         <div class="inside-content">
@@ -156,7 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
     </div>
 
-<script src="assets/js/main.js"></script>
+
 </body>
 </html>
 
